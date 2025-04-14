@@ -1,0 +1,3 @@
+[submodule "GameEngine/glm"]
+	path = GameEngine/glm
+	url = https://github.com/g-truc/glm

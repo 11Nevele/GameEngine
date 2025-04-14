@@ -1,5 +1,6 @@
 #include "acpch.h"
 #include "WindowsInput.h"
+
 //#include <GLFW/\glfw3.h>
 
 namespace ac
@@ -13,6 +14,7 @@ namespace ac
 	{
 		auto state = glfwGetMouseButton(window.mWindow, button);
 		return state == GLFW_PRESS;
+		GLFW_KEY_B
 	}
 	Vector2 WindowsInput::GetMousePosition(const WinWindow& window)
 	{
