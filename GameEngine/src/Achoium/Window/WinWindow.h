@@ -1,13 +1,14 @@
 #pragma once
 #include "acpch.h"
 #include "Window.h"
-
+#include "Input\WindowsInput.h"
 
 namespace ac
 {
 	class WinWindow : public Window
 	{
 	public:
+		friend class WindowsInput;
 		WinWindow(const WindowProperties& properties, EventManager& eventManager);
 		virtual ~WinWindow();
 

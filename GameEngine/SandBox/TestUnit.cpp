@@ -140,6 +140,21 @@ void TestInvokeEvent() {
     ACMSG("TestInvokeEvent passed");
 }
 
+void TestInput()
+{
+	ac::EventManager eventManager;
+    ac::WinWindow window({ "AC", 1280, 720 }, eventManager);
+    ac::WindowsInput input;
+    for (int i = 0; i < 10000; ++i)
+    {
+		window.OnUpdate();
+		ac::Vector2 v = input.GetMousePosition(window);
+		ACMSG("MousePose: " << v.x << " " << v.y);
+		//ACMSG("KeyPressed: " << input.IsKeyPressed(AC_KEY_SPACE, window));
+		//ACMSG("MouseButtonPressed: " << input.IsMouseButtonPressed(AC_MOUSE_BUTTON_LEFT, window));
+    }
+}
+
 void StartTest() {
     TestCreateEntity();
     TestAddComponent();
@@ -150,4 +165,5 @@ void StartTest() {
     TestRegisterEvent();
     TestAddListener();
     TestInvokeEvent();
+	TestInput();
 }

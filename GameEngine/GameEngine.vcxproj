@@ -21,6 +21,8 @@
     <ClInclude Include="SandBox\TestUnit.h" />
     <ClInclude Include="src\Achoium\Event\MouseEvent.h" />
     <ClInclude Include="src\Achoium\Event\WindowEvent.h" />
+    <ClInclude Include="src\Achoium\Input\WindowsInput.h" />
+    <ClInclude Include="src\Achoium\Util\Vector2.h" />
     <ClInclude Include="src\Achoium\Window\Window.h" />
     <ClInclude Include="src\Achoium\Window\WinWindow.h" />
   </ItemGroup>
@@ -36,6 +38,8 @@
     <ClCompile Include="SandBox\BenchmarkEvent.cpp" />
     <ClCompile Include="SandBox\TestUnit.cpp" />
     <ClCompile Include="SandBox\Main.cpp" />
+    <ClCompile Include="src\Achoium\Input\WindowsInput.cpp" />
+    <ClCompile Include="src\Achoium\Util\Vector2.cpp" />
     <ClCompile Include="src\Achoium\Window\WinWindow.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
