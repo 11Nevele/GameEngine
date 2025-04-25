@@ -58,9 +58,10 @@ namespace ac
 			ACERR("Could not create window!");
 			return;
 		}
-		glfwMakeContextCurrent(mWindow);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		ACASSERT(status, "Failed to initialize GLAD!");
+		
+		mContext = new OpenGLContext(mWindow);
+		mContext->Init();
+
 		glfwSetWindowUserPointer(mWindow, &mData);
 		SetVSync(true);
 		glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* window, int width, int height)
@@ -140,11 +141,13 @@ namespace ac
 	void WinWindow::Shutdown()
 	{
 		glfwDestroyWindow(mWindow);
+		delete mWindow;
+		delete mContext;
 	}
 	void WinWindow::OnUpdate()
 	{
 		glfwPollEvents();
-		glfwSwapBuffers(mWindow);
+		mContext->SwapBuffers();
 	}
 	void WinWindow::SetVSync(bool enabled)
 	{

@@ -14,7 +14,7 @@ namespace ac
 	{
 		auto state = glfwGetMouseButton(window.mWindow, button);
 		return state == GLFW_PRESS;
-		GLFW_KEY_B
+		
 	}
 	Vector2 WindowsInput::GetMousePosition(const WinWindow& window)
 	{

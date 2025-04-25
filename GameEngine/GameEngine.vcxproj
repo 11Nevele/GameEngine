@@ -21,6 +21,9 @@
     <ClInclude Include="SandBox\TestUnit.h" />
     <ClInclude Include="src\Achoium\Event\MouseEvent.h" />
     <ClInclude Include="src\Achoium\Event\WindowEvent.h" />
+    <ClInclude Include="src\Achoium\GraphicContext\GraphicContext.h" />
+    <ClInclude Include="src\Achoium\GraphicContext\OpenGLContext.h" />
+    <ClInclude Include="src\Achoium\Input\Keycode.h" />
     <ClInclude Include="src\Achoium\Input\WindowsInput.h" />
     <ClInclude Include="src\Achoium\Util\Vector2.h" />
     <ClInclude Include="src\Achoium\Window\Window.h" />
@@ -38,6 +41,7 @@
     <ClCompile Include="SandBox\BenchmarkEvent.cpp" />
     <ClCompile Include="SandBox\TestUnit.cpp" />
     <ClCompile Include="SandBox\Main.cpp" />
+    <ClCompile Include="src\Achoium\GraphicContext\OpenGLContext.cpp" />
     <ClCompile Include="src\Achoium\Input\WindowsInput.cpp" />
     <ClCompile Include="src\Achoium\Util\Vector2.cpp" />
     <ClCompile Include="src\Achoium\Window\WinWindow.cpp" />
@@ -78,12 +82,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(ProjectDir)src\Achoium;$(ProjectDir)src;$(SolutionDir)GLFW\include;$(SolutionDir)glad\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)glm;$(ProjectDir)src\Achoium;$(ProjectDir)src;$(SolutionDir)GLFW\include;$(SolutionDir)glad\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(ProjectDir)src\Achoium;$(ProjectDir)src;$(SolutionDir)GLFW\include;$(SolutionDir)glad\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)glm;$(ProjectDir)src\Achoium;$(ProjectDir)src;$(SolutionDir)GLFW\include;$(SolutionDir)glad\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

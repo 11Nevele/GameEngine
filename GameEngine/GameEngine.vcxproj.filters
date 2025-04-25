@@ -57,6 +57,15 @@
     <ClInclude Include="src\Achoium\Util\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Achoium\Input\Keycode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Achoium\GraphicContext\GraphicContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Achoium\GraphicContext\OpenGLContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -81,6 +90,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Achoium\Util\Vector2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Achoium\GraphicContext\OpenGLContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

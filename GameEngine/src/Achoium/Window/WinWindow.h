@@ -2,7 +2,7 @@
 #include "acpch.h"
 #include "Window.h"
 #include "Input\WindowsInput.h"
-
+#include "GraphicContext\OpenGLContext.h"
 namespace ac
 {
 	class WinWindow : public Window
@@ -23,6 +23,7 @@ namespace ac
 		virtual void Shutdown();
 	private:
 		GLFWwindow* mWindow;
+		OpenGLContext* mContext;
 		struct WindowData
 		{
 			std::string title;
