@@ -25,6 +25,16 @@
     <ClInclude Include="src\Achoium\GraphicContext\OpenGLContext.h" />
     <ClInclude Include="src\Achoium\Input\Keycode.h" />
     <ClInclude Include="src\Achoium\Input\WindowsInput.h" />
+    <ClInclude Include="src\Achoium\Render\Buffer.h" />
+    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLRenderer.h" />
+    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLShader.h" />
+    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.h" />
+    <ClInclude Include="src\Achoium\Render\Render.h" />
+    <ClInclude Include="src\Achoium\Render\Renderer.h" />
+    <ClInclude Include="src\Achoium\Render\Shader.h" />
+    <ClInclude Include="src\Achoium\Render\VertexArray.h" />
+    <ClInclude Include="src\Achoium\Util\FileReader.h" />
     <ClInclude Include="src\Achoium\Util\Vector2.h" />
     <ClInclude Include="src\Achoium\Window\Window.h" />
     <ClInclude Include="src\Achoium\Window\WinWindow.h" />
@@ -43,6 +53,11 @@
     <ClCompile Include="SandBox\Main.cpp" />
     <ClCompile Include="src\Achoium\GraphicContext\OpenGLContext.cpp" />
     <ClCompile Include="src\Achoium\Input\WindowsInput.cpp" />
+    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLRenderer.cpp" />
+    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.cpp" />
+    <ClCompile Include="src\Achoium\Util\FileReader.cpp" />
     <ClCompile Include="src\Achoium\Util\Vector2.cpp" />
     <ClCompile Include="src\Achoium\Window\WinWindow.cpp" />
   </ItemGroup>

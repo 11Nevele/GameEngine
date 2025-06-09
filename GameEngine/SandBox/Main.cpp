@@ -7,6 +7,7 @@
 #include "TestUnit.h"
 #include "Benchmark.h"
 using namespace ac;
+
 EventManager eventManager;
 class Test
 {
@@ -29,7 +30,7 @@ using namespace std;
 unsigned int vertexArray, vertexBuffer, indexBuffer;
 int main()
 {
-	//StartTest();
+	//fStartTest();
 	ac::World world;
 	world.AddResource<ac::EventManager>(new EventManager());
 	world.AddResource<Window>(Window::Create({"AC", 1280, 720}, world.GetResourse<EventManager>()));
