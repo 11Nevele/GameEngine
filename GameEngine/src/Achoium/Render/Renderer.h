@@ -17,6 +17,6 @@ namespace ac
 
 		virtual void Submit(const std::shared_ptr<Shader>& shader, const std::shared_ptr<VertexArray>& vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) = 0;
 
-		virtual void UpdateCamera(const glm::mat4& cameraTransform);
+		virtual void UpdateCamera(const glm::mat4& cameraTransform) = 0;
 	};
 }

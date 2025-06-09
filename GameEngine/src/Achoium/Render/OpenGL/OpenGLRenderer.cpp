@@ -44,6 +44,8 @@ namespace ac
 		// Upload the transformation matrix and view-projection matrix to the shader
 		shader->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
 		shader->SetMat4("u_Transform", transform);
+		shader->SetFloat("WidthLengthRatio", 16.0 / 9.0);
+		shader->SetFloat("scale", 1);
 
 		// Bind the vertex array
 		vertexArray->Bind();

@@ -104,6 +104,12 @@ namespace ac
         glUniform4f(location, value.x, value.y, value.z, value.w);
     }
 
+    void OpenGLShader::SetMat3(const std::string& name, const glm::mat3& value)
+    {
+        GLint location = glGetUniformLocation(m_RendererID, name.c_str());
+        glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
+    }
+
     void OpenGLShader::SetMat4(const std::string& name, const glm::mat4& value)
     {
         GLint location = glGetUniformLocation(m_RendererID, name.c_str());

@@ -2,7 +2,7 @@
 #include "Render/VertexArray.h"
 namespace ac
 {
-	class OpenGLVertexArray:VertexArray
+	class OpenGLVertexArray: public VertexArray
 	{
 	public:
 		OpenGLVertexArray();

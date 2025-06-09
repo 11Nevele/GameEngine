@@ -1,7 +1,7 @@
 #pragma once
 #include "acpch.h"
+#include <glm\glm.hpp>
 #include "Window\WinWindow.h"
-#include "Util\Vector2.h"
 namespace ac
 {
 	class WinWindow; // Forward declaration of WinWindow class
@@ -10,6 +10,6 @@ namespace ac
 	public:
 		bool IsKeyPressed(int keycode, const WinWindow& window);
 		bool IsMouseButtonPressed(int button, const WinWindow& window);
-		Vector2 GetMousePosition(const WinWindow& window);
+		glm::vec2 GetMousePosition(const WinWindow& window);
 	};
 }

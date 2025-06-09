@@ -54,9 +54,6 @@
     <ClInclude Include="src\Achoium\Input\WindowsInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Util\Vector2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Achoium\Input\Keycode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -90,10 +87,19 @@
     <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Util\FileReader.h">
+    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.h">
+    <ClInclude Include="src\Achoium\Util\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Achoium\Math\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Achoium\Math\Quaternion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Achoium\Math\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -119,9 +125,6 @@
     <ClCompile Include="src\Achoium\Input\WindowsInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Util\Vector2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Achoium\GraphicContext\OpenGLContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -134,11 +137,21 @@
     <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Util\FileReader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Achoium\Util\util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Achoium\Math\Quaternion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Achoium\Math\Transform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SandBox\Shader\ShaderTest.txt" />
+    <Text Include="SandBox\Shader\fragmentShader.txt" />
   </ItemGroup>
 </Project>

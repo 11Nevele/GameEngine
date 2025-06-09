@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Achoium\Math\Transform.h" />
     <ClInclude Include="src\Achoium\Event\KeyEvent.h" />
     <ClInclude Include="src\Achoium\Achoium.h" />
     <ClInclude Include="src\Achoium\acpch.h" />
@@ -25,6 +26,8 @@
     <ClInclude Include="src\Achoium\GraphicContext\OpenGLContext.h" />
     <ClInclude Include="src\Achoium\Input\Keycode.h" />
     <ClInclude Include="src\Achoium\Input\WindowsInput.h" />
+    <ClInclude Include="src\Achoium\Math\Quaternion.h" />
+    <ClInclude Include="src\Achoium\Math\util.h" />
     <ClInclude Include="src\Achoium\Render\Buffer.h" />
     <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLBuffer.h" />
     <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLRenderer.h" />
@@ -34,8 +37,7 @@
     <ClInclude Include="src\Achoium\Render\Renderer.h" />
     <ClInclude Include="src\Achoium\Render\Shader.h" />
     <ClInclude Include="src\Achoium\Render\VertexArray.h" />
-    <ClInclude Include="src\Achoium\Util\FileReader.h" />
-    <ClInclude Include="src\Achoium\Util\Vector2.h" />
+    <ClInclude Include="src\Achoium\Util\util.h" />
     <ClInclude Include="src\Achoium\Window\Window.h" />
     <ClInclude Include="src\Achoium\Window\WinWindow.h" />
   </ItemGroup>
@@ -53,13 +55,18 @@
     <ClCompile Include="SandBox\Main.cpp" />
     <ClCompile Include="src\Achoium\GraphicContext\OpenGLContext.cpp" />
     <ClCompile Include="src\Achoium\Input\WindowsInput.cpp" />
+    <ClCompile Include="src\Achoium\Math\Quaternion.cpp" />
+    <ClCompile Include="src\Achoium\Math\Transform.cpp" />
     <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLRenderer.cpp" />
     <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLShader.cpp" />
     <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.cpp" />
-    <ClCompile Include="src\Achoium\Util\FileReader.cpp" />
-    <ClCompile Include="src\Achoium\Util\Vector2.cpp" />
+    <ClCompile Include="src\Achoium\Util\util.cpp" />
     <ClCompile Include="src\Achoium\Window\WinWindow.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="SandBox\Shader\fragmentShader.txt" />
+    <Text Include="SandBox\Shader\ShaderTest.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

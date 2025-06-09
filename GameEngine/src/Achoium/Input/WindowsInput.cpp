@@ -16,10 +16,10 @@ namespace ac
 		return state == GLFW_PRESS;
 		
 	}
-	Vector2 WindowsInput::GetMousePosition(const WinWindow& window)
+	glm::vec2 WindowsInput::GetMousePosition(const WinWindow& window)
 	{
 		double x, y;
 		glfwGetCursorPos(window.mWindow, &x, &y);
-		return Vector2(x, y);
+		return glm::vec2(x, y);
 	}
 }
