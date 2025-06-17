@@ -39,6 +39,11 @@ namespace ac
    /// Uploads the vertex array object and its associated buffers to the GPU.  
    void OpenGLVertexArray::Upload()  
    {  
+       if (isUploaded)
+       {
+		   ACMSG("VertexArray: " << m_RendererID << "already uploaded, skipping upload.");
+           return;
+       }
        Bind();  
        indexBuffers->Upload();  
        for (shared_ptr<VertexBuffer> i : vertexBuffers)  

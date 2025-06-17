@@ -55,6 +55,11 @@ namespace ac
    /// Uploads the vertex buffer data to the GPU.  
    void OpenGLVertexBuffer::Upload()  
    {  
+       if (m_RendererID != 0)  
+       {  
+           ACMSG("VBO: " << m_RendererID << " Already Uploaded");  
+           return;  
+	   }
        glGenBuffers(1, &m_RendererID);  
        ACMSG("VBO: " << m_RendererID << " Created");  
        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);  
@@ -114,6 +119,11 @@ namespace ac
    /// Uploads the index buffer data to the GPU.  
    void OpenGLIndexBuffer::Upload()  
    {  
+       if (m_RendererID != 0)  
+       {  
+           ACMSG("EBO: " << m_RendererID << " Already Uploaded");  
+           return;  
+	   }
        glCreateBuffers(1, &m_RendererID);  
        ACMSG("EBO: " << m_RendererID << " Created");  
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);  
