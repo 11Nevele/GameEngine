@@ -1,9 +1,0 @@
-#include "Debug.h"
-#include "Core\ECS.hpp";
-#include "Event\Event.hpp";
-#include "Window\Window.h"
-#include "Window\WinWindow.h"
-#include "Render\Render.h"
-#include "Util/util.h"
-#include "Math/Quaternion.h"
-#include "Math/Transform.h"

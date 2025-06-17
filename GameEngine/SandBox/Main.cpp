@@ -28,84 +28,252 @@ void Add()
 using namespace std;
 using namespace ac;
 
+using mTexture2D = OpenGLTexture2D;
+using mInput = WindowsInput;
+using mWindow = WinWindow;
+using mRenderer = OpenGLRenderer;
+
 unsigned int vertexArray, vertexBuffer, indexBuffer;
 float verteies[] = {
 	// Front face
-	 0.5,  0.5,  0.5,  // 0
-	 0.5, -0.5,  0.5,  // 1
-	-0.5, -0.5,  0.5,  // 2
-	-0.5,  0.5,  0.5,  // 3
+	 0.5,  0.5,  0.5, 1.0, 1.0,  // 0
+	 0.5, -0.5,  0.5, 1.0, 0.0, // 1
+	-0.5, -0.5,  0.5, 0.0, 0.0, // 2
+	-0.5,  0.5,  0.5, 0.0, 1.0, // 3
 
 	// Back face
-	 0.5,  0.5, -0.5,  // 4
-	 0.5, -0.5, -0.5,  // 5
-	-0.5, -0.5, -0.5,  // 6
-	-0.5,  0.5, -0.5   // 7
+	0.5,  0.5, -0.5, 1.0, 1.0, // 4
+	0.5, -0.5, -0.5, 1.0, 0.0, // 5
+	-0.5, -0.5, -0.5, 0.0, 0.0, // 6
+	-0.5,  0.5, -0.5, 0.0, 1.0  // 7
+};
+
+float fullcube[] = {
+	// Positions          // Texture Coords
+	// Front face (Z = 0.5)
+	-0.5f, -0.5f,  0.5f,  0.0f, 2.0f/3.0f,  // Bottom-left
+	 0.5f, -0.5f,  0.5f,  0.25f, 2.0f / 3.0f,  // Bottom-right
+	 0.5f,  0.5f,  0.5f,  0.25f, 1.0f,  // Top-right
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  // Top-left
+
+	// Back face (Z = -0.5)
+	-0.5f, -0.5f, -0.5f,  0.25f, 2.0f / 3.0f,  // Bottom-right (mirrored)
+	 0.5f, -0.5f, -0.5f,  0.0f, 2.0f / 3.0f,  // Bottom-left (mirrored)
+	 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  // Top-left (mirrored)
+	-0.5f,  0.5f, -0.5f,  0.25f, 1.0f,  // Top-right (mirrored)
+
+	// Left face (X = -0.5)
+	-0.5f, -0.5f, -0.5f,  0.0f, 2.0f / 3.0f,  // Bottom-back
+	-0.5f, -0.5f,  0.5f, 0.25f, 2.0f / 3.0f,  // Bottom-front
+	-0.5f,  0.5f,  0.5f,  0.25f, 1.0f,  // Top-front
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,  // Top-back
+
+	// Right face (X = 0.5)
+	 0.5f, -0.5f,  0.5f,   0.0f, 2.0f / 3.0f,  // Bottom-front
+	 0.5f, -0.5f, -0.5f,  0.25f, 2.0f / 3.0f,  // Bottom-back
+	 0.5f,  0.5f, -0.5f,  0.25f, 1.0f,  // Top-back
+	 0.5f,  0.5f,  0.5f,  0.0f, 1.0f,  // Top-front
+
+	 // Bottom face (Y = -0.5)
+	 -0.5f, -0.5f, -0.5f,  0.0f, 2.0 / 3.0f,  // Back-left
+	  0.5f, -0.5f, -0.5f,  0.25f, 2.0 / 3.0f,  // Back-right
+	  0.5f, -0.5f,  0.5f,  0.25f, 1.0 / 3.0f,  // Front-right
+	 -0.5f, -0.5f,  0.5f,  0.0f, 1.0/3.0f,  // Front-left
+
+	 // Top face (Y = 0.5)
+	 -0.5f,  0.5f,  0.5f,  0.5f, 1.0/3.0f,  // Front-left
+	  0.5f,  0.5f,  0.5f,  0.75f, 1.0/3.0f,  // Front-right
+	  0.5f,  0.5f, -0.5f,  0.75f, 2.0 / 3.0f,  // Back-right
+	 -0.5f,  0.5f, -0.5f,  0.5f, 2.0 / 3.0f   // Back-left
 };
 
 uint32_t index[] = {
 	// Front face
 	0, 1, 2,
 	2, 3, 0,
-
+	
 	// Back face
-	4, 5, 6,
-	6, 7, 4,
+	4, 6, 5,
+	6, 4, 7,
 
 	// Left face
 	3, 2, 6,
 	6, 7, 3,
 
 	// Right face
-	0, 1, 5,
-	5, 4, 0,
+	0, 5, 1,
+	5, 0, 4,
 
 	// Top face
 	0, 3, 7,
 	7, 4, 0,
 
 	// Bottom face
-	1, 2, 6,
-	6, 5, 1
+	1, 6, 2,
+	6, 1, 5
+	
 };
+
+unsigned int fullcubeindices[] = {
+	// Front face
+	0, 1, 2,   // Triangle 1
+	2, 3, 0,   // Triangle 2
+	// Back face
+	4, 6, 5,   // Triangle 1
+	6, 4, 7,   // Triangle 2
+	// Left face
+	8, 9, 10,  // Triangle 1
+	10, 11, 8, // Triangle 2
+	// Right face
+	12, 13, 14, // Triangle 1
+	14, 15, 12, // Triangle 2
+	// Bottom face
+	16, 17, 18, // Triangle 1
+	18, 19, 16, // Triangle 2
+	// Top face
+	20, 21, 22, // Triangle 1
+	22, 23, 20  // Triangle 2
+};
+
+struct Camera {
+	glm::vec3 movementSpeed;
+};
+struct movement
+{
+	glm::vec3 velocity;
+};
+
+void CameraMovement(World& world)
+{
+	mInput& input = world.GetResourse<mInput>();
+	mWindow& win = world.GetResourse<mWindow>();
+	mRenderer& rend = world.GetResourse<mRenderer>();
+	auto t = world.View<Camera, Transform>().GetPacked();
+	for (auto i : t)
+	{
+		auto& transform = get<1>(i.components);
+		auto& camera = get < 0> (i.components);
+		if (input.IsKeyPressed(AC_KEY_A, win))
+			transform.position.x -= camera.movementSpeed.x;
+
+		if (input.IsKeyPressed(AC_KEY_D, win))
+			transform.position.x += camera.movementSpeed.x;
+
+		if (input.IsKeyPressed(AC_KEY_W, win))
+			transform.position.z -= camera.movementSpeed.z;
+
+		if (input.IsKeyPressed(AC_KEY_S, win))
+			transform.position.z += camera.movementSpeed.z;
+
+		if (input.IsKeyPressed(AC_KEY_LEFT_SHIFT, win))
+			transform.position.y += camera.movementSpeed.y;
+
+		if (input.IsKeyPressed(AC_KEY_LEFT_CONTROL, win))
+			transform.position.y -= camera.movementSpeed.y;
+		
+		rend.UpdateCamera(transform.asMat4(true));
+	}
+}
+void PhyscisMovement(World& world)
+{
+	world.View<movement, Transform>().ForEach([](Entity e, movement& mov, Transform& t)
+		{
+			t.position += mov.velocity;
+			
+		});
+}
+
+void RenderSprite(World& world)
+{
+	mRenderer& renderer = world.GetResourse<mRenderer>();
+	TextureManager& textureManager = world.GetResourse<TextureManager>();
+	ModelManager& modelManager = world.GetResourse<ModelManager>();
+	OpenGLShader shader("name",
+		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
+		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
+	shader.SetInt("u_Texture", 0);
+	world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer, &shader](Entity e, Sprite& sprite, Transform& trans)
+		{
+			textureManager.GetTexture(sprite.textureID).Bind();
+			OpenGLVertexArray& vao = modelManager.GetModel(0);
+			Transform t = trans;
+			t.scale.x *= sprite.width;
+			t.scale.y *= sprite.height;
+			renderer.Submit(&shader, &(vao), t.asMat4());
+		});
+
+}
+
 int main()
 {
 	//fStartTest();
+	
 	ac::World world;
+	world.RegisterType<Camera>();
+	world.RegisterType<Transform>();
 	world.AddResource<ac::EventManager>(new EventManager());
-	world.AddResource<Window>(Window::Create({"AC", 1280, 720}, world.GetResourse<EventManager>()));
-	world.AddResource<ac::Renderer>(new OpenGLRenderer());
+	world.AddResource<mWindow>(new mWindow({"AC", 1280, 720}, world.GetResourse<EventManager>()));
+	world.AddResource<mRenderer>(new mRenderer());
+	world.AddResource<mInput>(new mInput());
+	world.AddResource<TextureManager>(new TextureManager());
+	world.AddResource<ModelManager>(new ModelManager());
+	
+	world.GetResourse<TextureManager>()
+		.AddTexture("Default","C:/C++Projet/GameEngine/GameEngine/SandBox/Image/null.png")
+		.AddTexture("Grass", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/grass.png")
+		.AddTexture("Red", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/red.jpg");
 
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	OpenGLShader shader("name",
-		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/ShaderTest.txt"),
-		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/fragmentShader.txt"));
+	Entity c = world.CreateEntity();
+	Entity sp = world.CreateEntity();
+	world.Add<Camera>(c, {{10, 10, 10}});
+	world.Add<Transform>(c, Transform());
 
 	
+	world.Add<movement>(sp, { {10,0,0} });
+	Transform& tr = world.Add<Transform>(sp, Transform());
+	tr.scale = { 1,1, 1 };
+	Sprite &sprite = world.Add<Sprite>(sp, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 
-	OpenGLVertexArray vao;
-	OpenGLIndexBuffer ebo(index, sizeof(index) / sizeof(int32_t));
-	OpenGLVertexBuffer vbo(verteies, sizeof(verteies));
-	BufferLayout layout({ BufferElement(ShaderDataType::Float3, "coordinate") });
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	
+	
+	//glEnable(GL_DEPTH_TEST);
+	/*OpenGLVertexArray vao;
+	OpenGLIndexBuffer ebo(fullcubeindices, sizeof(fullcubeindices) / sizeof(uint32_t));
+	OpenGLVertexBuffer vbo(fullcube, sizeof(fullcube));
+	BufferLayout layout({ 
+		BufferElement(ShaderDataType::Float3, "coordinate"),
+		BufferElement(ShaderDataType::Float2, "ColorCoordinate") });
 	vbo.SetLayout(layout);
 	vao.AddVertexBuffer(util::Ref(vbo));
 	vao.SetIndexBuffer(util::Ref(ebo));
 
-	Transform transform;
-	transform.position = { 0,1 ,3 };
+	mTexture2D texture("C:/C++Projet/GameEngine/GameEngine/SandBox/Image/grass.png");
+	
+	*/
+	
+	Transform t;
+	t.scale.x *= sprite.width;
+	t.scale.y *= sprite.height;
+	OpenGLShader shader("name",
+		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
+		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
+	
+	shader.SetInt("u_Texture", 0);
 
 	while (true)
 	{
+		mWindow& win = world.GetResourse<mWindow>();
 
-		Window& win = world.GetResourse<Window>();
-		Renderer& renderer = world.GetResourse<Renderer>();
-		renderer.UpdateCamera(glm::mat4(1.0));
-		renderer.Submit(util::Ref(shader), util::Ref(vao), transform.asMat4());
-
-		transform.RotateY(1);
+		CameraMovement(world);
+		PhyscisMovement(world);
+		RenderSprite(world);
 
 		win.OnUpdate();
+		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	

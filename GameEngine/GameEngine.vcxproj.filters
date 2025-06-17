@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Achoium\Achoium.h">
+    <ClInclude Include="Achoium\Achoium.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Debug.h">
+    <ClInclude Include="Achoium\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Core\ECS.hpp">
+    <ClInclude Include="Achoium\Core\ECS.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Event\Event.hpp">
+    <ClInclude Include="Achoium\Event\Event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SandBox\TestUnit.h">
@@ -33,73 +33,88 @@
     <ClInclude Include="SandBox\Benchmark.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\acpch.h">
+    <ClInclude Include="Achoium\acpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Window\Window.h">
+    <ClInclude Include="Achoium\Window\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Window\WinWindow.h">
+    <ClInclude Include="Achoium\Window\WinWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Event\KeyEvent.h">
+    <ClInclude Include="Achoium\Event\KeyEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Event\MouseEvent.h">
+    <ClInclude Include="Achoium\Event\MouseEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Event\WindowEvent.h">
+    <ClInclude Include="Achoium\Event\WindowEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Input\WindowsInput.h">
+    <ClInclude Include="Achoium\Input\WindowsInput.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Input\Keycode.h">
+    <ClInclude Include="Achoium\Input\Keycode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\GraphicContext\GraphicContext.h">
+    <ClInclude Include="Achoium\GraphicContext\GraphicContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\GraphicContext\OpenGLContext.h">
+    <ClInclude Include="Achoium\GraphicContext\OpenGLContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\Buffer.h">
+    <ClInclude Include="Achoium\Render\Buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\Renderer.h">
+    <ClInclude Include="Achoium\Render\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\Render.h">
+    <ClInclude Include="Achoium\Render\Render.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\VertexArray.h">
+    <ClInclude Include="Achoium\Render\VertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\Shader.h">
+    <ClInclude Include="Achoium\Render\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLBuffer.h">
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLRenderer.h">
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLShader.h">
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLShader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.h">
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLVertexArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Util\util.h">
+    <ClInclude Include="Achoium\Util\util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Math\Transform.h">
+    <ClInclude Include="Achoium\Math\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Math\Quaternion.h">
+    <ClInclude Include="Achoium\Math\Quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Achoium\Math\util.h">
+    <ClInclude Include="Achoium\Math\util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Render\Texture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLTexture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\AssetManagement\AssetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -113,45 +128,73 @@
     <ClCompile Include="SandBox\BenchmarkEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\acpch.cpp">
+    <ClCompile Include="Achoium\acpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Window\WinWindow.cpp">
+    <ClCompile Include="Achoium\Window\WinWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\glad.c">
+    <ClCompile Include="Achoium\Input\WindowsInput.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Input\WindowsInput.cpp">
+    <ClCompile Include="Achoium\GraphicContext\OpenGLContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\GraphicContext\OpenGLContext.cpp">
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLBuffer.cpp">
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLRenderer.cpp">
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLShader.cpp">
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLVertexArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Render\OpenGL\OpenGLVertexArray.cpp">
+    <ClCompile Include="Achoium\Util\util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Util\util.cpp">
+    <ClCompile Include="Achoium\Math\Quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Math\Quaternion.cpp">
+    <ClCompile Include="Achoium\Math\Transform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Achoium\Math\Transform.cpp">
+    <ClCompile Include="Achoium\glad.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLTexture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\AssetManagement\AssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\stb_image.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
     <Text Include="SandBox\Shader\fragmentShader.txt" />
+    <Text Include="SandBox\Shader\TextureFragmentShader.txt" />
+    <Text Include="SandBox\Shader\TextureVertexShader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="SandBox\Image\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="SandBox\Image\grass2.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="SandBox\Image\red.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="SandBox\Image\null.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -1,28 +1,12 @@
 #version 330 core
 
 layout(location = 0) in vec3 aPos;
-//layout(location = 1) in vec3 aColor;
-
 uniform mat4 u_ViewProjection;
 uniform mat4 u_Transform;
-uniform float WidthLengthRatio;
-uniform float scale;
-
-out vec4 vertexColor; // specify a color output to the fragment shader
+uniform mat4 projection;
 
 void main()
 {
-    gl_Position = u_ViewProjection * u_Transform * vec4(aPos, 1.0);
-    if (gl_Position.z <= 0) {
-        // Handle the point being behind the camera
-        // For simplicity, we'll set the projected coordinates to a large value
-        // You can adjust this logic based on your specific requirements
-        gl_Position.x = gl_Position.x* 100000;
-        gl_Position.y = gl_Position.y *100000;
-    } else {
-        gl_Position.x = ((gl_Position.x * scale) / gl_Position.z / WidthLengthRatio);
-        gl_Position.y = ((gl_Position.y * scale) / gl_Position.z);
-        gl_Position.z = 0;
-    }
-
+    gl_Position = vec4(aPos, 1.0);
+    gl_Position.z =0;
 }
