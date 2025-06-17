@@ -4,8 +4,7 @@
 #include <glfw3.h>
 #include "Achoium.h"
 
-#include "TestUnit.h"
-#include "Benchmark.h"
+#include "UnitTests/TestUnit.h"
 using namespace ac;
 
 EventManager eventManager;
@@ -204,7 +203,7 @@ void RenderSprite(World& world)
 
 int main()
 {
-	//fStartTest();
+	TestAllTimeMethods();
 	
 	ac::World world;
 	world.RegisterType<Camera>();

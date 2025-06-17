@@ -21,8 +21,8 @@
     <ClInclude Include="Achoium\Event\Event.hpp" />
     <ClInclude Include="Achoium\Render\OpenGL\OpenGLTexture2D.h" />
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
-    <ClInclude Include="SandBox\Benchmark.h" />
-    <ClInclude Include="SandBox\TestUnit.h" />
+    <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
+    <ClInclude Include="SandBox\UnitTests\TestUnit.h" />
     <ClInclude Include="Achoium\Event\MouseEvent.h" />
     <ClInclude Include="Achoium\Event\WindowEvent.h" />
     <ClInclude Include="Achoium\GraphicContext\GraphicContext.h" />
@@ -45,6 +45,7 @@
     <ClInclude Include="Achoium\Render\Texture.h" />
     <ClInclude Include="Achoium\EngineComponents\Sprite.h" />
     <ClInclude Include="Achoium\EngineComponents\Time.h" />
+    <ClInclude Include="SandBox\UnitTests\TimeTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -61,8 +62,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="SandBox\BenchmarkEvent.cpp" />
-    <ClCompile Include="SandBox\TestUnit.cpp" />
+    <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />
+    <ClCompile Include="SandBox\UnitTests\BenchmarkEvent.cpp" />
+    <ClCompile Include="SandBox\UnitTests\TestUnit.cpp" />
     <ClCompile Include="SandBox\Main.cpp" />
     <ClCompile Include="Achoium\GraphicContext\OpenGLContext.cpp" />
     <ClCompile Include="Achoium\Input\WindowsInput.cpp" />
@@ -87,6 +89,9 @@
     <Image Include="SandBox\Image\grass2.jpg" />
     <Image Include="SandBox\Image\null.png" />
     <Image Include="SandBox\Image\red.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SandBox\Main.cpp (modification)" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

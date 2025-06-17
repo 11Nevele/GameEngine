@@ -1,6 +1,7 @@
 // TestUnit.h
 #pragma once
-
+#include "TimeTest.h"
+#include "Benchmark.h"
 struct TestComponent {
     int value;
 };

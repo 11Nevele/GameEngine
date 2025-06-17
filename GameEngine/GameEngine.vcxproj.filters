@@ -27,10 +27,10 @@
     <ClInclude Include="Achoium\Event\Event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SandBox\TestUnit.h">
+    <ClInclude Include="SandBox\UnitTests\TestUnit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SandBox\Benchmark.h">
+    <ClInclude Include="SandBox\UnitTests\Benchmark.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Achoium\acpch.h">
@@ -117,15 +117,18 @@
     <ClInclude Include="Achoium\EngineComponents\Time.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\UnitTests\TimeTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SandBox\TestUnit.cpp">
+    <ClCompile Include="SandBox\UnitTests\TestUnit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SandBox\BenchmarkEvent.cpp">
+    <ClCompile Include="SandBox\UnitTests\BenchmarkEvent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -176,6 +179,9 @@
     <ClCompile Include="Achoium\EngineComponents\Time.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SandBox\UnitTests\TimeTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
@@ -196,5 +202,8 @@
     <Image Include="SandBox\Image\null.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SandBox\Main.cpp (modification)" />
   </ItemGroup>
 </Project>
