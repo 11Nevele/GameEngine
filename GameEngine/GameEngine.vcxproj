@@ -29,7 +29,6 @@
     <ClInclude Include="Achoium\GraphicContext\OpenGLContext.h" />
     <ClInclude Include="Achoium\Input\Keycode.h" />
     <ClInclude Include="Achoium\Input\WindowsInput.h" />
-    <ClInclude Include="Achoium\Math\Quaternion.h" />
     <ClInclude Include="Achoium\Math\util.h" />
     <ClInclude Include="Achoium\Render\Buffer.h" />
     <ClInclude Include="Achoium\Render\OpenGL\OpenGLBuffer.h" />
@@ -45,6 +44,7 @@
     <ClInclude Include="Achoium\Window\WinWindow.h" />
     <ClInclude Include="Achoium\Render\Texture.h" />
     <ClInclude Include="Achoium\EngineComponents\Sprite.h" />
+    <ClInclude Include="Achoium\EngineComponents\Time.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -66,7 +66,6 @@
     <ClCompile Include="SandBox\Main.cpp" />
     <ClCompile Include="Achoium\GraphicContext\OpenGLContext.cpp" />
     <ClCompile Include="Achoium\Input\WindowsInput.cpp" />
-    <ClCompile Include="Achoium\Math\Quaternion.cpp" />
     <ClCompile Include="Achoium\Math\Transform.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLBuffer.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLRenderer.cpp" />
@@ -75,6 +74,7 @@
     <ClCompile Include="Achoium\Util\util.cpp" />
     <ClCompile Include="Achoium\Window\WinWindow.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Sprite.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\fragmentShader.txt" />

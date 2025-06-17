@@ -182,24 +182,22 @@ void PhyscisMovement(World& world)
 			
 		});
 }
-
+OpenGLShader* shader;
 void RenderSprite(World& world)
 {
 	mRenderer& renderer = world.GetResourse<mRenderer>();
 	TextureManager& textureManager = world.GetResourse<TextureManager>();
 	ModelManager& modelManager = world.GetResourse<ModelManager>();
-	OpenGLShader shader("name",
-		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
-		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
-	shader.SetInt("u_Texture", 0);
-	world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer, &shader](Entity e, Sprite& sprite, Transform& trans)
+	
+	shader->SetInt("u_Texture", 0);
+	world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, Sprite& sprite, Transform& trans)
 		{
 			textureManager.GetTexture(sprite.textureID).Bind();
 			OpenGLVertexArray& vao = modelManager.GetModel(0);
 			Transform t = trans;
 			t.scale.x *= sprite.width;
 			t.scale.y *= sprite.height;
-			renderer.Submit(&shader, &(vao), t.asMat4());
+			renderer.Submit(shader, &(vao), t.asMat4());
 		});
 
 }
@@ -233,37 +231,12 @@ int main()
 	Transform& tr = world.Add<Transform>(sp, Transform());
 	tr.scale = { 1,1, 1 };
 	Sprite &sprite = world.Add<Sprite>(sp, Sprite::Create("Default", world.GetResourse<TextureManager>()));
-
-	//glEnable(GL_CULL_FACE);
-	//glCullFace(GL_BACK);
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
 	
-	
-	//glEnable(GL_DEPTH_TEST);
-	/*OpenGLVertexArray vao;
-	OpenGLIndexBuffer ebo(fullcubeindices, sizeof(fullcubeindices) / sizeof(uint32_t));
-	OpenGLVertexBuffer vbo(fullcube, sizeof(fullcube));
-	BufferLayout layout({ 
-		BufferElement(ShaderDataType::Float3, "coordinate"),
-		BufferElement(ShaderDataType::Float2, "ColorCoordinate") });
-	vbo.SetLayout(layout);
-	vao.AddVertexBuffer(util::Ref(vbo));
-	vao.SetIndexBuffer(util::Ref(ebo));
-
-	mTexture2D texture("C:/C++Projet/GameEngine/GameEngine/SandBox/Image/grass.png");
-	
-	*/
-	
-	Transform t;
-	t.scale.x *= sprite.width;
-	t.scale.y *= sprite.height;
-	OpenGLShader shader("name",
+	shader = new OpenGLShader("name",
 		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
 		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
-	
-	shader.SetInt("u_Texture", 0);
 
+	
 	while (true)
 	{
 		mWindow& win = world.GetResourse<mWindow>();
