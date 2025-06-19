@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <unordered_map>
 #include <memory>
+#include "AllowToken.h"
 
 
 #ifndef EVENT_ASSERT
@@ -56,7 +57,6 @@ namespace ac
 		~EventPool() override
 		{
 			eventListeners.clear();
-
 		}
 
 		/**
@@ -88,7 +88,9 @@ namespace ac
 		{
 			for (auto& listener : eventListeners)
 			{
-				listener.second(data);
+				bool passing = listener.second(data);
+				if (!passing)
+					break;
 			}
 		}
 	private:
@@ -137,7 +139,8 @@ namespace ac
 		EventManager& AddListener(std::function<bool(const T&)> func)
 		{
 			auto it = eventID.find(typeid(T));
-			EVENT_ASSERT(it != eventID.end(), "Try to add listener to an unregisterd event " << typeid(T).name());
+			if (it == eventID.end())
+				RegisterEvent<T>();
 			EventPool<T>* pool = GetPool<T>();
 			pool->AddListener(func);
 			EVENT_INFO("Added listener for event: " << (typeid(T).name()));
@@ -152,10 +155,11 @@ namespace ac
 		 * @return EventManager& Reference to this manager for method chaining
 		 */
 		template<class T>
-		EventManager& Invoke(const T& event)
+		EventManager& Invoke(const T& event, AllowToken<T> t)
 		{
 			auto it = eventID.find(typeid(T));
-			EVENT_ASSERT(it != eventID.end(), "Try to invoke an unregisterd event " << typeid(T).name());
+			if(it == eventID.end())
+				RegisterEvent<T>();
 			EventPool<T>* pool = GetPool<T>();
 			pool->Invoke(event);
 			EVENT_INFO("Event invoked: ");

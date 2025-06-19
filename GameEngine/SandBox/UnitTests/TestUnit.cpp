@@ -3,6 +3,7 @@
 #include "Achoium.h"
 
 #include "TestUnit.h"
+#include "EventManagerTest.h"
 
 void TestCreateEntity() {
     ac::World world;
@@ -122,7 +123,7 @@ void TestAddListener() {
         listenerCalled = true;
         return true;
         });
-    manager.Invoke(TestEvent{ 42 });
+    manager.Invoke(TestEvent{ 42 }, AllowToken<TestEvent>());
     ACASSERT(listenerCalled, "TestAddListener failed");
     ACMSG("TestAddListener passed");
 }
@@ -135,7 +136,7 @@ void TestInvokeEvent() {
         receivedValue = event.value;
         return true;
         });
-    manager.Invoke(TestEvent{ 42 });
+    manager.Invoke(TestEvent{ 42 }, AllowToken<TestEvent>());
     ACASSERT(receivedValue == 42, "TestInvokeEvent failed");
     ACMSG("TestInvokeEvent passed");
 }
@@ -145,7 +146,7 @@ void TestInput()
 	ac::EventManager eventManager;
     ac::WinWindow window({ "AC", 1280, 720 }, eventManager);
     ac::WindowsInput input;
-    for (int i = 0; i < 10000; ++i)
+    for (int i = 0; i < 500; ++i)
     {
 		window.OnUpdate();
 		glm::vec2 v = input.GetMousePosition(window);
@@ -153,6 +154,8 @@ void TestInput()
 		//ACMSG("KeyPressed: " << input.IsKeyPressed(AC_KEY_SPACE, window));
 		//ACMSG("MouseButtonPressed: " << input.IsMouseButtonPressed(AC_MOUSE_BUTTON_LEFT, window));
     }
+    //window.Shutdown();
+
 }
 
 void StartTest() {
@@ -165,5 +168,12 @@ void StartTest() {
     TestRegisterEvent();
     TestAddListener();
     TestInvokeEvent();
-	TestInput();
+    TestInput();
+
+    TestAllTimeMethods();
+
+    // Run the new comprehensive event tests
+    RunAllEventManagerTests();
+
+    RunAllWorldTests();
 }

@@ -1,5 +1,5 @@
 #include "Debug.h"
-#include "Core/ECS.hpp";
+#include "Core/World.hpp";
 #include "Event/Event.hpp";
 #include "Window/Window.h"
 #include "Window/WinWindow.h"

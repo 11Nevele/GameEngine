@@ -1,5 +1,7 @@
 #pragma once
 #include "acpch.h"
+#include "AllowToken.h"
+#include "Window/WinWindow.h"
 namespace ac
 {
 	/**
@@ -10,7 +12,12 @@ namespace ac
 	struct MouseMovedEvent
 	{
 		float x, y; ///< Current mouse cursor position (x, y) in screen coordinates
+		
+		MouseMovedEvent() = default;
+		MouseMovedEvent(float x, float y) : x(x), y(y) {}
 	};
+
+	ALLOWTOKEN(MouseMovedEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for mouse scroll wheel input.
@@ -20,7 +27,12 @@ namespace ac
 	struct MouseScrolledEvent
 	{
 		float xOffset, yOffset; ///< Scroll offsets for horizontal (x) and vertical (y) scrolling
+		
+		MouseScrolledEvent() = default;
+		MouseScrolledEvent(float xOffset, float yOffset) : xOffset(xOffset), yOffset(yOffset) {}
 	};
+
+	ALLOWTOKEN(MouseScrolledEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for when a mouse button is pressed.
@@ -30,7 +42,12 @@ namespace ac
 	struct MouseButtonPressedEvent
 	{
 		int button; ///< The code identifying which mouse button was pressed
+		
+		MouseButtonPressedEvent() = default;
+		MouseButtonPressedEvent(int button) : button(button) {}
 	};
+
+	ALLOWTOKEN(MouseButtonPressedEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for when a mouse button is released.
@@ -40,6 +57,10 @@ namespace ac
 	struct MouseButtonReleasedEvent
 	{
 		int button; ///< The code identifying which mouse button was released
+		
+		MouseButtonReleasedEvent() = default;
+		MouseButtonReleasedEvent(int button) : button(button) {}
 	};
 
+	ALLOWTOKEN(MouseButtonReleasedEvent, friend class Window; friend class WinWindow;)
 }

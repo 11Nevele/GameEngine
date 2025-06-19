@@ -1,11 +1,11 @@
 #include "acpch.h"
 #include "Benchmark.h"
 #include "Achoium.h"
-
+using namespace ac;
 struct BenchmarkEvent {
     int value;
 };
-
+PUBLIC_ALLOWTOKEN(BenchmarkEvent)
 void BenchmarkEventSystem(int n) {
     ac::EventManager manager;
 
@@ -30,7 +30,7 @@ void BenchmarkEventSystem(int n) {
     // Measure time to invoke events
     BenchmarkEvent event{ 42 };
     start = std::chrono::high_resolution_clock::now();
-	manager.Invoke(event);
+	manager.Invoke(event, AllowToken<BenchmarkEvent>());
     end = std::chrono::high_resolution_clock::now();
     duration = end - start;
     ACMSG("Time to invoke event " << n <<" times: " << duration.count() << " seconds");

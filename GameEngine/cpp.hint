@@ -1,0 +1,4 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define ALLOWTOKEN(T, friendList) template<> class AllowToken<T> { private: AllowToken() = default; AllowToken(const AllowToken&) = delete; AllowToken(AllowToken&&) = delete; AllowToken& operator=(const AllowToken&) = delete; AllowToken& operator=(AllowToken&&) = delete; friendList};

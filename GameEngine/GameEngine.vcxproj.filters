@@ -21,9 +21,6 @@
     <ClInclude Include="Achoium\Debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Achoium\Core\ECS.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Achoium\Event\Event.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -120,6 +117,27 @@
     <ClInclude Include="SandBox\UnitTests\TimeTest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Achoium\Event\AllowToken.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\UnitTests\EventManagerTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Core\sparseset.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Core\World.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Core\ECSEvents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Core\ECSDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\UnitTests\WorldTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -182,6 +200,12 @@
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\UnitTests\WorldTest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
@@ -204,6 +228,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <None Include="SandBox\Main.cpp (modification)" />
+    <None Include="cpp.hint" />
+    <None Include="SandBox\UnitTests\TestUnit.cpp (partial update)" />
   </ItemGroup>
 </Project>

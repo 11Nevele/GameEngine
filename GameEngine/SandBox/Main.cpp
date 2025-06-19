@@ -142,7 +142,7 @@ struct movement
 	glm::vec3 velocity;
 };
 
-void CameraMovement(World& world)
+void CameraMovement(ac::World& world)
 {
 	mInput& input = world.GetResourse<mInput>();
 	mWindow& win = world.GetResourse<mWindow>();
@@ -173,7 +173,7 @@ void CameraMovement(World& world)
 		rend.UpdateCamera(transform.asMat4(true));
 	}
 }
-void PhyscisMovement(World& world)
+void PhyscisMovement(ac::World& world)
 {
 	world.View<movement, Transform>().ForEach([](Entity e, movement& mov, Transform& t)
 		{
@@ -182,7 +182,7 @@ void PhyscisMovement(World& world)
 		});
 }
 OpenGLShader* shader;
-void RenderSprite(World& world)
+void RenderSprite(ac::World& world)
 {
 	mRenderer& renderer = world.GetResourse<mRenderer>();
 	TextureManager& textureManager = world.GetResourse<TextureManager>();
@@ -198,13 +198,13 @@ void RenderSprite(World& world)
 			t.scale.y *= sprite.height;
 			renderer.Submit(shader, &(vao), t.asMat4());
 		});
-
 }
 
 int main()
 {
-	TestAllTimeMethods();
-	
+	StartTest();
+
+	//StartTest();
 	ac::World world;
 	world.RegisterType<Camera>();
 	world.RegisterType<Transform>();
@@ -226,7 +226,7 @@ int main()
 	world.Add<Transform>(c, Transform());
 
 	
-	world.Add<movement>(sp, { {10,0,0} });
+	world.Add<movement>(sp, { {5,0,0} });
 	Transform& tr = world.Add<Transform>(sp, Transform());
 	tr.scale = { 1,1, 1 };
 	Sprite &sprite = world.Add<Sprite>(sp, Sprite::Create("Default", world.GetResourse<TextureManager>()));

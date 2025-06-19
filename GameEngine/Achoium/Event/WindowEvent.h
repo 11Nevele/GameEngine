@@ -1,4 +1,6 @@
 #pragma once
+#include "AllowToken.h"
+#include "Window/WinWindow.h"
 namespace ac
 {
 	/**
@@ -9,7 +11,10 @@ namespace ac
 	 */
 	struct WindowCloseEvent
 	{
+		WindowCloseEvent() = default;
 	};
+
+	ALLOWTOKEN(WindowCloseEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for window resize actions.
@@ -19,7 +24,12 @@ namespace ac
 	struct WindowResizeEvent
 	{
 		unsigned int width, height; ///< The new width and height of the window in pixels
+		
+		WindowResizeEvent() = default;
+		WindowResizeEvent(unsigned int width, unsigned int height) : width(width), height(height) {}
 	};
+
+	ALLOWTOKEN(WindowResizeEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for application tick.
@@ -29,7 +39,10 @@ namespace ac
 	 */
 	struct AppTickEvent
 	{
+		AppTickEvent() = default;
 	};
+
+	ALLOWTOKEN(AppTickEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for application update.
@@ -39,7 +52,10 @@ namespace ac
 	 */
 	struct AppUpdateEvent
 	{
+		AppUpdateEvent() = default;
 	};
+
+	ALLOWTOKEN(AppUpdateEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for application render.
@@ -49,5 +65,8 @@ namespace ac
 	 */
 	struct AppRenderEvent
 	{
+		AppRenderEvent() = default;
 	};
+
+	ALLOWTOKEN(AppRenderEvent, friend class Window; friend class WinWindow;)
 }

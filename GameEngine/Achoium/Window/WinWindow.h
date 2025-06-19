@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "Input\WindowsInput.h"
 #include "GraphicContext\OpenGLContext.h"
+#include "Event\Event.hpp"
 namespace ac
 {
 	/**
@@ -99,6 +100,14 @@ namespace ac
 		};
 		
 		WindowData mData;  ///< Window state and configuration data
+
+		// Callback functions for GLFW events
+		static void WindowSizeCallback(GLFWwindow* window, int width, int height);
+		static void WindowCloseCallback(GLFWwindow* window);
+		static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+		static void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
+		static void ScrollCallback(GLFWwindow* window, double xOffset, double yOffset);
+		static void CursorPositionCallback(GLFWwindow* window, double xPos, double yPos);
 	};
 }
 

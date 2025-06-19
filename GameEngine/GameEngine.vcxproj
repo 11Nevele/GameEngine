@@ -11,17 +11,22 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Achoium\Core\ECSDebug.h" />
+    <ClInclude Include="Achoium\Core\ECSEvents.h" />
+    <ClInclude Include="Achoium\Core\World.hpp" />
+    <ClInclude Include="Achoium\Event\AllowToken.h" />
     <ClInclude Include="Achoium\stb_image.h" />
     <ClInclude Include="Achoium\Math\Transform.h" />
     <ClInclude Include="Achoium\Event\KeyEvent.h" />
     <ClInclude Include="Achoium\Achoium.h" />
     <ClInclude Include="Achoium\acpch.h" />
     <ClInclude Include="Achoium\Debug.h" />
-    <ClInclude Include="Achoium\Core\ECS.hpp" />
     <ClInclude Include="Achoium\Event\Event.hpp" />
     <ClInclude Include="Achoium\Render\OpenGL\OpenGLTexture2D.h" />
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
+    <ClInclude Include="Achoium\Core\sparseset.hpp" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
+    <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestUnit.h" />
     <ClInclude Include="Achoium\Event\MouseEvent.h" />
     <ClInclude Include="Achoium\Event\WindowEvent.h" />
@@ -46,6 +51,7 @@
     <ClInclude Include="Achoium\EngineComponents\Sprite.h" />
     <ClInclude Include="Achoium\EngineComponents\Time.h" />
     <ClInclude Include="SandBox\UnitTests\TimeTest.h" />
+    <ClInclude Include="SandBox\UnitTests\WorldTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -62,6 +68,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\BenchmarkEvent.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestUnit.cpp" />
@@ -77,6 +84,7 @@
     <ClCompile Include="Achoium\Window\WinWindow.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Sprite.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Time.cpp" />
+    <ClCompile Include="SandBox\UnitTests\WorldTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\fragmentShader.txt" />
@@ -91,7 +99,8 @@
     <Image Include="SandBox\Image\red.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="SandBox\Main.cpp (modification)" />
+    <None Include="cpp.hint" />
+    <None Include="SandBox\UnitTests\TestUnit.cpp (partial update)" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

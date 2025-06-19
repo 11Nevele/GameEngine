@@ -1,7 +1,11 @@
 #pragma once
 #include "acpch.h"
+#include "Window/WinWindow.h"
+#include "AllowToken.h"
 namespace ac
 {
+
+
 	/**
 	 * @brief Event data for when a key is pressed.
 	 * 
@@ -12,7 +16,12 @@ namespace ac
 	{
 		int keyCode;   ///< The code identifying which key was pressed
 		int repeatCnt; ///< How many repeat counts have occurred (0 for first press)
+		
+		KeyPressedEvent() = default;
+		KeyPressedEvent(int keyCode, int repeatCnt) : keyCode(keyCode), repeatCnt(repeatCnt) {}
 	};
+
+	ALLOWTOKEN(KeyPressedEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for when a key is released.
@@ -22,7 +31,12 @@ namespace ac
 	struct KeyReleasedEvent
 	{
 		int keyCode; ///< The code identifying which key was released
+		
+		KeyReleasedEvent() = default;
+		KeyReleasedEvent(int keyCode) : keyCode(keyCode) {}
 	};
+
+	ALLOWTOKEN(KeyReleasedEvent, friend class Window; friend class WinWindow;)
 
 	/**
 	 * @brief Event data for when a key is typed (character input).
@@ -34,7 +48,14 @@ namespace ac
 	struct KeyTypedEvent
 	{
 		int keyCode; ///< The character code that was typed
+		
+	private:
+		friend class WinWindow;
+		friend class Window;
+		KeyTypedEvent() = default;
+		KeyTypedEvent(int keyCode) : keyCode(keyCode) {}
 	};
+	ALLOWTOKEN(KeyTypedEvent, friend class Window; friend class WinWindow;)
 }
 
 

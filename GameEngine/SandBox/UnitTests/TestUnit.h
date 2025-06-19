@@ -2,6 +2,8 @@
 #pragma once
 #include "TimeTest.h"
 #include "Benchmark.h"
+#include "WorldTest.h"
+using namespace ac;
 struct TestComponent {
     int value;
 };
@@ -18,6 +20,7 @@ struct TestResource {
 struct TestEvent {
     int value;
 };
+PUBLIC_ALLOWTOKEN(TestEvent)
 
 void TestCreateEntity();
 void TestAddComponent();
@@ -28,4 +31,5 @@ void TestSimpleView();
 void TestRegisterEvent();
 void TestAddListener();
 void TestInvokeEvent();
+void TestInput();
 void StartTest();
