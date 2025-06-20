@@ -47,6 +47,11 @@ namespace ac
      * @brief Maximum number of component types supported by the ECS.
      */
     constexpr size_t MAX_COMPONENTS = 64;
+	/**
+	 * @brief Maximum number of system layers supported by the ECS.
+	 */
+	constexpr size_t MAX_SYSTEM_LAYER = 10;
+
     /**
      * @brief Interface for sparse set implementations.
      *

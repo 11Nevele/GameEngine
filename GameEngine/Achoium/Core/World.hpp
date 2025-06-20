@@ -23,6 +23,8 @@ namespace ac
 	class World final
 	{
 	private:
+		
+
 		/** The next entity ID to be assigned. */
 		Entity maxEnity = 0;
 
@@ -49,6 +51,12 @@ namespace ac
 
 		/** Stores all resources. */
 		std::vector<std::shared_ptr<void>> resourceList;
+
+		std::array<std::vector<void(*)(World&)>, MAX_SYSTEM_LAYER> preUpdateSystems;
+
+		std::array<std::vector<void(*)(World&)>, MAX_SYSTEM_LAYER> updateSystems;
+
+		std::array<std::vector<void(*)(World&)>, MAX_SYSTEM_LAYER> postUpdateSystems;
 
 		/**
 		 * @brief Retrieves the tag/name of an entity.
@@ -98,6 +106,18 @@ namespace ac
 			size_t ind = GetComponentID<T>();
 			ECS_ASSERT(ind != UINT64_MAX, "Try to access a type that does not exist");
 			return static_cast<SparseSet<T>*>(ComponentPools[ind].get());
+		}
+
+		/**
+		 * @brief Validates system priority to ensure it's within bounds.
+		 * 
+		 * @param priority Priority level (0-9).
+		 * @return Valid priority value.
+		 */
+		size_t ValidatePriority(size_t priority)
+		{
+			ECS_ASSERT(priority < MAX_SYSTEM_LAYER, "System priority must be in range [0," << MAX_SYSTEM_LAYER << "]");
+			return priority;
 		}
 
 		template<class... Ts>
@@ -398,6 +418,103 @@ namespace ac
 		 */
 		std::size_t GetPoolCount() {
 			return ComponentPools.size();
+		}
+
+		/**
+		 * @brief Adds a system to be executed during the pre-update phase.
+		 * 
+		 * @param systemFunc Function pointer to the system (void(*)(World&)).
+		 * @param priority Priority level (0-9), lower values execute first.
+		 * @return Reference to this World for chaining.
+		 */
+		World& AddPreUpdateSystem(void(*systemFunc)(World&), size_t priority)
+		{
+			preUpdateSystems[ValidatePriority(priority)].push_back(systemFunc);
+			return *this;
+		}
+
+		/**
+		 * @brief Adds a system to be executed during the update phase.
+		 * 
+		 * @param systemFunc Function pointer to the system (void(*)(World&)).
+		 * @param priority Priority level (0-9), lower values execute first.
+		 * @return Reference to this World for chaining.
+		 */
+		World& AddUpdateSystem(void(*systemFunc)(World&), size_t priority)
+		{
+			updateSystems[ValidatePriority(priority)].push_back(systemFunc);
+			return *this;
+		}
+
+		/**
+		 * @brief Adds a system to be executed during the post-update phase.
+		 * 
+		 * @param systemFunc Function pointer to the system (void(*)(World&)).
+		 * @param priority Priority level (0-9), lower values execute first.
+		 * @return Reference to this World for chaining.
+		 */
+		World& AddPostUpdateSystem(void(*systemFunc)(World&), size_t priority)
+		{
+			postUpdateSystems[ValidatePriority(priority)].push_back(systemFunc);
+			return *this;
+		}
+
+		/**
+		 * @brief Executes all pre-update systems in order of priority.
+		 * 
+		 * Systems with lower priority values execute first.
+		 * Within the same priority level, systems execute in the order they were added.
+		 */
+		void RunPreUpdateSystems()
+		{
+			for (size_t priority = 0; priority < preUpdateSystems.size(); ++priority)
+			{
+				for (auto& system : preUpdateSystems[priority])
+				{
+					system(*this);
+				}
+			}
+		}
+
+		/**
+		 * @brief Executes all update systems in order of priority.
+		 * 
+		 * Systems with lower priority values execute first.
+		 * Within the same priority level, systems execute in the order they were added.
+		 */
+		void RunUpdateSystems()
+		{
+			for (size_t priority = 0; priority < updateSystems.size(); ++priority)
+			{
+				for (auto& system : updateSystems[priority])
+				{
+					system(*this);
+				}
+			}
+		}
+
+		/**
+		 * @brief Executes all post-update systems in order of priority.
+		 * 
+		 * Systems with lower priority values execute first.
+		 * Within the same priority level, systems execute in the order they were added.
+		 */
+		void RunPostUpdateSystems()
+		{
+			for (size_t priority = 0; priority < postUpdateSystems.size(); ++priority)
+			{
+				for (auto& system : postUpdateSystems[priority])
+				{
+					system(*this);
+				}
+			}
+		}
+
+		void Update()
+		{
+			RunPreUpdateSystems();
+			RunUpdateSystems();
+			RunPostUpdateSystems();
 		}
 	};
 }

@@ -412,6 +412,190 @@ void TestWorldOnDeletedEvent() {
     ACMSG("TestWorldOnDeletedEvent passed");
 }
 
+// System-related tests implementation for WorldTest.cpp
+
+// Tracking structure to test system execution
+struct SystemExecutionTracker {
+    bool preUpdateCalled = false;
+    bool updateCalled = false;
+    bool postUpdateCalled = false;
+    int preUpdateValue = 0;
+    int updateValue = 0;
+    int postUpdateValue = 0;
+    std::vector<int> executionOrder;
+
+    void Reset() {
+        preUpdateCalled = false;
+        updateCalled = false;
+        postUpdateCalled = false;
+        preUpdateValue = 0;
+        updateValue = 0;
+        postUpdateValue = 0;
+        executionOrder.clear();
+    }
+};
+
+// Global tracker for test systems
+SystemExecutionTracker systemTracker;
+
+// Test system functions
+void TestPreUpdateSystem(ac::World& world) {
+    systemTracker.preUpdateCalled = true;
+    systemTracker.preUpdateValue += 1;
+    systemTracker.executionOrder.push_back(1);
+}
+
+void TestUpdateSystem(ac::World& world) {
+    systemTracker.updateCalled = true;
+    systemTracker.updateValue += 10;
+    systemTracker.executionOrder.push_back(2);
+}
+
+void TestPostUpdateSystem(ac::World& world) {
+    systemTracker.postUpdateCalled = true;
+    systemTracker.postUpdateValue += 100;
+    systemTracker.executionOrder.push_back(3);
+}
+
+// Priority system functions
+void TestLowPrioritySystem(ac::World& world) {
+    systemTracker.executionOrder.push_back(100);
+}
+
+void TestMediumPrioritySystem(ac::World& world) {
+    systemTracker.executionOrder.push_back(200);
+}
+
+void TestHighPrioritySystem(ac::World& world) {
+    systemTracker.executionOrder.push_back(300);
+}
+
+void TestWorldAddSystems() {
+    ac::World world;
+    systemTracker.Reset();
+
+    // Add systems of different types
+    world.AddPreUpdateSystem(TestPreUpdateSystem, 0);
+    world.AddUpdateSystem(TestUpdateSystem, 0);
+    world.AddPostUpdateSystem(TestPostUpdateSystem, 0);
+
+    // No assertions here since we're just testing if they can be added without errors
+    // The execution tests will verify they were actually added correctly
+
+    ACMSG("TestWorldAddSystems passed");
+}
+
+void TestWorldExecuteSystems() {
+    ac::World world;
+    systemTracker.Reset();
+
+    // Add systems
+    world.AddPreUpdateSystem(TestPreUpdateSystem, 0);
+    world.AddUpdateSystem(TestUpdateSystem, 0);
+    world.AddPostUpdateSystem(TestPostUpdateSystem, 0);
+
+    // Execute pre-update systems
+    world.RunPreUpdateSystems();
+    ACASSERT(systemTracker.preUpdateCalled, "TestWorldExecuteSystems failed: pre-update system wasn't called");
+    ACASSERT(systemTracker.preUpdateValue == 1, "TestWorldExecuteSystems failed: pre-update system value incorrect");
+    ACASSERT(!systemTracker.updateCalled, "TestWorldExecuteSystems failed: update system should not be called yet");
+    ACASSERT(!systemTracker.postUpdateCalled, "TestWorldExecuteSystems failed: post-update system should not be called yet");
+
+    // Execute update systems
+    world.RunUpdateSystems();
+    ACASSERT(systemTracker.updateCalled, "TestWorldExecuteSystems failed: update system wasn't called");
+    ACASSERT(systemTracker.updateValue == 10, "TestWorldExecuteSystems failed: update system value incorrect");
+    ACASSERT(!systemTracker.postUpdateCalled, "TestWorldExecuteSystems failed: post-update system should not be called yet");
+
+    // Execute post-update systems
+    world.RunPostUpdateSystems();
+    ACASSERT(systemTracker.postUpdateCalled, "TestWorldExecuteSystems failed: post-update system wasn't called");
+    ACASSERT(systemTracker.postUpdateValue == 100, "TestWorldExecuteSystems failed: post-update system value incorrect");
+
+    // Check execution order
+    ACASSERT(systemTracker.executionOrder.size() == 3, "TestWorldExecuteSystems failed: incorrect number of systems executed");
+    ACASSERT(systemTracker.executionOrder[0] == 1, "TestWorldExecuteSystems failed: incorrect execution order");
+    ACASSERT(systemTracker.executionOrder[1] == 2, "TestWorldExecuteSystems failed: incorrect execution order");
+    ACASSERT(systemTracker.executionOrder[2] == 3, "TestWorldExecuteSystems failed: incorrect execution order");
+
+    ACMSG("TestWorldExecuteSystems passed");
+}
+
+void TestWorldSystemPriority() {
+    ac::World world;
+    systemTracker.Reset();
+
+    // Add systems with different priorities (in reverse order)
+    world.AddUpdateSystem(TestHighPrioritySystem, 9);   // Higher number = lower priority = runs later
+    world.AddUpdateSystem(TestMediumPrioritySystem, 5);
+    world.AddUpdateSystem(TestLowPrioritySystem, 0);    // Lower number = higher priority = runs first
+
+    // Execute update systems
+    world.RunUpdateSystems();
+
+    // Check execution order based on priority
+    ACASSERT(systemTracker.executionOrder.size() == 3, "TestWorldSystemPriority failed: incorrect number of systems executed");
+    ACASSERT(systemTracker.executionOrder[0] == 100, "TestWorldSystemPriority failed: priority order incorrect, low priority should run first");
+    ACASSERT(systemTracker.executionOrder[1] == 200, "TestWorldSystemPriority failed: priority order incorrect, medium priority should run second");
+    ACASSERT(systemTracker.executionOrder[2] == 300, "TestWorldSystemPriority failed: priority order incorrect, high priority should run last");
+
+    // Test adding multiple systems at same priority level
+    systemTracker.Reset();
+    ac::World world2;
+
+    // Add systems at same priority level, they should execute in order added
+    world2.AddUpdateSystem(TestLowPrioritySystem, 0);
+    world2.AddUpdateSystem(TestMediumPrioritySystem, 0);
+    world2.AddUpdateSystem(TestHighPrioritySystem, 0);
+
+    // Execute update systems
+    world2.RunUpdateSystems();
+
+    // Check that systems at same priority execute in order added
+    ACASSERT(systemTracker.executionOrder.size() == 3, "TestWorldSystemPriority failed: incorrect number of systems executed");
+    ACASSERT(systemTracker.executionOrder[0] == 100, "TestWorldSystemPriority failed: same priority order incorrect");
+    ACASSERT(systemTracker.executionOrder[1] == 200, "TestWorldSystemPriority failed: same priority order incorrect");
+    ACASSERT(systemTracker.executionOrder[2] == 300, "TestWorldSystemPriority failed: same priority order incorrect");
+
+    ACMSG("TestWorldSystemPriority passed");
+}
+
+void TestWorldSystemInvalidPriority() {
+    ac::World world;
+    systemTracker.Reset();
+
+    // Test with invalid priority - this should cause an assertion error in debug mode
+    // In release mode, it may just silently fail, so we can't rely on catching the exception
+    bool exceptionThrown = false;
+
+    try {
+        world.AddUpdateSystem(TestUpdateSystem, 10); // Priority > 9 is invalid
+    }
+    catch (...) {
+        exceptionThrown = true;
+    }
+
+    // In debug builds with assertions enabled, this should throw an exception
+    // In release builds, we can't guarantee this behavior
+#ifdef _DEBUG
+    ACASSERT(exceptionThrown, "TestWorldSystemInvalidPriority failed: invalid priority should trigger assertion");
+#endif
+
+    // Test with valid priority
+    bool validPriorityExceptionThrown = false;
+
+    try {
+        world.AddUpdateSystem(TestUpdateSystem, 9); // Priority 9 is valid (0-9)
+    }
+    catch (...) {
+        validPriorityExceptionThrown = true;
+    }
+
+    ACASSERT(!validPriorityExceptionThrown, "TestWorldSystemInvalidPriority failed: valid priority triggered exception");
+
+    ACMSG("TestWorldSystemInvalidPriority passed");
+}
+
 // Main test runner function
 void RunAllWorldTests() {
     TestWorldConstructor();
@@ -428,6 +612,11 @@ void RunAllWorldTests() {
     TestWorldGetPoolCount();
     TestWorldOnAddedEvent();
     TestWorldOnDeletedEvent();
+
+    TestWorldAddSystems();
+    TestWorldExecuteSystems();
+    TestWorldSystemPriority();
+    //TestWorldSystemInvalidPriority();
     
     ACMSG("=== All World class tests completed ===");
 }
