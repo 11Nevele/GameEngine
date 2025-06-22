@@ -14,6 +14,14 @@
     <ClInclude Include="Achoium\Core\ECSDebug.h" />
     <ClInclude Include="Achoium\Core\ECSEvents.h" />
     <ClInclude Include="Achoium\Core\World.hpp" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\3D\BoxCollider.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\Collider.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\Physics.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\RigidBody.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\3D\SphereCollider.h" />
+    <ClInclude Include="Achoium\EngineSystems\PhysicsSystem.h" />
+    <ClInclude Include="Achoium\EngineSystems\RenderSystems.h" />
+    <ClInclude Include="Achoium\EngineSystems\TimeSystem.h" />
     <ClInclude Include="Achoium\Event\AllowToken.h" />
     <ClInclude Include="Achoium\stb_image.h" />
     <ClInclude Include="Achoium\Math\Transform.h" />
@@ -25,8 +33,10 @@
     <ClInclude Include="Achoium\Render\OpenGL\OpenGLTexture2D.h" />
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
     <ClInclude Include="Achoium\Core\sparseset.hpp" />
+    <ClInclude Include="Achoium\InitEngine.h" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
+    <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />
     <ClInclude Include="SandBox\UnitTests\TestUnit.h" />
     <ClInclude Include="Achoium\Event\MouseEvent.h" />
     <ClInclude Include="Achoium\Event\WindowEvent.h" />
@@ -58,6 +68,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\3D\BoxCollider.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\Collider.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\RigidBody.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\3D\SphereCollider.cpp" />
+    <ClCompile Include="Achoium\EngineSystems\PhysicsSystem.cpp" />
+    <ClCompile Include="Achoium\EngineSystems\RenderSystems.cpp" />
+    <ClCompile Include="Achoium\EngineSystems\TimeSystem.cpp" />
     <ClCompile Include="Achoium\glad.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -68,7 +85,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Achoium\InitEngine.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
+    <ClCompile Include="SandBox\UnitTests\TestPhysics.cpp" />
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\BenchmarkEvent.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestUnit.cpp" />
@@ -100,7 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
-    <None Include="SandBox\UnitTests\TestUnit.cpp (partial update)" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

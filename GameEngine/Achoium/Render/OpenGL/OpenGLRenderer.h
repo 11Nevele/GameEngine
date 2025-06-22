@@ -12,6 +12,9 @@ namespace ac
 	class OpenGLRenderer : public Renderer
 	{
 	public:
+
+		OpenGLRenderer();
+
 		/**
 		 * @brief Initializes the OpenGL renderer.
 		 * 
@@ -59,7 +62,10 @@ namespace ac
 		 * @param vertexArray The vertex array containing the geometry to render
 		 * @param transform The model transformation matrix to apply
 		 */
-		void Submit(Shader* shader, VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
+		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
+
+		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
+
 
 		/**
 		 * @brief Updates the camera view for rendering.
@@ -76,6 +82,9 @@ namespace ac
 		 * 
 		 * Stores the current view-projection matrix for the scene.
 		 */
+		Shader* shader2D;
+		Shader* shaderDebug;
+
 		struct SceneData
 		{
 			glm::mat4 ViewProjectionMatrix; ///< Combined view and projection matrix

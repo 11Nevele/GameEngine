@@ -3,6 +3,7 @@
 #include "TimeTest.h"
 #include "Benchmark.h"
 #include "WorldTest.h"
+#include "TestPhysics.h"
 using namespace ac;
 struct TestComponent {
     int value;

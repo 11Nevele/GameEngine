@@ -89,8 +89,8 @@ namespace ac
 			for (auto& listener : eventListeners)
 			{
 				bool passing = listener.second(data);
-				if (!passing)
-					break;
+				//if (!passing)
+					//break;
 			}
 		}
 	private:

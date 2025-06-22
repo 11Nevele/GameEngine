@@ -3,10 +3,20 @@
 #include "OpenGLShader.h"  
 #include <glad/glad.h>  
 #include <glm/gtc/matrix_transform.hpp>  
-
+#include "Util/util.h"
 namespace ac  
-{  
-/// Initializes the OpenGL renderer.  
+{
+	OpenGLRenderer::OpenGLRenderer(): s_SceneData()
+	{
+		shader2D = new OpenGLShader("name",
+			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
+			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
+		shaderDebug = new OpenGLShader("name",
+			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugVertexShader.txt"),
+			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugFragmentShader.txt"));
+
+	}
+	/// Initializes the OpenGL renderer.  
 /// Enables depth testing for proper rendering of 3D objects.  
 void OpenGLRenderer::Init()  
 {  
@@ -50,7 +60,7 @@ void OpenGLRenderer::EndScene()
 /// @param shader The shader program to use for rendering.  
 /// @param vertexArray The vertex array containing the geometry data.  
 /// @param transform The transformation matrix for the object being rendered.  
-void OpenGLRenderer::Submit(Shader* shader, VertexArray* vertexArray, const glm::mat4& transform)  
+void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform)  
 {  
 	glm::mat4 projection = glm::perspective(  
 		glm::radians(45.0f),  // Field of View (FOV) angle  
@@ -64,12 +74,12 @@ void OpenGLRenderer::Submit(Shader* shader, VertexArray* vertexArray, const glm:
 	);  
 
 	// Bind the shader program  
-	shader->Bind();  
+	shader2D->Bind();  
 
 	// Upload the transformation matrix and view-projection matrix to the shader  
-	shader->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);  
-	shader->SetMat4("u_Transform", transform);  
-	shader->SetMat4("projection", projection);  
+	shader2D->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+	shader2D->SetMat4("u_Transform", transform);
+	shader2D->SetMat4("projection", projection);
 
 	// Bind the vertex array  
 	vertexArray->Bind();  
@@ -78,6 +88,31 @@ void OpenGLRenderer::Submit(Shader* shader, VertexArray* vertexArray, const glm:
 	uint32_t cnt = vertexArray->GetIndexBuffer()->GetCount();  
 	glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);  
 }  
+
+void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform)
+{
+	glm::mat4 projection = glm::ortho(
+		0.0f, 1280.0f,        // Left, Right  
+		0.0f, 720.0f          // Bottom, Top  
+	);
+
+	// Bind the shader program  
+	shaderDebug->Bind();
+
+	// Upload the transformation matrix and view-projection matrix to the shader  
+	shaderDebug->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+	shaderDebug->SetMat4("u_Transform", transform);
+	shaderDebug->SetMat4("projection", projection);
+
+	// Bind the vertex array  
+	vertexArray->Bind();
+
+	// Issue the draw call  
+	uint32_t cnt = vertexArray->GetIndexBuffer()->GetCount();
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
 
 /// Updates the camera's view-projection matrix.  
 /// @param cameraTransform The transformation matrix representing the camera's view and projection.  

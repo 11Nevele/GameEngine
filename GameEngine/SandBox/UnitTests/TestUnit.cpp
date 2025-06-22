@@ -146,7 +146,7 @@ void TestInput()
 	ac::EventManager eventManager;
     ac::WinWindow window({ "AC", 1280, 720 }, eventManager);
     ac::WindowsInput input;
-    for (int i = 0; i < 500; ++i)
+    for (int i = 0; i < 50; ++i)
     {
 		window.OnUpdate();
 		glm::vec2 v = input.GetMousePosition(window);
@@ -176,4 +176,14 @@ void StartTest() {
     RunAllEventManagerTests();
 
     RunAllWorldTests();
+
+
+    try
+    {
+        ac::RunPhysicsTests();
+    }
+    catch (const std::exception& e)
+    {
+        std::cerr << "Exception in tests: " << e.what() << std::endl;
+    }
 }

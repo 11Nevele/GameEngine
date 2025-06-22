@@ -144,105 +144,85 @@ struct movement
 
 void CameraMovement(ac::World& world)
 {
+	
 	mInput& input = world.GetResourse<mInput>();
 	mWindow& win = world.GetResourse<mWindow>();
 	mRenderer& rend = world.GetResourse<mRenderer>();
+	Time& time = world.GetResourse<Time>();
 	auto t = world.View<Camera, Transform>().GetPacked();
 	for (auto i : t)
 	{
 		auto& transform = get<1>(i.components);
 		auto& camera = get < 0> (i.components);
 		if (input.IsKeyPressed(AC_KEY_A, win))
-			transform.position.x -= camera.movementSpeed.x;
+			transform.position.x -= camera.movementSpeed.x * time.Delta();
 
 		if (input.IsKeyPressed(AC_KEY_D, win))
-			transform.position.x += camera.movementSpeed.x;
+			transform.position.x += camera.movementSpeed.x * time.Delta();
 
 		if (input.IsKeyPressed(AC_KEY_W, win))
-			transform.position.z -= camera.movementSpeed.z;
+			transform.position.z -= camera.movementSpeed.z * time.Delta();
 
 		if (input.IsKeyPressed(AC_KEY_S, win))
-			transform.position.z += camera.movementSpeed.z;
+			transform.position.z += camera.movementSpeed.z * time.Delta();
 
 		if (input.IsKeyPressed(AC_KEY_LEFT_SHIFT, win))
-			transform.position.y += camera.movementSpeed.y;
+			transform.position.y += camera.movementSpeed.y * time.Delta();
 
 		if (input.IsKeyPressed(AC_KEY_LEFT_CONTROL, win))
-			transform.position.y -= camera.movementSpeed.y;
+			transform.position.y -= camera.movementSpeed.y * time.Delta();
 		
 		rend.UpdateCamera(transform.asMat4(true));
 	}
 }
-void PhyscisMovement(ac::World& world)
-{
-	world.View<movement, Transform>().ForEach([](Entity e, movement& mov, Transform& t)
-		{
-			t.position += mov.velocity;
-			
-		});
-}
-OpenGLShader* shader;
-void RenderSprite(ac::World& world)
-{
-	mRenderer& renderer = world.GetResourse<mRenderer>();
-	TextureManager& textureManager = world.GetResourse<TextureManager>();
-	ModelManager& modelManager = world.GetResourse<ModelManager>();
-	
-	shader->SetInt("u_Texture", 0);
-	world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, Sprite& sprite, Transform& trans)
-		{
-			textureManager.GetTexture(sprite.textureID).Bind();
-			OpenGLVertexArray& vao = modelManager.GetModel(0);
-			Transform t = trans;
-			t.scale.x *= sprite.width;
-			t.scale.y *= sprite.height;
-			renderer.Submit(shader, &(vao), t.asMat4());
-		});
-}
+
+
 
 int main()
 {
-	StartTest();
-
 	//StartTest();
+
+	StartTest();
 	ac::World world;
-	world.RegisterType<Camera>();
-	world.RegisterType<Transform>();
-	world.AddResource<ac::EventManager>(new EventManager());
-	world.AddResource<mWindow>(new mWindow({"AC", 1280, 720}, world.GetResourse<EventManager>()));
-	world.AddResource<mRenderer>(new mRenderer());
-	world.AddResource<mInput>(new mInput());
-	world.AddResource<TextureManager>(new TextureManager());
-	world.AddResource<ModelManager>(new ModelManager());
-	
-	world.GetResourse<TextureManager>()
-		.AddTexture("Default","C:/C++Projet/GameEngine/GameEngine/SandBox/Image/null.png")
-		.AddTexture("Grass", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/grass.png")
-		.AddTexture("Red", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/red.jpg");
+	InitEngine(world);
 
-	Entity c = world.CreateEntity();
-	Entity sp = world.CreateEntity();
-	world.Add<Camera>(c, {{10, 10, 10}});
-	world.Add<Transform>(c, Transform());
+	Entity ground = world.CreateEntity();
+	Entity obj1 = world.CreateEntity();
+	Entity obj2 = world.CreateEntity();
+	Entity camera = world.CreateEntity();
 
-	
-	world.Add<movement>(sp, { {5,0,0} });
-	Transform& tr = world.Add<Transform>(sp, Transform());
-	tr.scale = { 1,1, 1 };
-	Sprite &sprite = world.Add<Sprite>(sp, Sprite::Create("Default", world.GetResourse<TextureManager>()));
-	
-	shader = new OpenGLShader("name",
-		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
-		util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
+	world.Add<Camera>(camera, Camera{ { 100.0f, 100.0f, 0 } });
+	world.Add<Transform>(camera, Transform());
+	world.Get<Transform>(camera).position = { 0, 0, 0 };
 
-	
+	world.Add<Transform>(ground, Transform());
+	world.Get<Transform>(ground).scale.x = 10;
+	world.Add<RigidBody>(ground, RigidBody(1,0,0, false, true, true));
+	world.Add<BoxCollider>(ground, BoxCollider(10000, 400, 10));
+	world.Get<BoxCollider>(ground).offset = glm::vec3(200,200,0);
+
+	world.Add<Transform>(obj1, Transform());
+	world.Get<Transform>(obj1).position.y = 500;
+	world.Add<RigidBody>(obj1, RigidBody(1, 0, 0, true, false, true));
+	world.Add<BoxCollider>(obj1, BoxCollider(400, 400, 10));
+	world.Get<BoxCollider>(obj1).offset = glm::vec3(200, 200, 0);
+
+	world.Add<Transform>(obj2, Transform());
+	world.Get<Transform>(obj2).position = { 500,500,0 };
+	world.Add<RigidBody>(obj2, RigidBody(1, 0, 0, true, false, true));
+	world.Add<BoxCollider>(obj1, BoxCollider(400, 400, 10));
+	world.Get<BoxCollider>(obj1).offset = glm::vec3(200, 200, 0);
+
+	//world.Add<Sprite>(ground, Sprite::Create("Default", world.GetResourse<TextureManager>()));
+	//world.Add<Sprite>(obj1, Sprite::Create("Default", world.GetResourse<TextureManager>()));
+	//world.Add<Sprite>(obj2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
+
+	world.AddPostUpdateSystem(RenderCollider, 9);
 	while (true)
 	{
 		mWindow& win = world.GetResourse<mWindow>();
-
 		CameraMovement(world);
-		PhyscisMovement(world);
-		RenderSprite(world);
+		world.Update();
 
 		win.OnUpdate();
 		glClearColor(0.1, 0.1, 0.1, 1);

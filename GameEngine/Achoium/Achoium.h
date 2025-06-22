@@ -8,5 +8,10 @@
 #include "Math/Transform.h"
 #include "Input/Keycode.h"
 #include "AssetManagement/AssetManager.h"
+
+#include "InitEngine.h"
+
+#include "EngineSystems/RenderSystems.h"
+#include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Sprite.h"
 #include "EngineComponents/Time.h"

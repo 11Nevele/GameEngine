@@ -254,7 +254,7 @@ namespace ac
 		 * @return Reference to the added component.
 		 */
 		template <class T>
-		T& Add(Entity id, T&& obj = {})
+		void Add(Entity id, T&& obj = {})
 		{
 			ECS_ASSERT_VALID_ENTITY(id);
 			ECS_ASSERT_ALIVE_ENTITY(id);
@@ -272,9 +272,8 @@ namespace ac
 			ISparseSet* set = ComponentPools[bitMaskInd].get();
 			SparseSet<T>* p = static_cast<SparseSet<T>*>(set);
 
-			T& o = *(p->Set(id, std::move(obj)));
-			GetResourse<EventManager>().Invoke(OnAdded<T>{id, o}, AllowToken<OnAdded<T>>());
-			return o;
+			T& o = p->Set(id, std::move(obj));
+			GetResourse<EventManager>().Invoke(OnAdded<T>{id, o, *this}, AllowToken<OnAdded<T>>());
 		}
 
 		/**
@@ -294,7 +293,7 @@ namespace ac
 			SparseSet<T>* p = static_cast<SparseSet<T>*>(ComponentPools[t->second].get());
 
 			T& o= *(p->Get(id));
-			GetResourse<EventManager>().Invoke(OnDeleted<T>{id, o}, AllowToken<OnDeleted<T>>());
+			GetResourse<EventManager>().Invoke(OnDeleted<T>{id, o, *this}, AllowToken<OnDeleted<T>>());
 
 			size_t bitMaskInd = t->second;
 			ComponentMask* mask = entityComponentMasks.Get(id);

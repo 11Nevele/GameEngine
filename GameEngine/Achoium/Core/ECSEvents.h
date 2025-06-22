@@ -4,6 +4,7 @@
 // #include "World.hpp"
 namespace ac
 {
+    using Entity = uint64_t;
     // Forward declaration instead of including
     class World;
 
@@ -12,6 +13,7 @@ namespace ac
     {
         Entity ID;
         const T& component;
+        World& world;
     };
 
     template<class T>
@@ -31,6 +33,7 @@ namespace ac
     {
         Entity ID;
         const T& component;
+        World& world;
     };
 
     template<class T>

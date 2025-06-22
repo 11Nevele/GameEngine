@@ -46,10 +46,16 @@ namespace ac
 		 * @param path The file path where the texture is located.
 		 * @return TextureManager& Reference to this manager for method chaining.
 		 */
+
+		void AddReference(uint32_t id);
+		void AddReference(const std::string& name);
+		void DeleteReference(uint32_t id);
+		void DeleteReference(const std::string& name);
 		TextureManager& AddTexture(const std::string& name, const std::string& path);
 	private:
 		std::unordered_map<std::string, uint32_t> textureNameToID; ///< Maps texture names to their internal IDs
 		std::vector<OpenGLTexture2D> textureList;                  ///< Stores all loaded textures
+		std::vector<uint32_t> referenceCount;
 	};
 
 	/**
@@ -101,9 +107,15 @@ namespace ac
 		 * @return ModelManager& Reference to this manager for method chaining.
 		 */
 		ModelManager& AddModel(const std::string& name, const std::string& path);
+
+		void AddReference(uint32_t id);
+		void AddReference(const std::string& name);
+		void DeleteReference(uint32_t id);
+		void DeleteReference(const std::string& name);
 	private:
 		std::unordered_map<std::string, uint32_t> modelNameToID; ///< Maps model names to their internal IDs
 		std::vector<OpenGLVertexArray> modelList;               ///< Stores all loaded models
+		std::vector<uint32_t> referenceCount;
 	};
 }
 

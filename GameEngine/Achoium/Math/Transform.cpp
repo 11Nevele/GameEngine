@@ -10,7 +10,7 @@ namespace ac
    /// Converts the transform into a 4x4 matrix representation.  
    /// @param invPosition If true, the position is inverted in the transformation.  
    /// @return A 4x4 matrix representing the transform.  
-   glm::mat4 Transform::asMat4(bool invPosition)  
+   glm::mat4 Transform::asMat4(bool invPosition) const
    {  
        glm::mat4 transform = glm::mat4(1.0f);  
 
@@ -32,7 +32,7 @@ namespace ac
 
    /// Default constructor for the Transform class.  
    /// Initializes position, rotation, and scale to their default values.  
-   Transform::Transform() : position(0, 0, 0), rotation(glm::vec3(0, 0, 0)), scale(1, 1, 1)  
+   Transform::Transform() : position(0, 0, 0), rotation(1.0f, 0.0f, 0.0f, 0.0f), scale(1, 1, 1)  
    {  
    }  
 

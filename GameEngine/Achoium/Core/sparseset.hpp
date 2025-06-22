@@ -182,13 +182,13 @@ namespace ac
 		 * @param obj The data to associate with the entity.
 		 * @return A pointer to the data associated with the entity.
 		 */
-		Type* Set(Entity element, Type&& obj)
+		Type& Set(Entity element, Type&& obj)
 		{
 			if (Contains(element))
 			{
 				size_t ind = GetDenseID(element);
 				objects[ind] = obj;
-				return &objects[ind];
+				return objects[ind];
 			}
 
 			if (element > maxValue)
@@ -196,7 +196,7 @@ namespace ac
 			dense.push_back(element);
 			objects.emplace_back(std::forward<Type>(obj));
 			sparse[element] = dense.size() - 1;
-			return &objects.back();
+			return objects.back();
 		}
 
 		/**
@@ -307,7 +307,7 @@ namespace ac
 		{
 			for (const Type& e : objects)
 			{
-				std::cout << e << ", ";
+				//std::cout << e << ", ";
 			}
 			std::cout << std::endl;
 		}

@@ -45,6 +45,56 @@ const OpenGLTexture2D& ac::TextureManager::GetTexture(uint32_t id)
 	return textureList[id];  
 }  
 
+void TextureManager::AddReference(uint32_t id)
+{
+	ACASSERT(id < textureList.size(), "ID out of bound at texture"
+		 << " id: " << id);
+	if (referenceCount[id] == 0)
+	{
+		textureList[id].Upload();
+	}
+	referenceCount[id]++;
+	return;
+}
+
+void TextureManager::AddReference(const std::string& name)
+{
+	uint32_t id = GetTextureID(name);
+	ACASSERT(id < textureList.size(), "ID out of bound at texture"
+		<< name << " id: " << id);
+	if (referenceCount[id] == 0)
+	{
+		textureList[id].Upload();
+	}
+	referenceCount[id]++;
+	return;
+}
+
+void TextureManager::DeleteReference(uint32_t id)
+{
+	ACASSERT(id < textureList.size(), "ID out of bound at texture"
+		<< " id: " << id);
+	referenceCount[id]--;
+	if (referenceCount[id] == 0)
+	{
+		textureList[id].Delete();
+	}
+	return;
+}
+
+void TextureManager::DeleteReference(const std::string& name)
+{
+	uint32_t id = GetTextureID(name);
+	ACASSERT(id < textureList.size(), "ID out of bound at texture"
+		<< name << " id: " << id);
+	referenceCount[id]--;
+	if (referenceCount[id] == 0)
+	{
+		textureList[id].Delete();
+	}
+	return;
+}
+
 /// Adds a new texture to the manager.  
 /// Reads the texture data from the specified path and stores it.  
 /// @param name The name of the texture.  
@@ -56,6 +106,7 @@ TextureManager& ac::TextureManager::AddTexture(const std::string& name, const st
 	textureNameToID[name] = id;  
 	TextureInfo info;  
 	int width, height, channel;  
+	stbi_set_flip_vertically_on_load(true);
 	stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channel, 0);  
 	info.height = height;  
 	info.width = width;  
@@ -70,9 +121,12 @@ TextureManager& ac::TextureManager::AddTexture(const std::string& name, const st
 		info.dataFormat = GL_RGB;  
 	}  
 	ACASSERT(data, "FAIL TO READ DATA FROM" << path);  
-	textureList.emplace_back(data, info);  
+	textureList.emplace_back(data, info); 
+	referenceCount.emplace_back(0);
 	return *this;  
 }  
+
+
 
 /// Constructor for the ModelManager class.  
 /// Initializes the manager with a default "Plane" model.  
@@ -93,7 +147,8 @@ ModelManager::ModelManager()
 	vao.SetIndexBuffer(make_shared< OpenGLIndexBuffer>(OpenGLIndexBuffer(unique_ptr<uint32_t[]>(new uint32_t[]  
 		{ 0, 1, 2,  
 		2, 3, 0 }), 6)));  
-	modelList.emplace_back(std::move(vao));  
+	modelList.emplace_back(std::move(vao));
+	referenceCount.emplace_back(0);
 }  
 
 /// Retrieves a model by name.  
@@ -148,4 +203,54 @@ ModelManager& ModelManager::AddModel(const std::string& name, const std::string&
 	return *this;  
 	// TODO: insert return statement here  
 }  
+void ModelManager::AddReference(uint32_t id)
+{
+	ACASSERT(id < modelList.size(), "ID out of bound at texture"
+		<< " id: " << id);
+	if (referenceCount[id] == 0)
+	{
+		modelList[id].Upload();
+	}
+	referenceCount[id]++;
+	return;
+}
+
+void ModelManager::AddReference(const std::string& name)
+{
+	uint32_t id = GetModelID(name);
+	ACASSERT(id < modelList.size(), "ID out of bound at texture"
+		<< name << " id: " << id);
+	if (referenceCount[id] == 0)
+	{
+		modelList[id].Upload();
+	}
+	referenceCount[id]++;
+	return;
+}
+
+void ModelManager::DeleteReference(uint32_t id)
+{
+	ACASSERT(id < modelList.size(), "ID out of bound at texture"
+		<< " id: " << id);
+	referenceCount[id]--;
+	if (referenceCount[id] == 0)
+	{
+		modelList[id].Delete();
+	}
+	return;
+}
+
+void ModelManager::DeleteReference(const std::string& name)
+{
+	uint32_t id = GetModelID(name);
+	ACASSERT(id < modelList.size(), "ID out of bound at texture"
+		<< name << " id: " << id);
+	referenceCount[id]--;
+	if (referenceCount[id] == 0)
+	{
+		modelList[id].Delete();
+	}
+	return;
+}
+
 }
