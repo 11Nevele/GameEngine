@@ -14,8 +14,13 @@
     <ClInclude Include="Achoium\Core\ECSDebug.h" />
     <ClInclude Include="Achoium\Core\ECSEvents.h" />
     <ClInclude Include="Achoium\Core\World.hpp" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\RectCollider2D.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\RigidBody2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\3D\BoxCollider.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\Collider.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\CollisionLayer.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\Physics.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\RigidBody.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\3D\SphereCollider.h" />
@@ -68,8 +73,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\RectCollider2D.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\RigidBody2D.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\3D\BoxCollider.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\Collider.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\CollisionLayer.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\RigidBody.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\3D\SphereCollider.cpp" />
     <ClCompile Include="Achoium\EngineSystems\PhysicsSystem.cpp" />

@@ -20,14 +20,24 @@ namespace ac
     {
     public:
         /**
-     * @brief Systems that handle physics simulation and collision detection.
-     */
+         * @brief System that handles 3D physics simulation.
+         */
         static void PhysicsStep(World& world);
 
         /**
-         * @brief System that performs collision detection and resolution.
+         * @brief System that handles 2D physics simulation.
+         */
+        static void Physics2DStep(World& world);
+
+        /**
+         * @brief System that performs 3D collision detection and resolution.
          */
         static void CollisionSystem(World& world);
+        
+        /**
+         * @brief System that performs 2D collision detection and resolution.
+         */
+        static void Collision2DSystem(World& world);
     };
 
     /**
@@ -52,4 +62,3 @@ namespace ac
 
     ALLOWTOKEN(OnTriggerEnter, friend class PhysicsSystem;)
 }
-    

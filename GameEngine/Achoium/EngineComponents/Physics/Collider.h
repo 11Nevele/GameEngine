@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <cstdint>
 
 namespace ac
 {
@@ -17,11 +18,19 @@ namespace ac
     public:
         glm::vec3 offset; ///< Local position offset from entity's transform
         bool isTrigger;   ///< If true, detects collisions but doesn't resolve them
+        uint32_t layer;   ///< Collision layer this collider belongs to
         
         /**
          * @brief Default constructor.
          */
         Collider();
+        
+        /**
+         * @brief Constructor with layer.
+         * 
+         * @param _layer The collision layer this collider belongs to
+         */
+        explicit Collider(uint32_t _layer);
         
         /**
          * @brief Virtual destructor for proper cleanup of derived classes.

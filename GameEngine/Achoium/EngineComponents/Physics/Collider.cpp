@@ -4,15 +4,23 @@
 
 namespace ac
 {
-    Collider::Collider() : offset(0.0f), isTrigger(false)
+    Collider::Collider()
+        : offset(0.0f)
+        , isTrigger(false)
+        , layer(0)
     {
     }
-
+    
+    Collider::Collider(uint32_t _layer)
+        : offset(0.0f)
+        , isTrigger(false)
+        , layer(_layer)
+    {
+    }
+    
     glm::vec3 Collider::GetWorldPosition(const Transform& transform) const
     {
-        // Apply the entity's transform to the offset
-        glm::mat4 transformMatrix = transform.asMat4(false);
-        glm::vec4 worldPos = transformMatrix * glm::vec4(offset, 1.0f);
-        return glm::vec3(worldPos);
+        // Apply entity's transform to the collider's local offset
+        return transform.position + transform.rotation * offset;
     }
 }

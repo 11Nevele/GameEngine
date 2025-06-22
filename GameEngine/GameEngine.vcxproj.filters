@@ -168,6 +168,21 @@
     <ClInclude Include="Achoium\EngineComponents\Physics\Physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Physics\CollisionLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\RectCollider2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\RigidBody2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -261,6 +276,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Achoium\EngineComponents\Physics\3D\SphereCollider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\CollisionLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\RectCollider2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\RigidBody2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
