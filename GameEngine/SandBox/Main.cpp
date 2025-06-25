@@ -142,6 +142,10 @@ struct movement
 	glm::vec3 velocity;
 };
 
+struct PlayerMovement
+{
+
+};
 void CameraMovement(ac::World& world)
 {
 	
@@ -176,13 +180,38 @@ void CameraMovement(ac::World& world)
 	}
 }
 
+void PlayerControl(ac::World& world)
+{
+
+	mInput& input = world.GetResourse<mInput>();
+	mWindow& win = world.GetResourse<mWindow>();
+	Time& time = world.GetResourse<Time>();
+	auto t = world.View<PlayerMovement, RigidBody2D>().GetPacked();
+	
+	for (auto i : t)
+	{
+		const float f = 10.0;
+		auto& rb = get<1>(i.components);
+		if (input.IsKeyPressed(AC_KEY_LEFT, win))
+			rb.ApplyForce({ -f,0 });
+		if (input.IsKeyPressed(AC_KEY_RIGHT, win))
+			rb.ApplyForce({ f,0 });
+
+		if (input.IsKeyPressed(AC_KEY_UP, win))
+			rb.ApplyForce({ 0,f });
+
+		if (input.IsKeyPressed(AC_KEY_DOWN, win))
+			rb.ApplyForce({ 0,-f });
+
+	}
+}
 
 
 int main()
 {
 	//StartTest();
 
-	StartTest();
+	//StartTest();
 	ac::World world;
 	InitEngine(world);
 
@@ -197,21 +226,29 @@ int main()
 
 	world.Add<Transform>(ground, Transform());
 	world.Get<Transform>(ground).scale.x = 10;
-	world.Add<RigidBody>(ground, RigidBody(1,0,0, false, true, true));
-	world.Add<BoxCollider>(ground, BoxCollider(10000, 400, 10));
-	world.Get<BoxCollider>(ground).offset = glm::vec3(200,200,0);
+	world.Add<RigidBody2D>(ground, RigidBody2D(1,0,0.5, false, true, true));
+	world.Add<RectCollider2D>(ground, RectCollider2D(10000, 100));
+	world.Get<RectCollider2D>(ground).offset = glm::vec3(0,0,0);
+	world.Get<Transform>(ground).RotateZ(0);
 
 	world.Add<Transform>(obj1, Transform());
-	world.Get<Transform>(obj1).position.y = 500;
-	world.Add<RigidBody>(obj1, RigidBody(1, 0, 0, true, false, true));
-	world.Add<BoxCollider>(obj1, BoxCollider(400, 400, 10));
-	world.Get<BoxCollider>(obj1).offset = glm::vec3(200, 200, 0);
+	world.Get<Transform>(obj1).position = {500, 600, 0};
+	world.Get<Transform>(obj1).RotateZ(-30);
+	world.Add<RigidBody2D>(obj1, RigidBody2D(1, 0, 0, true, false, false));
+	world.Add<RectCollider2D>(obj1, RectCollider2D(45, 30));
+	world.Get<RectCollider2D>(obj1).offset = glm::vec3(0, 0, 0);
+	world.Get<RigidBody2D>(obj1).inertiaTensor = (45.0 * 45.0 + 900.0) / 12.0;
 
 	world.Add<Transform>(obj2, Transform());
-	world.Get<Transform>(obj2).position = { 500,500,0 };
-	world.Add<RigidBody>(obj2, RigidBody(1, 0, 0, true, false, true));
-	world.Add<BoxCollider>(obj1, BoxCollider(400, 400, 10));
-	world.Get<BoxCollider>(obj1).offset = glm::vec3(200, 200, 0);
+	world.Get<Transform>(obj2).position = { 500,400,0 };
+	world.Get<Transform>(obj2).RotateZ(30);
+	world.Add<RigidBody2D>(obj2, RigidBody2D(1, 0, 0.5, true, false, false));
+	world.Add<RectCollider2D>(obj2, RectCollider2D(100, 50));
+	world.Get<RectCollider2D>(obj2).offset = glm::vec3(0, 0, 0);
+	world.Get<RigidBody2D>(obj2).inertiaTensor = 12500/12.0;
+	world.Add<PlayerMovement>(obj2, PlayerMovement());
+	//world.Get<RigidBody2D>(obj2).angularVelocity = 1.1;
+
 
 	//world.Add<Sprite>(ground, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 	//world.Add<Sprite>(obj1, Sprite::Create("Default", world.GetResourse<TextureManager>()));
@@ -222,6 +259,7 @@ int main()
 	{
 		mWindow& win = world.GetResourse<mWindow>();
 		CameraMovement(world);
+		PlayerControl(world);
 		world.Update();
 
 		win.OnUpdate();

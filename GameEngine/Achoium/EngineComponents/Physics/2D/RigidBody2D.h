@@ -23,6 +23,7 @@ namespace ac
         bool useGravity; ///< Whether gravity affects this object
         bool isKinematic; ///< If true, not affected by forces but affects others
         bool freezeRotation; ///< If true, rotation is not simulated
+        float inertiaTensor;
         
         /**
          * @brief Default constructor with standard physics values.
@@ -62,5 +63,13 @@ namespace ac
          * @param _impulse Impulse vector to apply
          */
         void ApplyImpulse(const glm::vec2& _impulse);
+
+        /**
+         * @brief Applies an instantaneous impulse at a specific position, creating torque.
+         * 
+         * @param impulse Impulse vector to apply
+         * @param position World position to apply the impulse at (relative to center)
+         */
+        void ApplyImpulseAtPosition(const glm::vec2& impulse, const glm::vec2& position);
     };
 }

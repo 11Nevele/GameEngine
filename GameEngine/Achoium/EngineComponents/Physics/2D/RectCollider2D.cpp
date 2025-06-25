@@ -111,88 +111,36 @@ namespace ac
         float minPenetration = std::numeric_limits<float>::max();
         glm::vec2 bestAxis;
         bool hasCollision = true;
+        std::vector<glm::vec2> axes;
         
-        // Check my axes
+        // Get all potential axes to test (edges from both rectangles)
+        // Collect axes from my edges
         for (size_t i = 0; i < myVertices.size(); ++i)
         {
             size_t j = (i + 1) % myVertices.size();
-            
-            // Calculate the edge vector
             glm::vec2 edge = myVertices[j] - myVertices[i];
-            
-            // Calculate the perpendicular axis for projection (normal to the edge)
             glm::vec2 axis(-edge.y, edge.x);
             float length = glm::length(axis);
-            if (length < 0.0001f) continue; // Skip degenerate edges
+            if (length < 0.0001f) continue;
             
-            axis = axis / length; // Normalize
-            
-            // Project both shapes onto the axis
-            float minA = std::numeric_limits<float>::max();
-            float maxA = -std::numeric_limits<float>::max();
-            float minB = std::numeric_limits<float>::max();
-            float maxB = -std::numeric_limits<float>::max();
-            
-            // Project vertices of rectangle A
-            for (const auto& vertex : myVertices)
-            {
-                float projection = glm::dot(axis, vertex);
-                minA = std::min(minA, projection);
-                maxA = std::max(maxA, projection);
-            }
-            
-            // Project vertices of rectangle B
-            for (const auto& vertex : otherVertices)
-            {
-                float projection = glm::dot(axis, vertex);
-                minB = std::min(minB, projection);
-                maxB = std::max(maxB, projection);
-            }
-            
-            // Check for separation
-            if (minA > maxB || minB > maxA)
-            {
-                // Separating axis found, no collision
-                hasCollision = false;
-                break;
-            }
-            
-            // Calculate penetration depth
-            float overlap = std::min(maxA - minB, maxB - minA);
-            
-            // Track minimum penetration for collision response
-            if (overlap < minPenetration)
-            {
-                minPenetration = overlap;
-                bestAxis = axis;
-                
-                // Ensure the normal points from A to B
-                float centerA = (minA + maxA) * 0.5f;
-                float centerB = (minB + maxB) * 0.5f;
-                if (centerA > centerB)
-                {
-                    bestAxis = -bestAxis;
-                }
-            }
+            axes.push_back(axis / length); // Normalize
         }
         
-        if (!hasCollision) return false;
-        
-        // Check other's axes
+        // Collect axes from other's edges
         for (size_t i = 0; i < otherVertices.size(); ++i)
         {
             size_t j = (i + 1) % otherVertices.size();
-            
-            // Calculate the edge vector
             glm::vec2 edge = otherVertices[j] - otherVertices[i];
-            
-            // Calculate the perpendicular axis for projection
             glm::vec2 axis(-edge.y, edge.x);
             float length = glm::length(axis);
-            if (length < 0.0001f) continue; // Skip degenerate edges
+            if (length < 0.0001f) continue;
             
-            axis = axis / length; // Normalize
-            
+            axes.push_back(axis / length); // Normalize
+        }
+        
+        // Test all axes
+        for (const auto& axis : axes)
+        {
             // Project both shapes onto the axis
             float minA = std::numeric_limits<float>::max();
             float maxA = -std::numeric_limits<float>::max();
@@ -244,20 +192,143 @@ namespace ac
         
         if (!hasCollision) return false;
         
-        // If we get here, there is a collision
+        // Set collision normal and penetration depth
         collisionNormal = glm::vec3(bestAxis.x, bestAxis.y, 0.0f);
         penetrationDepth = minPenetration;
         
-        // Calculate an approximate collision point (center point of overlap)
-        glm::vec3 myCenter = GetWorldPosition(myTransform);
-        glm::vec3 otherCenter = other->GetWorldPosition(otherTransform);
+        // Find the contact points - this is what needs improvement
         
-        // Find point along the collision normal from the center of A
-        glm::vec2 direction = glm::vec2(collisionNormal.x, collisionNormal.y);
-        float distanceToContact = glm::dot(otherCenter - myCenter, collisionNormal);
-        glm::vec3 contactPoint = myCenter + glm::vec3(direction, 0) * distanceToContact;
+        // Get the reference and incident faces
+        struct Face {
+            glm::vec2 startPoint;
+            glm::vec2 endPoint;
+            glm::vec2 normal;
+            float dot;
+        };
         
-        collisionPoint = contactPoint;
+		glm::vec2 collisionNormal2D = glm::vec2(collisionNormal.x, collisionNormal.y);
+
+        Face referenceFace{};
+        Face incidentFace{};
+        bool flipNormal = false;
+        
+        // Find reference face (edge most perpendicular to collsion normal)
+        float mnDot = std::numeric_limits<float>::max();;
+		float mxProjectionOnNormal = -std::numeric_limits<float>::max();
+		float mnProjectionOnNormal = std::numeric_limits<float>::max();
+        
+        // Check my faces
+        for (size_t i = 0; i < myVertices.size(); i++) {
+            size_t j = (i + 1) % myVertices.size();
+            glm::vec2 edge = myVertices[j] - myVertices[i];
+            glm::vec2 normal(-edge.y, edge.x);
+			float myMxProjectionOnNormal = std::max(glm::dot(collisionNormal2D, myVertices[j]), glm::dot(collisionNormal2D, myVertices[i]));
+            
+            normal = glm::normalize(normal);
+            float dot = abs(glm::dot(collisionNormal2D, glm::normalize(edge)));
+            if(myMxProjectionOnNormal > mxProjectionOnNormal) {
+                mxProjectionOnNormal = myMxProjectionOnNormal;
+				referenceFace.startPoint = myVertices[i];
+				referenceFace.endPoint = myVertices[j];
+                referenceFace.dot = dot;
+                referenceFace.normal = normal; // Use the normal as is
+                mnDot = dot;
+
+			}
+            else if(abs(myMxProjectionOnNormal - mxProjectionOnNormal) < 0.0001f) {
+                if (dot < mnDot)
+                {
+                    mxProjectionOnNormal = myMxProjectionOnNormal;
+                    referenceFace.startPoint = myVertices[i];
+                    referenceFace.endPoint = myVertices[j];
+                    referenceFace.normal = normal; // Use the normal as is
+                    referenceFace.dot = dot;
+                    mnDot = dot;
+                }
+			}
+        }
+        mnDot = std::numeric_limits<float>::max();
+        // Check other faces
+        for (size_t i = 0; i < otherVertices.size(); i++) {
+            size_t j = (i + 1) % otherVertices.size();
+            glm::vec2 edge = otherVertices[j] - otherVertices[i];
+            glm::vec2 normal(-edge.y, edge.x);
+            normal = glm::normalize(normal);
+            float myMnProjectionOnNormal = std::max(glm::dot(collisionNormal2D, myVertices[j]), glm::dot(collisionNormal2D, myVertices[i]));
+
+            // Reverse the normal since we need it pointing from B to A for comparison
+            //normal = -normal;
+            
+            float dot = abs(glm::dot(collisionNormal2D, glm::normalize(edge)));
+            if (myMnProjectionOnNormal < mnProjectionOnNormal) {
+                mnProjectionOnNormal = myMnProjectionOnNormal;
+                incidentFace.startPoint = otherVertices[i];
+                incidentFace.endPoint = otherVertices[j];
+                incidentFace.normal = normal; // Use the normal as is
+                incidentFace.dot = dot;
+                mnDot = dot;
+            }
+            else if (abs(myMnProjectionOnNormal - mnProjectionOnNormal) < 0.0001f) {
+                if (dot < mnDot)
+                {
+                    mnProjectionOnNormal = myMnProjectionOnNormal;
+                    incidentFace.startPoint = otherVertices[i];
+                    incidentFace.endPoint = otherVertices[j];
+                    incidentFace.normal = normal; // Use the normal as is
+                    incidentFace.dot = dot;
+                    mnDot = dot;
+                }
+            }
+        }
+        
+        if(incidentFace.dot < referenceFace.dot)
+			std::swap(referenceFace, incidentFace);
+        
+        // Clipping
+        // Reference edge vector
+        glm::vec2 refEdge = referenceFace.endPoint - referenceFace.startPoint;
+        refEdge = glm::normalize(refEdge);
+        
+        
+
+        // Compute reference face side normals (pointing outward)
+        glm::vec2 refFaceNormal = referenceFace.normal;
+        
+        // Position relative to reference face start
+        float offset1 = glm::dot(refFaceNormal, referenceFace.startPoint);
+        float offset2 = glm::dot(refFaceNormal, referenceFace.endPoint);
+        
+        // Clip incident face to reference face side planes
+        // Side 1
+        std::vector<glm::vec2> clippedPoints;
+        ClipSegmentToLine(incidentFace.startPoint, incidentFace.endPoint, refFaceNormal, offset1, clippedPoints);
+        
+
+        
+        if (clippedPoints.empty()) {
+            // Use approximate method as above
+            glm::vec3 myCenter(0.0f);
+            for (const auto& vertex : myVertices) {
+                myCenter += glm::vec3(vertex.x, vertex.y, 0.0f);
+            }
+            myCenter /= static_cast<float>(myVertices.size());
+            
+            glm::vec3 otherCenter(0.0f);
+            for (const auto& vertex : otherVertices) {
+                otherCenter += glm::vec3(vertex.x, vertex.y, 0.0f);
+            }
+            otherCenter /= static_cast<float>(otherVertices.size());
+            
+            collisionPoint = (myCenter + otherCenter) * 0.5f;
+        } else {
+            // Average the contact points
+            glm::vec2 avgContactPoint(0.0f);
+            for (const auto& point : clippedPoints) {
+                avgContactPoint += point;
+            }
+            avgContactPoint /= static_cast<float>(clippedPoints.size());
+            collisionPoint = glm::vec3(avgContactPoint.x, avgContactPoint.y, 0.0f);
+        }
         
         return true;
     }
@@ -536,5 +607,46 @@ namespace ac
         collisionPoint = glm::vec3((rectCenter + polyCenter) * 0.5f, 0.0f);
         
         return true;
+    }
+    
+    void RectCollider2D::ClipSegmentToLine(
+        const glm::vec2& v1,
+        const glm::vec2& v2,
+        const glm::vec2& normal,
+        float offset,
+        std::vector<glm::vec2>& outPoints
+    ) const
+    {
+        outPoints.clear();
+        
+        // Distance of vertices from the clipping line
+        float distance1 = glm::dot(normal, v1) - offset;
+        float distance2 = glm::dot(normal, v2) - offset;
+        
+        // If both points are behind the line, keep both
+        if (distance1 >= 0.0f && distance2 >= 0.0f) {
+            outPoints.push_back(v1);
+            outPoints.push_back(v2);
+            return;
+        }
+        
+        // If only first point is behind the line, keep first and compute intersection
+        if (distance1 >= 0.0f && distance2 < 0.0f) {
+            outPoints.push_back(v1);
+            //float t = distance1 / (distance1 - distance2);
+            //outPoints.push_back(v1 + t * (v2 - v1));
+            return;
+        }
+        
+        // If only second point is behind the line, keep second and compute intersection
+        if (distance1 < 0.0f && distance2 >= 0.0f) {
+            //float t = distance1 / (distance1 - distance2);
+            //outPoints.push_back(v1 + t * (v2 - v1));
+            outPoints.push_back(v2);
+            return;
+        }
+        
+        // Both points are in front of the line, keep none
+        return;
     }
 }

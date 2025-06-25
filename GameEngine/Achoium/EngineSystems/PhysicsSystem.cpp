@@ -4,6 +4,7 @@
 #include "Math/Transform.h"
 #include "Event/Event.hpp"
 #include "EngineComponents/Time.h"
+#include "Debug.h"
 namespace ac
 {
     constexpr glm::vec3 gravity(0.0f, -9.81f, 0.0f);
@@ -251,6 +252,8 @@ namespace ac
         }
     }
 
+    
+
     void PhysicsSystem::Collision2DSystem(World& world)
     {
         EventManager& eventManager = world.GetResourse<EventManager>();
@@ -344,31 +347,20 @@ namespace ac
                     if (rbA.isKinematic && rbB.isKinematic)
                         continue;
 
-                    // Calculate impulse for collision response
-                    float invMassSum = rbA.inverseMass + rbB.inverseMass;
-                    if (invMassSum <= 0)
-                        continue; // Avoid division by zero
+                    // Get 2D vectors for calculations
+                    glm::vec2 normal2D(collisionNormal.x, collisionNormal.y);
+                    glm::vec2 collisionPoint2D(collisionPoint.x, collisionPoint.y);
+                    
+                    // Calculate relative positions of collision point
+                    glm::vec2 rA = collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y);
+                    glm::vec2 rB = collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y);
+                    
+                    // Calculate relative velocity at contact point
+                    glm::vec2 relativeVelocity = rbB.velocity + glm::vec2(-rbB.angularVelocity * rB.y, rbB.angularVelocity * rB.x) -
+                                               rbA.velocity - glm::vec2(-rbA.angularVelocity * rA.y, rbA.angularVelocity * rA.x);
 
-                    // Position correction (avoid sinking)
-                    const float percent = 0.2f; // penetration correction factor
-                    glm::vec2 correction = glm::vec2(collisionNormal.x, collisionNormal.y) * 
-                                         (penetrationDepth / invMassSum) * percent;
-
-                    if (!rbA.isKinematic)
-                    {
-                        transformA.position.x -= correction.x * rbA.inverseMass;
-                        transformA.position.y -= correction.y * rbA.inverseMass;
-                    }
-
-                    if (!rbB.isKinematic)
-                    {
-                        transformB.position.x += correction.x * rbB.inverseMass;
-                        transformB.position.y += correction.y * rbB.inverseMass;
-                    }
-
-                    // Velocity correction (bounce effect)
-                    glm::vec2 relativeVelocity = rbB.velocity - rbA.velocity;
-                    float velocityAlongNormal = glm::dot(relativeVelocity, glm::vec2(collisionNormal.x, collisionNormal.y));
+                    // Calculate velocity along normal
+                    float velocityAlongNormal = glm::dot(relativeVelocity, normal2D);
                     
                     // Only resolve if objects are moving toward each other
                     if (velocityAlongNormal < 0)
@@ -376,68 +368,114 @@ namespace ac
                         // Calculate coefficient of restitution (bounciness)
                         float e = std::min(rbA.restitution, rbB.restitution);
 
-                        // Calculate impulse scalar
-                        float j = -(1.0f + e) * velocityAlongNormal / invMassSum;
+                        // Calculate angular contribution to constraint
+                        // 2D cross product for rA.cross(normal) is (rA.x * normal.y - rA.y * normal.x)
+                        float rACrossN = rA.x * normal2D.y - rA.y * normal2D.x;
+                        float rBCrossN = rB.x * normal2D.y - rB.y * normal2D.x;
+                        
+                        // Calculate effective mass for constraint
+                        float inverseMassSum = rbA.inverseMass + rbB.inverseMass;
+                        
+						
 
-                        // Apply impulse
-                        glm::vec2 impulse = glm::vec2(collisionNormal.x, collisionNormal.y) * j;
-
+                        // Include rotational contribution in effective mass
+                        if (!rbA.freezeRotation)
+                            inverseMassSum += rACrossN * rACrossN * rbA.inverseMass / rbA.inertiaTensor;
+                        if (!rbB.freezeRotation)
+                            inverseMassSum += rBCrossN * rBCrossN * rbB.inverseMass / rbB.inertiaTensor;
+                        
+                        if (inverseMassSum <= 0)
+                            continue; // Avoid division by zero
+                        
+                        // Calculate impulse scalar using constraint
+                        float j = -(1.0f + e) * velocityAlongNormal / inverseMassSum;
+                        ACMSG("Collided");
+                        // Apply constraint impulse
+                        glm::vec2 impulse = normal2D * j;
+                        rbA.ApplyImpulseAtPosition(-impulse, collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y));
+						rbB.ApplyImpulseAtPosition(impulse, collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y));
+                        
+                        // Apply position correction (avoid sinking)
+                        const float percent = 0.2f; // penetration correction factor
+                        glm::vec2 correction = normal2D * (penetrationDepth / inverseMassSum) * percent;
+                        
                         if (!rbA.isKinematic)
-                            rbA.velocity -= impulse * rbA.inverseMass;
+                        {
+                            transformA.position.x -= correction.x * rbA.inverseMass;
+                            transformA.position.y -= correction.y * rbA.inverseMass;
+                        }
 
                         if (!rbB.isKinematic)
-                            rbB.velocity += impulse * rbB.inverseMass;
-
-                        // Apply friction
+                        {
+                            transformB.position.x += correction.x * rbB.inverseMass;
+                            transformB.position.y += correction.y * rbB.inverseMass;
+                        }
+                        /*
+                        // Apply friction as a separate constraint
                         float friction = (rbA.friction + rbB.friction) * 0.5f;
-
+                        
                         if (friction > 0)
                         {
                             // Recalculate relative velocity after normal impulse
-                            relativeVelocity = rbB.velocity - rbA.velocity;
-
+                            relativeVelocity = rbB.velocity + glm::vec2(-rbB.angularVelocity * rB.y, rbB.angularVelocity * rB.x) -
+                                            rbA.velocity - glm::vec2(-rbA.angularVelocity * rA.y, rbA.angularVelocity * rA.x);
+                            
                             // Calculate tangent vector (perpendicular to normal)
-                            glm::vec2 normal2D = glm::vec2(collisionNormal.x, collisionNormal.y);
                             glm::vec2 tangent = relativeVelocity - (glm::dot(relativeVelocity, normal2D) * normal2D);
                             float tangentLength = glm::length(tangent);
-
+                            
                             if (tangentLength > 0.0001f)
                             {
                                 tangent = tangent / tangentLength;
-
+                                
+                                // Calculate angular contribution for friction constraint
+                                float rACrossT = rA.x * tangent.y - rA.y * tangent.x;
+                                float rBCrossT = rB.x * tangent.y - rB.y * tangent.x;
+                                
+                                // Calculate effective mass for friction constraint
+                                float frictionInverseMassSum = rbA.inverseMass + rbB.inverseMass;
+                                
+                                // Include rotational contribution in effective mass for friction
+                                if (!rbA.freezeRotation)
+                                    frictionInverseMassSum += rACrossT * rACrossT * rbA.inverseMass;
+                                if (!rbB.freezeRotation)
+                                    frictionInverseMassSum += rBCrossT * rBCrossT * rbB.inverseMass;
+                                
                                 // Calculate friction impulse
-                                float jt = -glm::dot(relativeVelocity, tangent) / invMassSum;
-
-                                // Clamp friction
+                                float jt = -glm::dot(relativeVelocity, tangent) / frictionInverseMassSum;
+                                
+                                // Clamp friction to coulomb's law
                                 jt = glm::clamp(jt, -j * friction, j * friction);
-
+                                
                                 // Apply friction impulse
                                 glm::vec2 frictionImpulse = tangent * jt;
-
+                                
                                 if (!rbA.isKinematic)
+                                {
                                     rbA.velocity -= frictionImpulse * rbA.inverseMass;
+                                    
+                                    if (!rbA.freezeRotation)
+                                    {
+                                        // Apply angular friction impulse
+                                        float angularFrictionImpulse = -rACrossT * jt * rbA.inverseMass;
+                                        rbA.angularVelocity += angularFrictionImpulse;
+                                    }
+                                }
 
                                 if (!rbB.isKinematic)
+                                {
                                     rbB.velocity += frictionImpulse * rbB.inverseMass;
                                     
-                                // Handle angular velocity changes due to friction
-                                if (!rbA.freezeRotation && !rbA.isKinematic)
-                                {
-                                    // Calculate torque from friction force (2D cross product is a scalar)
-                                    rbA.angularVelocity -= (collisionPoint.x * frictionImpulse.y - 
-                                                           collisionPoint.y * frictionImpulse.x) * 
-                                                           rbA.inverseMass;
-                                }
-                                
-                                if (!rbB.freezeRotation && !rbB.isKinematic)
-                                {
-                                    // Calculate torque from friction force (2D cross product is a scalar)
-                                    rbB.angularVelocity += (collisionPoint.x * frictionImpulse.y - 
-                                                           collisionPoint.y * frictionImpulse.x) * 
-                                                           rbB.inverseMass;
+                                    if (!rbB.freezeRotation)
+                                    {
+                                        // Apply angular friction impulse
+                                        float angularFrictionImpulse = rBCrossT * jt * rbB.inverseMass;
+                                        rbB.angularVelocity += angularFrictionImpulse;
+                                    }
                                 }
                             }
                         }
+                        */
                     }
                 }
             }

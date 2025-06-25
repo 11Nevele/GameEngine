@@ -26,6 +26,10 @@ namespace ac
 		world.RegisterType<RigidBody>();
 		world.RegisterType<SphereCollider>();
 		world.RegisterType<BoxCollider>();
+		world.RegisterType<CircleCollider2D>();
+		world.RegisterType<PolygonCollider2D>();
+		world.RegisterType<RectCollider2D>();
+		world.RegisterType<RigidBody2D>();
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
@@ -34,7 +38,7 @@ namespace ac
 		world.AddResource<WindowsInput>(new WindowsInput());
 		world.AddResource<TextureManager>(new TextureManager());
 		world.AddResource<ModelManager>(new ModelManager());
-
+		world.AddResource<CollisionLayer>(new CollisionLayer());
 
 		world.GetResourse<TextureManager>()
 			.AddTexture("Default", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/null.png")
@@ -51,6 +55,8 @@ namespace ac
 		world.AddUpdateSystem(PhysicsSystem::PhysicsStep, 1); // Run physics step early in update
 		world.AddUpdateSystem(PhysicsSystem::CollisionSystem, 2); // Run collision detection after physics update
 		
+		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
+		world.AddPostUpdateSystem(PhysicsSystem::Collision2DSystem, 2); // Run collision detection after physics update
 		world.AddPostUpdateSystem(RenderSprite, 9);
 		
 

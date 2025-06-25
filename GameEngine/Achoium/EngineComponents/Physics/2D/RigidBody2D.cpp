@@ -15,6 +15,7 @@ namespace ac
         , useGravity(true)
         , isKinematic(false)
         , freezeRotation(false)
+        , inertiaTensor(1.0f)
     {
     }
 
@@ -30,6 +31,7 @@ namespace ac
         , useGravity(_useGravity)
         , isKinematic(_isKinematic)
         , freezeRotation(_freezeRotation)
+        , inertiaTensor(1.0f)
     {
     }
     
@@ -45,6 +47,7 @@ namespace ac
         , useGravity(true)
         , isKinematic(false)
         , freezeRotation(false)
+        , inertiaTensor(1.0f)
     {
     }
     
@@ -84,5 +87,29 @@ namespace ac
         // Impulse = change in momentum = mass * change in velocity
         // So, change in velocity = impulse / mass
         velocity += _impulse * inverseMass;
+    }
+    
+    void RigidBody2D::ApplyImpulseAtPosition(const glm::vec2& impulse, const glm::vec2& position)
+    {
+        // Only apply impulse if not kinematic
+        if (isKinematic)
+            return;
+        
+        // Apply linear impulse (change in velocity)
+        velocity += impulse * inverseMass;
+        
+        // Calculate angular impulse if rotation isn't frozen
+        if (!freezeRotation)
+        {
+            // Calculate torque using 2D cross product (r × F)
+            // position is relative to center of mass
+            float angularImpulse = position.x * impulse.y - position.y * impulse.x;
+            
+            // Apply angular impulse
+            // For simplicity, using a moment of inertia approximation
+            // Actual moment of inertia would depend on the shape
+            
+            angularVelocity += angularImpulse / inertiaTensor;
+        }
     }
 }

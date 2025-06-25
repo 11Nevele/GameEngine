@@ -102,5 +102,23 @@ namespace ac
             glm::vec3& collisionNormal,
             float& penetrationDepth
         ) const;
+
+    private:
+        /**
+         * @brief Helper method for clipping a segment to a line.
+         * 
+         * @param v1 First vertex of the segment
+         * @param v2 Second vertex of the segment
+         * @param normal Normal vector of the line
+         * @param offset Offset of the line
+         * @param outPoints Output vector to store clipped points
+         */
+        void ClipSegmentToLine(
+            const glm::vec2& v1,
+            const glm::vec2& v2,
+            const glm::vec2& normal,
+            float offset,
+            std::vector<glm::vec2>& outPoints
+        ) const;
     };
 }
