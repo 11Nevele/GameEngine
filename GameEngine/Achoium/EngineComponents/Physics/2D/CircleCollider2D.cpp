@@ -1,4 +1,5 @@
 #include "acpch.h"
+
 #include "CircleCollider2D.h"
 #include "RectCollider2D.h"
 #include "PolygonCollider2D.h"
@@ -8,19 +9,19 @@
 namespace ac
 {
     CircleCollider2D::CircleCollider2D()
-        : Collider()
+        : Collider2D()
         , radius(0.5f)
     {
     }
     
     CircleCollider2D::CircleCollider2D(float _radius)
-        : Collider()
+        : Collider2D()
         , radius(_radius)
     {
     }
     
-    CircleCollider2D::CircleCollider2D(float _radius, const glm::vec3& _offset, uint32_t _layer, bool _isTrigger)
-        : Collider(_layer)
+    CircleCollider2D::CircleCollider2D(float _radius, const glm::vec2& _offset, uint32_t _layer, bool _isTrigger)
+        : Collider2D(_layer)
         , radius(_radius)
     {
         offset = _offset;
@@ -28,11 +29,11 @@ namespace ac
     }
     
     bool CircleCollider2D::CheckCollision(
-        const Collider* other,
+        const Collider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
@@ -40,17 +41,17 @@ namespace ac
         if (const CircleCollider2D* otherCircle = dynamic_cast<const CircleCollider2D*>(other))
         {
             return CircleVsCircle(otherCircle, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         else if (const RectCollider2D* otherRect = dynamic_cast<const RectCollider2D*>(other))
         {
             return CircleVsRect(otherRect, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         else if (const PolygonCollider2D* otherPolygon = dynamic_cast<const PolygonCollider2D*>(other))
         {
             return CircleVsPolygon(otherPolygon, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         
         // Unsupported collider type
@@ -61,13 +62,13 @@ namespace ac
         const CircleCollider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
-        glm::vec3 myPos = GetWorldPosition(myTransform);
-        glm::vec3 otherPos = other->GetWorldPosition(otherTransform);
+        glm::vec myPos = GetWorldPosition(myTransform);
+        glm::vec otherPos = other->GetWorldPosition(otherTransform);
         
         // For 2D, we only care about the XY plane
         glm::vec2 myPos2D(myPos.x, myPos.y);
@@ -97,7 +98,7 @@ namespace ac
         if (dist < 0.0001f)
         {
             collisionNormal = glm::vec3(0.0f, 1.0f, 0.0f); // Default to up direction
-            collisionPoint = myPos;
+            //collisionPoints = myPos;
             penetrationDepth = sumRadii;
         }
         else
@@ -111,7 +112,7 @@ namespace ac
             
             // Calculate collision point
             glm::vec2 collisionPoint2D = myPos2D + normalDir * radius;
-            collisionPoint = glm::vec3(collisionPoint2D.x, collisionPoint2D.y, myPos.z);
+            //collisionPoint = glm::vec3(collisionPoint2D.x, collisionPoint2D.y, myPos.z);
         }
         
         return true;
@@ -120,19 +121,19 @@ namespace ac
     bool CircleCollider2D::CircleVsRect(
         const RectCollider2D* rect,
         const Transform& myTransform,
-        const Transform& rectTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        const Transform& otherTransform,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
         // Get world positions
-        glm::vec3 circleCenter = GetWorldPosition(myTransform);
-        glm::vec3 rectCenter = rect->GetWorldPosition(rectTransform);
+        glm::vec2 circleCenter = GetWorldPosition(myTransform);
+        glm::vec2 rectCenter = rect->GetWorldPosition(otherTransform);
         
         // Convert to local rectange space
-        glm::mat4 rectWorldToLocal = glm::inverse(rectTransform.asMat4());
-        glm::vec4 circleCenterLocal = rectWorldToLocal * glm::vec4(circleCenter, 1.0f);
+        glm::mat4 rectWorldToLocal = glm::inverse(otherTransform.asMat4());
+        glm::vec4 circleCenterLocal = rectWorldToLocal * glm::vec4(circleCenter, 1.0f, 1.0f);
         
         // Find the closest point on the rectangle to the circle
         glm::vec3 closestPoint;
@@ -151,7 +152,7 @@ namespace ac
         }
         
         // Convert the closest point back to world space
-        glm::vec4 closestPointWorld = rectTransform.asMat4() * glm::vec4(closestPoint, 1.0f);
+        glm::vec4 closestPointWorld = otherTransform.asMat4() * glm::vec4(closestPoint, 1.0f);
         
         // If the circle center is inside the rectangle, we need to find the shortest exit direction
         if (distanceSq < 0.0001f)
@@ -176,7 +177,7 @@ namespace ac
             }
             
             // Recalculate world position
-            closestPointWorld = rectTransform.asMat4() * glm::vec4(closestPoint, 1.0f);
+            closestPointWorld = otherTransform.asMat4() * glm::vec4(closestPoint, 1.0f);
         }
         
         float distance = glm::sqrt(distanceSq);
@@ -195,7 +196,7 @@ namespace ac
         }
         
         // Calculate the collision point
-        collisionPoint = glm::vec3(closestPointWorld);
+        //collisionPoint = glm::vec3(closestPointWorld);
         
         // Calculate the penetration depth
         penetrationDepth = radius - distance;
@@ -207,17 +208,17 @@ namespace ac
         const PolygonCollider2D* polygon,
         const Transform& myTransform,
         const Transform& polygonTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
         // Get the circle's world position
-        glm::vec3 circleCenter = GetWorldPosition(myTransform);
+        glm::vec2 circleCenter = GetWorldPosition(myTransform);
         
         // Convert circle center to polygon's local space
         glm::mat4 worldToLocal = glm::inverse(polygonTransform.asMat4());
-        glm::vec4 circleCenterLocal = worldToLocal * glm::vec4(circleCenter, 1.0f);
+        glm::vec4 circleCenterLocal = worldToLocal * glm::vec4(circleCenter, 1.0f, 1.0f);
         
         // Find the closest point on the polygon to the circle center
         glm::vec2 closestPoint2D = polygon->FindClosestPoint(glm::vec2(circleCenterLocal.x, circleCenterLocal.y));
@@ -246,11 +247,11 @@ namespace ac
         }
         else
         {
-            collisionNormal = glm::normalize(glm::vec3(circleCenter) - glm::vec3(closestPointWorld));
+            collisionNormal = glm::normalize(glm::vec3(circleCenter, 0) - glm::vec3(closestPointWorld));
         }
         
         // Calculate collision data
-        collisionPoint = glm::vec3(closestPointWorld);
+        //collisionPoint = glm::vec3(closestPointWorld);
         penetrationDepth = radius - distance;
         
         return true;

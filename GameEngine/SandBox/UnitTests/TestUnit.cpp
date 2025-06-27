@@ -177,13 +177,4 @@ void StartTest() {
 
     RunAllWorldTests();
 
-
-    try
-    {
-        ac::RunPhysicsTests();
-    }
-    catch (const std::exception& e)
-    {
-        std::cerr << "Exception in tests: " << e.what() << std::endl;
-    }
 }

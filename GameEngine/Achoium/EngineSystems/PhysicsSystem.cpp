@@ -252,7 +252,118 @@ namespace ac
         }
     }
 
-    
+    void Solve(RigidBody2D& rbA, RigidBody2D& rbB, Transform& transformA, Transform& transformB, 
+        float penetrationDepth, glm::vec2 collisionNormal, glm::vec2 collisionPoint2D, bool applyPositionCorrection)
+    {
+        // Get 2D vectors for calculations
+        glm::vec2 normal2D(collisionNormal.x, collisionNormal.y);
+
+        // Calculate relative positions of collision point
+        glm::vec2 rA = collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y);
+        glm::vec2 rB = collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y);
+
+        // Calculate relative velocity at contact point
+        glm::vec2 relativeVelocity = rbB.velocity + glm::vec2(-rbB.angularVelocity * rB.y, rbB.angularVelocity * rB.x) -
+            rbA.velocity - glm::vec2(-rbA.angularVelocity * rA.y, rbA.angularVelocity * rA.x);
+
+        // Calculate velocity along normal
+        float velocityAlongNormal = glm::dot(relativeVelocity, normal2D);
+		if (velocityAlongNormal < 0)
+        {
+            // Calculate coefficient of restitution (bounciness)
+            float e = std::min(rbA.restitution, rbB.restitution);
+
+            // Calculate angular contribution to constraint
+            // 2D cross product for rA.cross(normal) is (rA.x * normal.y - rA.y * normal.x)
+            float rACrossN = rA.x * normal2D.y - rA.y * normal2D.x;
+            float rBCrossN = rB.x * normal2D.y - rB.y * normal2D.x;
+
+            // Calculate effective mass for constraint
+            float inverseMassSum = rbA.inverseMass + rbB.inverseMass;
+
+
+
+            // Include rotational contribution in effective mass
+            if (!rbA.freezeRotation)
+                inverseMassSum += rACrossN * rACrossN / rbA.inertiaTensor;
+            if (!rbB.freezeRotation)
+                inverseMassSum += rBCrossN * rBCrossN / rbB.inertiaTensor;
+
+            if (inverseMassSum <= 0)
+                return; // Avoid division by zero
+
+            // Calculate impulse scalar using constraint
+            float j = -(1.0f + e) * velocityAlongNormal / inverseMassSum;
+            ACMSG("Collided");
+            // Apply constraint impulse
+            glm::vec2 impulse = normal2D * j;
+            rbA.ApplyImpulseAtPosition(-impulse, collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y));
+            rbB.ApplyImpulseAtPosition(impulse, collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y));
+
+            if (applyPositionCorrection)
+            {
+                // Apply position correction (avoid sinking)
+                const float percent = 0.2f; // penetration correction factor
+                glm::vec2 correction = normal2D * (penetrationDepth / inverseMassSum) * percent;
+
+                if (!rbA.isKinematic)
+                {
+                    transformA.position.x -= correction.x * rbA.inverseMass;
+                    transformA.position.y -= correction.y * rbA.inverseMass;
+                }
+
+                if (!rbB.isKinematic)
+                {
+                    transformB.position.x += correction.x * rbB.inverseMass;
+                    transformB.position.y += correction.y * rbB.inverseMass;
+                }
+            }
+           
+        }
+    }
+
+    void SolveFriction(RigidBody2D& rbA, RigidBody2D& rbB, Transform& transformA, Transform& transformB,
+        float penetrationDepth, glm::vec2 collisionNormal, glm::vec2 collisionPoint2D)
+    {
+        float e = std::min(rbA.restitution, rbB.restitution);
+        float friction = (rbA.friction + rbB.friction) / 2.0;
+
+        glm::vec2 tangent(-collisionNormal.y, collisionNormal.x);
+
+        // Calculate relative positions of collision point
+        glm::vec2 rA = collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y);
+        glm::vec2 rB = collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y);
+
+        // Calculate relative velocity at contact point
+        glm::vec2 relativeVelocity = rbB.velocity + glm::vec2(-rbB.angularVelocity * rB.y, rbB.angularVelocity * rB.x) -
+            rbA.velocity - glm::vec2(-rbA.angularVelocity * rA.y, rbA.angularVelocity * rA.x);
+
+        float velocityAlongTangent = glm::dot(relativeVelocity, tangent);
+
+        float rACrossN = rA.x * tangent.y - rA.y * tangent.x;
+        float rBCrossN = rB.x * tangent.y - rB.y * tangent.x;
+
+        // Calculate effective mass for constraint
+        float inverseMassSum = rbA.inverseMass + rbB.inverseMass;
+
+
+        // Include rotational contribution in effective mass
+        if (!rbA.freezeRotation)
+            inverseMassSum += rACrossN * rACrossN / rbA.inertiaTensor;
+        if (!rbB.freezeRotation)
+            inverseMassSum += rBCrossN * rBCrossN / rbB.inertiaTensor;
+
+        if (inverseMassSum <= 0)
+            return; // Avoid division by zero
+
+        float j = friction * -(1.0 + e) * velocityAlongTangent / inverseMassSum;
+        ACMSG("Collided");
+        // Apply constraint impulse
+        glm::vec2 impulse = tangent * j;
+        rbA.ApplyImpulseAtPosition(-impulse, collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y));
+        rbB.ApplyImpulseAtPosition(impulse, collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y));
+
+    }
 
     void PhysicsSystem::Collision2DSystem(World& world)
     {
@@ -265,47 +376,48 @@ namespace ac
         auto polygonColliders = world.View<PolygonCollider2D, Transform>().GetPacked();
         
         // Combined list of all colliders
-        std::vector<std::pair<Entity, Collider*>> allColliders;
+        std::vector<std::pair<Entity, Collider2D*>> allColliders;
         
         // Add circle colliders to the combined list
         for (auto& item : circleColliders) {
             Entity entity = item.id;
             CircleCollider2D& circleCollider = world.Get<CircleCollider2D>(entity);
-            allColliders.push_back({entity, static_cast<Collider*>(&circleCollider)});
+            allColliders.push_back({entity, static_cast<Collider2D*>(&circleCollider)});
         }
         
         // Add rect colliders to the combined list
         for (auto& item : rectColliders) {
             Entity entity = item.id;
             RectCollider2D& rectCollider = world.Get<RectCollider2D>(entity);
-            allColliders.push_back({entity, static_cast<Collider*>(&rectCollider)});
+            allColliders.push_back({entity, static_cast<Collider2D*>(&rectCollider)});
         }
         
         // Add polygon colliders to the combined list
         for (auto& item : polygonColliders) {
             Entity entity = item.id;
             PolygonCollider2D& polygonCollider = world.Get<PolygonCollider2D>(entity);
-            allColliders.push_back({entity, static_cast<Collider*>(&polygonCollider)});
+            allColliders.push_back({entity, static_cast<Collider2D*>(&polygonCollider)});
         }
         
         // Check each collider pair for collisions
         for (size_t i = 0; i < allColliders.size(); i++)
         {
             Entity entityA = allColliders[i].first;
-            Collider* colliderA = allColliders[i].second;
+            Collider2D* colliderA = allColliders[i].second;
             Transform& transformA = world.Get<Transform>(entityA);
             
             for (size_t j = i + 1; j < allColliders.size(); j++)
             {
                 Entity entityB = allColliders[j].first;
-                Collider* colliderB = allColliders[j].second;
+                Collider2D* colliderB = allColliders[j].second;
                 Transform& transformB = world.Get<Transform>(entityB);
                 
                 // Check if layers should collide
                 if (!collisionLayers.ShouldCollide(colliderA->layer, colliderB->layer))
                     continue;
                     
-                glm::vec3 collisionPoint, collisionNormal;
+                glm::vec2 collisionNormal;
+				std::vector<CollisionPoint> collisionPoint;
                 float penetrationDepth;
                 
                 // Check for collision
@@ -314,24 +426,24 @@ namespace ac
                     continue;
 
                 // Create collision data
-                CollisionData collisionData;
-                collisionData.entityA = entityA;
-                collisionData.entityB = entityB;
-                collisionData.collisionPoint = collisionPoint;
-                collisionData.collisionNormal = collisionNormal;
-                collisionData.penetrationDepth = penetrationDepth;
+                //CollisionData collisionData;
+                //collisionData.entityA = entityA;
+                //collisionData.entityB = entityB;
+                //collisionData.collisionPoint = {};
+                //collisionData.collisionNormal = collisionNormal;
+                //collisionData.penetrationDepth = penetrationDepth;
 
                 // If either collider is a trigger, send trigger event
                 if (colliderA->isTrigger || colliderB->isTrigger)
                 {
-                    OnTriggerEnter triggerEvent{ collisionData, world };
-                    eventManager.Invoke(triggerEvent, AllowToken<OnTriggerEnter>());
+                    //OnTriggerEnter triggerEvent{ collisionData, world };
+                    //eventManager.Invoke(triggerEvent, AllowToken<OnTriggerEnter>());
                 }
                 else
                 {
                     // Send collision event
-                    OnCollision collisionEvent{ collisionData, world };
-                    eventManager.Invoke(collisionEvent, AllowToken<OnCollision>());
+                    //OnCollision collisionEvent{ collisionData, world };
+                    //eventManager.Invoke(collisionEvent, AllowToken<OnCollision>());
 
                     // Collision resolution for RigidBody2D components
                     bool hasRbA = world.Has<RigidBody2D>(entityA);
@@ -346,139 +458,32 @@ namespace ac
                     // Skip if both are kinematic
                     if (rbA.isKinematic && rbB.isKinematic)
                         continue;
-
-                    // Get 2D vectors for calculations
-                    glm::vec2 normal2D(collisionNormal.x, collisionNormal.y);
-                    glm::vec2 collisionPoint2D(collisionPoint.x, collisionPoint.y);
-                    
-                    // Calculate relative positions of collision point
-                    glm::vec2 rA = collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y);
-                    glm::vec2 rB = collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y);
-                    
-                    // Calculate relative velocity at contact point
-                    glm::vec2 relativeVelocity = rbB.velocity + glm::vec2(-rbB.angularVelocity * rB.y, rbB.angularVelocity * rB.x) -
-                                               rbA.velocity - glm::vec2(-rbA.angularVelocity * rA.y, rbA.angularVelocity * rA.x);
-
-                    // Calculate velocity along normal
-                    float velocityAlongNormal = glm::dot(relativeVelocity, normal2D);
-                    
-                    // Only resolve if objects are moving toward each other
-                    if (velocityAlongNormal < 0)
+                    bool b = true;
+                    for (int t = 0; t < 10; ++t)
                     {
-                        // Calculate coefficient of restitution (bounciness)
-                        float e = std::min(rbA.restitution, rbB.restitution);
-
-                        // Calculate angular contribution to constraint
-                        // 2D cross product for rA.cross(normal) is (rA.x * normal.y - rA.y * normal.x)
-                        float rACrossN = rA.x * normal2D.y - rA.y * normal2D.x;
-                        float rBCrossN = rB.x * normal2D.y - rB.y * normal2D.x;
-                        
-                        // Calculate effective mass for constraint
-                        float inverseMassSum = rbA.inverseMass + rbB.inverseMass;
-                        
-						
-
-                        // Include rotational contribution in effective mass
-                        if (!rbA.freezeRotation)
-                            inverseMassSum += rACrossN * rACrossN * rbA.inverseMass / rbA.inertiaTensor;
-                        if (!rbB.freezeRotation)
-                            inverseMassSum += rBCrossN * rBCrossN * rbB.inverseMass / rbB.inertiaTensor;
-                        
-                        if (inverseMassSum <= 0)
-                            continue; // Avoid division by zero
-                        
-                        // Calculate impulse scalar using constraint
-                        float j = -(1.0f + e) * velocityAlongNormal / inverseMassSum;
-                        ACMSG("Collided");
-                        // Apply constraint impulse
-                        glm::vec2 impulse = normal2D * j;
-                        rbA.ApplyImpulseAtPosition(-impulse, collisionPoint2D - glm::vec2(transformA.position.x, transformA.position.y));
-						rbB.ApplyImpulseAtPosition(impulse, collisionPoint2D - glm::vec2(transformB.position.x, transformB.position.y));
-                        
-                        // Apply position correction (avoid sinking)
-                        const float percent = 0.2f; // penetration correction factor
-                        glm::vec2 correction = normal2D * (penetrationDepth / inverseMassSum) * percent;
-                        
-                        if (!rbA.isKinematic)
+                        for (const auto& point : collisionPoint)
                         {
-                            transformA.position.x -= correction.x * rbA.inverseMass;
-                            transformA.position.y -= correction.y * rbA.inverseMass;
+                            // Calculate impulse for collision response
+                            Solve(rbA, rbB, transformA, transformB, penetrationDepth, collisionNormal, point.rbA, b);
+                            SolveFriction(rbA, rbB, transformA, transformB, penetrationDepth, collisionNormal, point.rbA);
+                            b = false; // Only apply position correction once per collision
                         }
-
-                        if (!rbB.isKinematic)
-                        {
-                            transformB.position.x += correction.x * rbB.inverseMass;
-                            transformB.position.y += correction.y * rbB.inverseMass;
-                        }
-                        /*
-                        // Apply friction as a separate constraint
-                        float friction = (rbA.friction + rbB.friction) * 0.5f;
-                        
-                        if (friction > 0)
-                        {
-                            // Recalculate relative velocity after normal impulse
-                            relativeVelocity = rbB.velocity + glm::vec2(-rbB.angularVelocity * rB.y, rbB.angularVelocity * rB.x) -
-                                            rbA.velocity - glm::vec2(-rbA.angularVelocity * rA.y, rbA.angularVelocity * rA.x);
-                            
-                            // Calculate tangent vector (perpendicular to normal)
-                            glm::vec2 tangent = relativeVelocity - (glm::dot(relativeVelocity, normal2D) * normal2D);
-                            float tangentLength = glm::length(tangent);
-                            
-                            if (tangentLength > 0.0001f)
-                            {
-                                tangent = tangent / tangentLength;
-                                
-                                // Calculate angular contribution for friction constraint
-                                float rACrossT = rA.x * tangent.y - rA.y * tangent.x;
-                                float rBCrossT = rB.x * tangent.y - rB.y * tangent.x;
-                                
-                                // Calculate effective mass for friction constraint
-                                float frictionInverseMassSum = rbA.inverseMass + rbB.inverseMass;
-                                
-                                // Include rotational contribution in effective mass for friction
-                                if (!rbA.freezeRotation)
-                                    frictionInverseMassSum += rACrossT * rACrossT * rbA.inverseMass;
-                                if (!rbB.freezeRotation)
-                                    frictionInverseMassSum += rBCrossT * rBCrossT * rbB.inverseMass;
-                                
-                                // Calculate friction impulse
-                                float jt = -glm::dot(relativeVelocity, tangent) / frictionInverseMassSum;
-                                
-                                // Clamp friction to coulomb's law
-                                jt = glm::clamp(jt, -j * friction, j * friction);
-                                
-                                // Apply friction impulse
-                                glm::vec2 frictionImpulse = tangent * jt;
-                                
-                                if (!rbA.isKinematic)
-                                {
-                                    rbA.velocity -= frictionImpulse * rbA.inverseMass;
-                                    
-                                    if (!rbA.freezeRotation)
-                                    {
-                                        // Apply angular friction impulse
-                                        float angularFrictionImpulse = -rACrossT * jt * rbA.inverseMass;
-                                        rbA.angularVelocity += angularFrictionImpulse;
-                                    }
-                                }
-
-                                if (!rbB.isKinematic)
-                                {
-                                    rbB.velocity += frictionImpulse * rbB.inverseMass;
-                                    
-                                    if (!rbB.freezeRotation)
-                                    {
-                                        // Apply angular friction impulse
-                                        float angularFrictionImpulse = rBCrossT * jt * rbB.inverseMass;
-                                        rbB.angularVelocity += angularFrictionImpulse;
-                                    }
-                                }
-                            }
-                        }
-                        */
                     }
+                    
                 }
             }
         }
+    }
+    void PhysicsSystem::DebugPhysics(World& world)
+    {
+        float totMomentum = 0, totEnergy = 0;
+        world.View<RigidBody2D>().ForEach([&totMomentum, &totEnergy](Entity e, RigidBody2D& rb)
+            {
+                totMomentum += (rb.mass * glm::length(rb.velocity));
+                totMomentum += (abs(rb.angularVelocity) * rb.inertiaTensor);
+                
+            });
+        ACMSG("TotMomentum: " << totMomentum);
+        //ACMSG("TotEnergy: " << totEnergy);
     }
 }

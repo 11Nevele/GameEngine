@@ -17,6 +17,9 @@ namespace ac
         , freezeRotation(false)
         , inertiaTensor(1.0f)
     {
+        if(isKinematic)
+			inverseMass = 0.0f; // Kinematic bodies have no mass for physics
+
     }
 
     RigidBody2D::RigidBody2D(float _mass, float _restitution, float _friction, bool _useGravity, bool _isKinematic, bool _freezeRotation)
@@ -33,6 +36,9 @@ namespace ac
         , freezeRotation(_freezeRotation)
         , inertiaTensor(1.0f)
     {
+        if (isKinematic)
+            inverseMass = 0.0f; // Kinematic bodies have no mass for physics
+
     }
     
     RigidBody2D::RigidBody2D(float _mass)
@@ -49,6 +55,9 @@ namespace ac
         , freezeRotation(false)
         , inertiaTensor(1.0f)
     {
+        if (isKinematic)
+            inverseMass = 0.0f; // Kinematic bodies have no mass for physics
+
     }
     
     void RigidBody2D::ApplyForce(const glm::vec2& _force)

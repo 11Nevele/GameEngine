@@ -15,6 +15,7 @@
     <ClInclude Include="Achoium\Core\ECSEvents.h" />
     <ClInclude Include="Achoium\Core\World.hpp" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h" />
+    <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\RectCollider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\RigidBody2D.h" />
@@ -74,6 +75,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Physics\2D\Collider2D.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\RectCollider2D.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\RigidBody2D.cpp" />

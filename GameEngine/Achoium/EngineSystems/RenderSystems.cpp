@@ -47,8 +47,8 @@ namespace ac
 		ModelManager& modelManager = world.GetResourse<ModelManager>();
 		world.View<RectCollider2D, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, RectCollider2D& colli, Transform& trans)
 			{
-				glm::vec3 offset = (colli.offset - colli.halfSize) / colli.halfSize / 2.0f;
-				offset.z = 0;
+				glm::vec2 tmp = (colli.offset - colli.halfSize) / colli.halfSize / 2.0f;
+				glm::vec3 offset = glm::vec3(tmp,0);
 				Transform t = trans;
 				t.scale.x *= colli.halfSize.x * 2;
 				t.scale.y *= colli.halfSize.y * 2;

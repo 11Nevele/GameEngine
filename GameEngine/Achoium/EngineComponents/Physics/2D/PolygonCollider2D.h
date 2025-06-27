@@ -1,5 +1,5 @@
 #pragma once
-#include "../Collider.h"
+#include "Collider2D.h"
 #include <vector>
 
 namespace ac
@@ -10,7 +10,7 @@ namespace ac
      * PolygonCollider2D represents an arbitrary convex polygon collision shape
      * defined by a set of vertices. It operates in the XY plane with the Z component ignored.
      */
-    class PolygonCollider2D : public Collider
+    class PolygonCollider2D : public Collider2D
     {
     public:
         /**
@@ -33,7 +33,7 @@ namespace ac
          * @param _layer Collision layer this collider belongs to
          * @param _isTrigger Whether this collider is a trigger
          */
-        PolygonCollider2D(const std::vector<glm::vec2>& _vertices, const glm::vec3& _offset, uint32_t _layer = 0, bool _isTrigger = false);
+        PolygonCollider2D(const std::vector<glm::vec2>& _vertices, const glm::vec2& _offset, uint32_t _layer = 0, bool _isTrigger = false);
         
         /**
          * @brief Gets the local-space vertices of the polygon.
@@ -62,12 +62,12 @@ namespace ac
          * 
          * Checks for collision with another collider and outputs collision data.
          */
-        bool CheckCollision(
-            const Collider* other,
+        virtual bool CheckCollision(
+            const Collider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const override;
         
@@ -86,7 +86,7 @@ namespace ac
          * @param transform The polygon's transform
          * @return The penetration normal pointing out of the polygon
          */
-        glm::vec3 FindPenetrationNormal(const glm::vec2& point, const Transform& transform) const;
+        glm::vec2 FindPenetrationNormal(const glm::vec2& point, const Transform& transform) const;
         
         /**
          * @brief Calculates the minimum penetration axis and depth using SAT.
@@ -115,8 +115,8 @@ namespace ac
             const PolygonCollider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
 
@@ -128,9 +128,9 @@ namespace ac
         bool PolygonVsCircle(
             const class CircleCollider2D* circle,
             const Transform& myTransform,
-            const Transform& circleTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            const Transform& otherTransform,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
     };

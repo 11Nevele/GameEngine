@@ -12,6 +12,9 @@
 #include "InitEngine.h"
 
 #include "EngineSystems/RenderSystems.h"
+#include "EngineSystems/PhysicsSystem.h"
+#include "EngineSystems/TimeSystem.h"
+
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Sprite.h"
 #include "EngineComponents/Time.h"

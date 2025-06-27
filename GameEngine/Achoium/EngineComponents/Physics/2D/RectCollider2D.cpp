@@ -9,20 +9,20 @@
 namespace ac
 {
     RectCollider2D::RectCollider2D()
-        : Collider()
-        , halfSize(0.5f, 0.5f, 0.0f)
+        : Collider2D()
+        , halfSize(0.5f, 0.5f)
     {
     }
     
     RectCollider2D::RectCollider2D(float width, float height)
-        : Collider()
-        , halfSize(width * 0.5f, height * 0.5f, 0.0f)
+        : Collider2D()
+        , halfSize(width * 0.5f, height * 0.5f)
     {
     }
     
-    RectCollider2D::RectCollider2D(float width, float height, const glm::vec3& _offset, uint32_t _layer, bool _isTrigger)
-        : Collider(_layer)
-        , halfSize(width * 0.5f, height * 0.5f, 0.0f)
+    RectCollider2D::RectCollider2D(float width, float height, const glm::vec2& _offset, uint32_t _layer, bool _isTrigger)
+        : Collider2D(_layer)
+        , halfSize(width * 0.5f, height * 0.5f)
     {
         offset = _offset;
         isTrigger = _isTrigger;
@@ -51,7 +51,7 @@ namespace ac
         
         // Apply offset to model matrix
         if (glm::length2(offset) > 0.0001f) {
-            modelMatrix = glm::translate(modelMatrix, offset);
+            modelMatrix = glm::translate(modelMatrix, glm::vec3(offset,0));
         }
         
         for (size_t i = 0; i < 4; ++i)
@@ -65,11 +65,11 @@ namespace ac
     }
     
     bool RectCollider2D::CheckCollision(
-        const Collider* other,
+        const Collider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
@@ -77,17 +77,17 @@ namespace ac
         if (const RectCollider2D* otherRect = dynamic_cast<const RectCollider2D*>(other))
         {
             return RectVsRect(otherRect, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         else if (const CircleCollider2D* otherCircle = dynamic_cast<const CircleCollider2D*>(other))
         {
             return RectVsCircle(otherCircle, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         else if (const PolygonCollider2D* otherPolygon = dynamic_cast<const PolygonCollider2D*>(other))
         {
             return RectVsPolygon(otherPolygon, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         
         // Unsupported collider type
@@ -98,8 +98,8 @@ namespace ac
         const RectCollider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
@@ -254,7 +254,7 @@ namespace ac
             glm::vec2 edge = otherVertices[j] - otherVertices[i];
             glm::vec2 normal(-edge.y, edge.x);
             normal = glm::normalize(normal);
-            float myMnProjectionOnNormal = std::max(glm::dot(collisionNormal2D, myVertices[j]), glm::dot(collisionNormal2D, myVertices[i]));
+            float myMnProjectionOnNormal = std::min(glm::dot(collisionNormal2D, otherVertices[j]), glm::dot(collisionNormal2D, otherVertices[i]));
 
             // Reverse the normal since we need it pointing from B to A for comparison
             //normal = -normal;
@@ -283,7 +283,13 @@ namespace ac
         
         if(incidentFace.dot < referenceFace.dot)
 			std::swap(referenceFace, incidentFace);
-        
+        else if(abs(incidentFace.dot - referenceFace.dot) < 0.0001f) {
+            // If they are equal, we can just use the one with the smaller start point
+            if (glm::length2(incidentFace.startPoint - incidentFace.endPoint) >
+                glm::length2(referenceFace.startPoint - referenceFace.endPoint)) {
+                std::swap(referenceFace, incidentFace);
+            }
+		}
         // Clipping
         // Reference edge vector
         glm::vec2 refEdge = referenceFace.endPoint - referenceFace.startPoint;
@@ -296,13 +302,25 @@ namespace ac
         
         // Position relative to reference face start
         float offset1 = glm::dot(refFaceNormal, referenceFace.startPoint);
-        float offset2 = glm::dot(refFaceNormal, referenceFace.endPoint);
+        float offset2 = glm::dot(refEdge, referenceFace.startPoint);
+        float offset3 = glm::dot(-refEdge, referenceFace.endPoint);
         
         // Clip incident face to reference face side planes
         // Side 1
         std::vector<glm::vec2> clippedPoints;
         ClipSegmentToLine(incidentFace.startPoint, incidentFace.endPoint, refFaceNormal, offset1, clippedPoints);
-        
+        if (clippedPoints.size() > 1)
+        {
+            glm::vec2 v1 = clippedPoints[0], v2 = clippedPoints[1];
+            clippedPoints.clear();
+            ClipSegmentToLine(v1, v2, refEdge, offset2, clippedPoints);
+        }
+        if (clippedPoints.size() > 1)
+        {
+            glm::vec2 v1 = clippedPoints[0], v2 = clippedPoints[1];
+            clippedPoints.clear();
+            ClipSegmentToLine(v1, v2, -refEdge, offset3, clippedPoints);
+        }
 
         
         if (clippedPoints.empty()) {
@@ -319,15 +337,15 @@ namespace ac
             }
             otherCenter /= static_cast<float>(otherVertices.size());
             
-            collisionPoint = (myCenter + otherCenter) * 0.5f;
+            glm::vec2 p = (myCenter + otherCenter) * 0.5f;
+            collisionPoints.push_back({ p,p });
         } else {
-            // Average the contact points
-            glm::vec2 avgContactPoint(0.0f);
-            for (const auto& point : clippedPoints) {
-                avgContactPoint += point;
-            }
-            avgContactPoint /= static_cast<float>(clippedPoints.size());
-            collisionPoint = glm::vec3(avgContactPoint.x, avgContactPoint.y, 0.0f);
+			glm::vec2 averagePoint(0.0f);
+            for(const auto& point : clippedPoints) {
+				averagePoint += point;
+			}
+			averagePoint /= static_cast<float>(clippedPoints.size());
+			collisionPoints.push_back({ averagePoint, averagePoint });
         }
         
         return true;
@@ -337,24 +355,24 @@ namespace ac
         const CircleCollider2D* circle,
         const Transform& myTransform,
         const Transform& circleTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
         // Get world positions
-        glm::vec3 rectCenter = GetWorldPosition(myTransform);
-        glm::vec3 circleCenter = circle->GetWorldPosition(circleTransform);
+        glm::vec2 rectCenter = GetWorldPosition(myTransform);
+        glm::vec2 circleCenter = circle->GetWorldPosition(circleTransform);
         
         // Convert circle center to rectangle's local space
         // We need to invert the transform to get from world to local space
         glm::mat4 rectModelMatrix = myTransform.asMat4();
         if (glm::length2(offset) > 0.0001f) {
-            rectModelMatrix = glm::translate(rectModelMatrix, offset);
+            rectModelMatrix = glm::translate(rectModelMatrix, glm::vec3(offset,0));
         }
         
         glm::mat4 rectWorldToLocal = glm::inverse(rectModelMatrix);
-        glm::vec4 circleCenterLocal = rectWorldToLocal * glm::vec4(circleCenter, 1.0f);
+        glm::vec4 circleCenterLocal = rectWorldToLocal * glm::vec4(circleCenter, 0.0f, 1.0f);
         
         // Find the closest point on the rectangle to the circle center
         glm::vec3 closestPoint;
@@ -418,7 +436,7 @@ namespace ac
             penetrationDepth = minPenetration + circle->radius;
             
             // Set collision point at circle center
-            collisionPoint = circleCenter;
+            //collisionPoint = circleCenter;
         }
         else
         {
@@ -428,7 +446,7 @@ namespace ac
             collisionNormal = glm::normalize(glm::vec3(worldNormal));
             
             // Set collision point at the closest point on the rectangle
-            collisionPoint = glm::vec3(closestPointWorld);
+            //collisionPoint = glm::vec3(closestPointWorld);
             
             // Calculate penetration depth
             penetrationDepth = circle->radius - distance;
@@ -441,8 +459,8 @@ namespace ac
         const PolygonCollider2D* polygon,
         const Transform& myTransform,
         const Transform& polygonTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
@@ -604,7 +622,7 @@ namespace ac
         glm::vec2 polyCenter = std::accumulate(polyVertices.begin(), polyVertices.end(), glm::vec2(0.0f)) / 
                                static_cast<float>(polyVertices.size());
         
-        collisionPoint = glm::vec3((rectCenter + polyCenter) * 0.5f, 0.0f);
+        //collisionPoint = glm::vec3((rectCenter + polyCenter) * 0.5f, 0.0f);
         
         return true;
     }
@@ -633,16 +651,16 @@ namespace ac
         // If only first point is behind the line, keep first and compute intersection
         if (distance1 >= 0.0f && distance2 < 0.0f) {
             outPoints.push_back(v1);
-            //float t = distance1 / (distance1 - distance2);
-            //outPoints.push_back(v1 + t * (v2 - v1));
+            float t = distance1 / (distance1 - distance2);
+            outPoints.push_back(v1 + t * (v2 - v1));
             return;
         }
         
         // If only second point is behind the line, keep second and compute intersection
         if (distance1 < 0.0f && distance2 >= 0.0f) {
-            //float t = distance1 / (distance1 - distance2);
-            //outPoints.push_back(v1 + t * (v2 - v1));
+            float t = distance1 / (distance1 - distance2);
             outPoints.push_back(v2);
+            outPoints.push_back(v1 + t * (v2 - v1));
             return;
         }
         

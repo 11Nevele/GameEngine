@@ -15,3 +15,5 @@
 
 // Include collision system resources
 #include "CollisionLayer.h"
+
+#include "2D/Collider2D.h"

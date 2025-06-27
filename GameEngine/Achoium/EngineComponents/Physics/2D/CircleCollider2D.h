@@ -1,5 +1,5 @@
 #pragma once
-#include "../Collider.h"
+#include "Collider2D.h"
 
 namespace ac
 {
@@ -9,7 +9,7 @@ namespace ac
      * CircleCollider2D represents a circular collision shape defined by its radius.
      * It operates in the XY plane with the Z component ignored.
      */
-    class CircleCollider2D : public Collider
+    class CircleCollider2D : public Collider2D
     {
     public:
         float radius; ///< Radius of the circle
@@ -34,19 +34,19 @@ namespace ac
          * @param _layer Collision layer this collider belongs to
          * @param _isTrigger Whether this collider is a trigger
          */
-        CircleCollider2D(float _radius, const glm::vec3& _offset, uint32_t _layer = 0, bool _isTrigger = false);
+        CircleCollider2D(float _radius, const glm::vec2& _offset, uint32_t _layer = 0, bool _isTrigger = false);
 
         /**
          * @brief Implements collision detection for this circle collider.
          * 
          * Checks for collision with another collider and outputs collision data.
          */
-        bool CheckCollision(
-            const Collider* other,
+        virtual bool CheckCollision(
+            const Collider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const override;
 
@@ -58,8 +58,8 @@ namespace ac
             const CircleCollider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
 
@@ -69,9 +69,9 @@ namespace ac
         bool CircleVsRect(
             const class RectCollider2D* rect,
             const Transform& myTransform,
-            const Transform& rectTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            const Transform& otherTransform,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
         
@@ -81,9 +81,9 @@ namespace ac
         bool CircleVsPolygon(
             const class PolygonCollider2D* polygon,
             const Transform& myTransform,
-            const Transform& polygonTransform,
-            glm::vec3& collisionPoint,
-            glm::vec3& collisionNormal,
+            const Transform& otherTransform,
+            std::vector<CollisionPoint>& collisionPoints,
+            glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
     };

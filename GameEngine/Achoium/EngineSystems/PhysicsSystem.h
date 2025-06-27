@@ -38,6 +38,8 @@ namespace ac
          * @brief System that performs 2D collision detection and resolution.
          */
         static void Collision2DSystem(World& world);
+
+        static void DebugPhysics(World& world);
     };
 
     /**

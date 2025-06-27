@@ -9,7 +9,7 @@
 namespace ac
 {
     PolygonCollider2D::PolygonCollider2D()
-        : Collider()
+        : Collider2D()
     {
         // Create a default triangle
         m_vertices.push_back(glm::vec2(-0.5f, -0.5f));
@@ -18,7 +18,7 @@ namespace ac
     }
     
     PolygonCollider2D::PolygonCollider2D(const std::vector<glm::vec2>& _vertices)
-        : Collider()
+        : Collider2D()
         , m_vertices(_vertices)
     {
         // Ensure we have at least 3 vertices for a valid polygon
@@ -32,8 +32,8 @@ namespace ac
         }
     }
     
-    PolygonCollider2D::PolygonCollider2D(const std::vector<glm::vec2>& _vertices, const glm::vec3& _offset, uint32_t _layer, bool _isTrigger)
-        : Collider(_layer)
+    PolygonCollider2D::PolygonCollider2D(const std::vector<glm::vec2>& _vertices, const glm::vec2& _offset, uint32_t _layer, bool _isTrigger)
+        : Collider2D(_layer)
         , m_vertices(_vertices)
     {
         offset = _offset;
@@ -80,11 +80,11 @@ namespace ac
     }
     
     bool PolygonCollider2D::CheckCollision(
-        const Collider* other,
+        const Collider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
@@ -92,12 +92,12 @@ namespace ac
         if (const PolygonCollider2D* otherPolygon = dynamic_cast<const PolygonCollider2D*>(other))
         {
             return PolygonVsPolygon(otherPolygon, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         else if (const CircleCollider2D* otherCircle = dynamic_cast<const CircleCollider2D*>(other))
         {
             return PolygonVsCircle(otherCircle, myTransform, otherTransform, 
-                collisionPoint, collisionNormal, penetrationDepth);
+                collisionPoints, collisionNormal, penetrationDepth);
         }
         
         // Unsupported collider type
@@ -150,7 +150,7 @@ namespace ac
         return closestPoint;
     }
     
-    glm::vec3 PolygonCollider2D::FindPenetrationNormal(const glm::vec2& point, const Transform& transform) const
+    glm::vec2 PolygonCollider2D::FindPenetrationNormal(const glm::vec2& point, const Transform& transform) const
     {
         // Get edges in local space
         std::vector<glm::vec2> edges = GetEdges();
@@ -266,8 +266,8 @@ namespace ac
         const PolygonCollider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
@@ -333,7 +333,6 @@ namespace ac
         glm::vec2 center2 = std::accumulate(otherVerticesWorld.begin(), otherVerticesWorld.end(), glm::vec2(0.0f)) 
                             / static_cast<float>(otherVerticesWorld.size());
         
-        collisionPoint = glm::vec3((center1 + center2) * 0.5f, 0.0f);
         
         return true;
     }
@@ -341,15 +340,15 @@ namespace ac
     bool PolygonCollider2D::PolygonVsCircle(
         const CircleCollider2D* circle,
         const Transform& myTransform,
-        const Transform& circleTransform,
-        glm::vec3& collisionPoint,
-        glm::vec3& collisionNormal,
+        const Transform& otherTransform,
+        std::vector<CollisionPoint>& collisionPoints,
+        glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
         // Delegate to the circle's implementation but flip the normal
-        bool result = circle->CircleVsPolygon(this, circleTransform, myTransform,
-                                            collisionPoint, collisionNormal, penetrationDepth);
+        bool result = circle->CircleVsPolygon(this, otherTransform, myTransform,
+                                            collisionPoints, collisionNormal, penetrationDepth);
         
         if (result)
         {

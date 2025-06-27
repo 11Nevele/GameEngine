@@ -206,6 +206,38 @@ void PlayerControl(ac::World& world)
 	}
 }
 
+void RandomBlockGenerator(World& world)
+{
+	WindowsInput& input = world.GetResourse<WindowsInput>();
+	mWindow& win = world.GetResourse<mWindow>();
+	static bool pressed = false;
+	if (input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1, win) && pressed == false)
+	{
+		pressed = true;
+		//randomly generate width height and angular  velocity
+		float width = rand() % 100 + 50; // Width between 50 and 150
+		float height = rand() % 100 + 50; // Height between 50 and 150
+		float angularVelocity = (rand() % 100 - 50) / 10.0f; // Angular velocity between -5 and 5
+		float mass = width * height * 0.01f;
+		float v = rand() % 200 + 100;
+
+
+		glm::vec2 mousePos = input.GetMousePosition(win);
+		mousePos.y = 720 - mousePos.y; // Invert Y coordinate for OpenGL
+		Entity block = world.CreateEntity();
+		world.Add<Transform>(block, Transform());
+		world.Get<Transform>(block).position = { mousePos.x, mousePos.y, 0 };
+		world.Add<RigidBody2D>(block, RigidBody2D(mass, 0, 0.01, true, false, false));
+		world.Add<RectCollider2D>(block, RectCollider2D(width, height));
+		world.Get<RectCollider2D>(block).offset = glm::vec3(0, 0, 0);
+		world.Get<RigidBody2D>(block).inertiaTensor = mass * (float)(width * width + height * height) / 12.0;
+		//world.Get<RigidBody2D>(block).angularVelocity = angularVelocity;
+		//world.Get<RigidBody2D>(block).velocity.y = v;
+	}
+	if (!input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1, win))
+		pressed = false;
+}
+
 
 int main()
 {
@@ -216,6 +248,7 @@ int main()
 	InitEngine(world);
 
 	Entity ground = world.CreateEntity();
+	Entity ground1 = world.CreateEntity();
 	Entity obj1 = world.CreateEntity();
 	Entity obj2 = world.CreateEntity();
 	Entity camera = world.CreateEntity();
@@ -224,32 +257,44 @@ int main()
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0 };
 
-	world.Add<Transform>(ground, Transform());
-	world.Get<Transform>(ground).scale.x = 10;
-	world.Add<RigidBody2D>(ground, RigidBody2D(1,0,0.5, false, true, true));
-	world.Add<RectCollider2D>(ground, RectCollider2D(10000, 100));
-	world.Get<RectCollider2D>(ground).offset = glm::vec3(0,0,0);
-	world.Get<Transform>(ground).RotateZ(0);
-
-	world.Add<Transform>(obj1, Transform());
-	world.Get<Transform>(obj1).position = {500, 600, 0};
-	world.Get<Transform>(obj1).RotateZ(-30);
-	world.Add<RigidBody2D>(obj1, RigidBody2D(1, 0, 0, true, false, false));
+	/*world.Add<Transform>(obj1, Transform());
+	world.Get<Transform>(obj1).position = { 500, 600, 0 };
+	world.Get<Transform>(obj1).RotateZ(0);
+	world.Add<RigidBody2D>(obj1, RigidBody2D(1, 1, 0, true, false, false));
 	world.Add<RectCollider2D>(obj1, RectCollider2D(45, 30));
 	world.Get<RectCollider2D>(obj1).offset = glm::vec3(0, 0, 0);
 	world.Get<RigidBody2D>(obj1).inertiaTensor = (45.0 * 45.0 + 900.0) / 12.0;
+	world.Get<RigidBody2D>(obj1).velocity = { 0, -50};
 
 	world.Add<Transform>(obj2, Transform());
 	world.Get<Transform>(obj2).position = { 500,400,0 };
-	world.Get<Transform>(obj2).RotateZ(30);
+	world.Get<Transform>(obj2).RotateZ(0);
 	world.Add<RigidBody2D>(obj2, RigidBody2D(1, 0, 0.5, true, false, false));
 	world.Add<RectCollider2D>(obj2, RectCollider2D(100, 50));
 	world.Get<RectCollider2D>(obj2).offset = glm::vec3(0, 0, 0);
-	world.Get<RigidBody2D>(obj2).inertiaTensor = 12500/12.0;
+	world.Get<RigidBody2D>(obj2).inertiaTensor = 12500 / 12.0;
 	world.Add<PlayerMovement>(obj2, PlayerMovement());
-	//world.Get<RigidBody2D>(obj2).angularVelocity = 1.1;
+	world.Get<RigidBody2D>(obj2).angularVelocity = 1.1;
+	world.Get<RigidBody2D>(obj2).velocity = { 0, -75 };*/
 
+	world.Add<Transform>(ground, Transform());
+	world.Get<Transform>(ground).scale.x = 10;
+	world.Add<RigidBody2D>(ground, RigidBody2D(1,1,0.0, false, true, true));
+	world.Add<RectCollider2D>(ground, RectCollider2D(10000, 100));
+	world.Get<RectCollider2D>(ground).offset = glm::vec3(0,0,0);
+	world.Get<Transform>(ground).RotateZ(45);
+	world.Get<RigidBody2D>(ground).inertiaTensor = 100010000 / 12.0;
 
+	world.Add<Transform>(ground1, Transform());
+	world.Get<Transform>(ground1).scale.x = 10;
+	world.Get<Transform>(ground1).position = {0,720,0};
+	world.Add<RigidBody2D>(ground1, RigidBody2D(1, 1, 0, false, true, true));
+	world.Add<RectCollider2D>(ground1, RectCollider2D(10000, 100));
+	world.Get<RectCollider2D>(ground1).offset = glm::vec3(0, 0, 0);
+	world.Get<Transform>(ground1).RotateZ(0);
+	world.Get<RigidBody2D>(ground1).inertiaTensor = 100010000 / 12.0;
+
+	world.AddPostUpdateSystem(PhysicsSystem::DebugPhysics, 9);
 	//world.Add<Sprite>(ground, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 	//world.Add<Sprite>(obj1, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 	//world.Add<Sprite>(obj2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
@@ -259,7 +304,8 @@ int main()
 	{
 		mWindow& win = world.GetResourse<mWindow>();
 		CameraMovement(world);
-		PlayerControl(world);
+		//PlayerControl(world);
+		RandomBlockGenerator(world);
 		world.Update();
 
 		win.OnUpdate();
