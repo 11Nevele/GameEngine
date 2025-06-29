@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include "Render/VertexArray.h"
 #include "Render/Shader.h"
+#include "Math/Transform.h"
 namespace ac
 {
 	class Renderer
@@ -16,6 +17,8 @@ namespace ac
 		virtual void EndScene() = 0;
 
 		virtual void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) = 0;
+
+		virtual void SubmitCircle(VertexArray* vertexArray, float radius, Transform transform) = 0;
 
 		virtual void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) = 0;
 

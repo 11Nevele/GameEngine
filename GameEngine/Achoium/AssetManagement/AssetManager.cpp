@@ -148,6 +148,7 @@ ModelManager::ModelManager()
 		{ 0, 1, 2,  
 		2, 3, 0 }), 6)));  
 	modelList.emplace_back(std::move(vao));
+	
 	referenceCount.emplace_back(0);
 }  
 

@@ -7,6 +7,7 @@ namespace ac
 	bool OnSpriteAdded(const OnAdded<Sprite>& event);
 	bool OnSpriteDelete(const OnDeleted<Sprite>& event);
 	void RenderSprite(World& world);
+	void RenderCircle(World& world);
 	void RenderCollider(World& world);
 
 }

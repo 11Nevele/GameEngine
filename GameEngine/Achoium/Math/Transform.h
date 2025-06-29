@@ -32,6 +32,8 @@ namespace ac
 		 * @return glm::mat4 A 4x4 transformation matrix
 		 */
 		glm::mat4 asMat4(bool invPosition = false) const;
+
+		glm::vec3 getRotationAsDegrees()const;
 		
 		/**
 		 * @brief Rotates around an arbitrary axis.

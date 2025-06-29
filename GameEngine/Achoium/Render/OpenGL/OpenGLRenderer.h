@@ -66,7 +66,7 @@ namespace ac
 
 		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
 
-
+		void SubmitCircle(VertexArray* vertexArray, float radius, Transform transform) override;
 		/**
 		 * @brief Updates the camera view for rendering.
 		 * 
@@ -84,6 +84,8 @@ namespace ac
 		 */
 		Shader* shader2D;
 		Shader* shaderDebug;
+
+		Shader* circleShader;
 
 		struct SceneData
 		{

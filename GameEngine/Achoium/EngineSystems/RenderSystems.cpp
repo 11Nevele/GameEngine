@@ -40,6 +40,17 @@ namespace ac
 				renderer.Submit(&(vao), t.asMat4());
 			});
 	}
+	void RenderCircle(World& world)
+	{
+		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+		TextureManager& textureManager = world.GetResourse<TextureManager>();
+		ModelManager& modelManager = world.GetResourse<ModelManager>();
+		float radius = 250;
+		static Transform t;
+		t.position.x += 1;
+		t.RotateZ(0.1);
+		renderer.SubmitCircle(&modelManager.GetModel(0), radius, t);
+	}
 	void RenderCollider(World& world)
 	{
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();

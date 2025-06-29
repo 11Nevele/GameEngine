@@ -28,7 +28,12 @@ namespace ac
        }  
 
        return transform;  
-   }  
+   }
+
+   glm::vec3 Transform::getRotationAsDegrees() const
+   {
+       return glm::eulerAngles(rotation);
+   }
 
    /// Default constructor for the Transform class.  
    /// Initializes position, rotation, and scale to their default values.  

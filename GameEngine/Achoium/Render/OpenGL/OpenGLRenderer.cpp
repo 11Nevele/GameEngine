@@ -14,7 +14,11 @@ namespace ac
 		shaderDebug = new OpenGLShader("name",
 			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugVertexShader.txt"),
 			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugFragmentShader.txt"));
-
+		circleShader = new OpenGLShader("circleShader",
+			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/CircleShaderVertex.glsl"),
+			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/CircleShaderFragment.glsl"));
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
 	}
 	/// Initializes the OpenGL renderer.  
 /// Enables depth testing for proper rendering of 3D objects.  
@@ -112,6 +116,39 @@ void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& tran
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void OpenGLRenderer::SubmitCircle(VertexArray* vertexArray, float radius, Transform transform)
+{
+	glm::mat4 projection = glm::ortho(
+		0.0f, 1280.0f,        // Left, Right  
+		0.0f, 720.0f          // Bottom, Top  
+	);
+
+	radius *= transform.scale.x;
+	transform.scale = { radius * 2, radius * 2, radius * 2 };
+
+	glm::mat4 transMat = transform.asMat4();
+
+	// Bind the shader program  
+	circleShader->Bind();
+
+	// Upload the transformation matrix and view-projection matrix to the shader  
+	circleShader->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+	circleShader->SetMat4("u_Transform", transMat * glm::translate(glm::mat4(1), glm::vec3(-0.5, -0.5, 0)));
+	circleShader->SetMat4("projection", projection);
+
+	glm::vec4 center = s_SceneData.ViewProjectionMatrix * glm::vec4(transform.position,1);
+	
+	circleShader->SetFloat2("u_Center", center);
+	circleShader->SetFloat4("u_Color", glm::vec4(1, 0, 0, 1));
+	circleShader->SetFloat("u_Radius", radius);
+	circleShader->SetFloat("u_Thickness", 1);
+	circleShader->SetFloat("u_rotation", transform.getRotationAsDegrees().z);
+
+	vertexArray->Bind();
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 /// Updates the camera's view-projection matrix.  

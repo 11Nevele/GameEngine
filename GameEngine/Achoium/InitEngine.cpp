@@ -20,6 +20,7 @@ namespace ac
 	//Do not change things unless you truely know what you are doing
 	void InitEngine(World& world)
 	{
+
 		world.RegisterType<Sprite>();
 		world.RegisterType<Transform>();
 		world.RegisterType<Collider>();
@@ -55,6 +56,7 @@ namespace ac
 		world.AddUpdateSystem(PhysicsSystem::PhysicsStep, 1); // Run physics step early in update
 		world.AddUpdateSystem(PhysicsSystem::CollisionSystem, 2); // Run collision detection after physics update
 		
+		world.AddPostUpdateSystem(RenderCircle, 1);
 		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
 		world.AddPostUpdateSystem(PhysicsSystem::Collision2DSystem, 2); // Run collision detection after physics update
 		world.AddPostUpdateSystem(RenderSprite, 9);
