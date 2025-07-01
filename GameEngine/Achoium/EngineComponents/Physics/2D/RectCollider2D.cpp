@@ -68,7 +68,7 @@ namespace ac
         const Collider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
@@ -98,7 +98,7 @@ namespace ac
         const RectCollider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
@@ -355,7 +355,7 @@ namespace ac
         const CircleCollider2D* circle,
         const Transform& myTransform,
         const Transform& circleTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
@@ -436,7 +436,7 @@ namespace ac
             penetrationDepth = minPenetration + circle->radius;
             
             // Set collision point at circle center
-            //collisionPoint = circleCenter;
+            collisionPoints.push_back({ closestPointWorld, circleCenter });
         }
         else
         {
@@ -446,7 +446,7 @@ namespace ac
             collisionNormal = glm::normalize(glm::vec3(worldNormal));
             
             // Set collision point at the closest point on the rectangle
-            //collisionPoint = glm::vec3(closestPointWorld);
+            collisionPoints.push_back({ closestPointWorld, circleCenter + -collisionNormal * circle->radius });
             
             // Calculate penetration depth
             penetrationDepth = circle->radius - distance;
@@ -459,7 +459,7 @@ namespace ac
         const PolygonCollider2D* polygon,
         const Transform& myTransform,
         const Transform& polygonTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const

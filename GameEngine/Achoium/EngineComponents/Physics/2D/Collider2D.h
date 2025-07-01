@@ -4,10 +4,10 @@
 
 namespace ac
 {
-    struct CollisionPoint
+    struct CollisionPoint2D
     {
-		glm::vec2 rbA; ///< Point on rigidbody A
-		glm::vec2 rbB; ///< Point on rigidbody B
+        glm::vec2 rbA{ 0,0 }; ///< Point on rigidbody A
+        glm::vec2 rbB{ 0,0 }; ///< Point on rigidbody B
     };
 
     // Forward declaration of Transform
@@ -66,7 +66,7 @@ namespace ac
             const Collider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const = 0;

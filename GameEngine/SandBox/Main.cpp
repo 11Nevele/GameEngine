@@ -227,17 +227,47 @@ void RandomBlockGenerator(World& world)
 		Entity block = world.CreateEntity();
 		world.Add<Transform>(block, Transform());
 		world.Get<Transform>(block).position = { mousePos.x, mousePos.y, 0 };
-		world.Add<RigidBody2D>(block, RigidBody2D(mass, 0, 0.01, true, false, false));
+		world.Add<RigidBody2D>(block, RigidBody2D(mass, 0, 0.1, true, false, false));
 		world.Add<RectCollider2D>(block, RectCollider2D(width, height));
 		world.Get<RectCollider2D>(block).offset = glm::vec3(0, 0, 0);
 		world.Get<RigidBody2D>(block).inertiaTensor = mass * (float)(width * width + height * height) / 12.0;
-		//world.Get<RigidBody2D>(block).angularVelocity = angularVelocity;
+		world.Get<RigidBody2D>(block).angularVelocity = angularVelocity;
 		//world.Get<RigidBody2D>(block).velocity.y = v;
 	}
 	if (!input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_1, win))
 		pressed = false;
 }
 
+void RandomCircleGenerator(World& world)
+{
+	WindowsInput& input = world.GetResourse<WindowsInput>();
+	mWindow& win = world.GetResourse<mWindow>();
+	static bool pressed = false;
+	if (input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_2, win) && pressed == false)
+	{
+		pressed = true;
+		//randomly generate width height and angular  velocity
+		float radius = rand() % 100 + 50; // Width between 50 and 150
+		float angularVelocity = 0.0f; // Angular velocity between -5 and 5
+		float mass = radius * radius * 0.01f;
+		float v = rand() % 200 + 100;
+
+
+		glm::vec2 mousePos = input.GetMousePosition(win);
+		mousePos.y = 720 - mousePos.y; // Invert Y coordinate for OpenGL
+		Entity block = world.CreateEntity();
+		world.Add<Transform>(block, Transform());
+		world.Get<Transform>(block).position = { mousePos.x, mousePos.y, 0 };
+		world.Add<RigidBody2D>(block, RigidBody2D(mass, 0.5, 0.1, true, false, false));
+		world.Add<CircleCollider2D>(block, CircleCollider2D(radius));
+		world.Get<CircleCollider2D>(block).offset = glm::vec3(0, 0, 0);
+		world.Get<RigidBody2D>(block).inertiaTensor = mass * std::pow(radius, 2);
+		world.Get<RigidBody2D>(block).angularVelocity = angularVelocity;
+		//world.Get<RigidBody2D>(block).velocity.y = v;
+	}
+	if (!input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_2, win))
+		pressed = false;
+}
 
 int main()
 {
@@ -282,7 +312,7 @@ int main()
 	world.Add<RigidBody2D>(ground, RigidBody2D(1,1,0.0, false, true, true));
 	world.Add<RectCollider2D>(ground, RectCollider2D(10000, 100));
 	world.Get<RectCollider2D>(ground).offset = glm::vec3(0,0,0);
-	world.Get<Transform>(ground).RotateZ(45);
+	world.Get<Transform>(ground).RotateZ(10);
 	world.Get<RigidBody2D>(ground).inertiaTensor = 100010000 / 12.0;
 
 	world.Add<Transform>(ground1, Transform());
@@ -299,13 +329,16 @@ int main()
 	//world.Add<Sprite>(obj1, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 	//world.Add<Sprite>(obj2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 
+	world.AddUpdateSystem(CameraMovement, 0);
+	world.AddUpdateSystem(RandomBlockGenerator, 0);
+	world.AddPostUpdateSystem(RandomCircleGenerator, 0);
+	
+
 	world.AddPostUpdateSystem(RenderCollider, 9);
 	while (true)
 	{
 		mWindow& win = world.GetResourse<mWindow>();
-		CameraMovement(world);
-		//PlayerControl(world);
-		RandomBlockGenerator(world);
+		
 		world.Update();
 
 

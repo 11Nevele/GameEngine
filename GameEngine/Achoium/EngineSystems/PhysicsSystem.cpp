@@ -7,7 +7,7 @@
 #include "Debug.h"
 namespace ac
 {
-    constexpr glm::vec3 gravity(0.0f, -9.81f, 0.0f);
+    constexpr glm::vec3 gravity(0.0f, -98.1, 0.0f);
     
     void PhysicsSystem::PhysicsStep(World& world)
     {
@@ -62,7 +62,7 @@ namespace ac
             // Apply gravity (in 2D, gravity is typically just in y direction)
             if (rb.useGravity)
             {
-                rb.force.y -= 9.81f * rb.mass; // Standard gravity
+                rb.force += glm::vec2(gravity.x, gravity.y) * rb.mass; // Standard gravity
             }
 
             // Update velocity with forces (F = ma, so a = F/m)
@@ -138,10 +138,10 @@ namespace ac
                     continue;
 
                 // Create collision data
-                CollisionData collisionData;
+                CollisionData2D collisionData;
                 collisionData.entityA = entityA;
                 collisionData.entityB = entityB;
-                collisionData.collisionPoint = collisionPoint;
+                //collisionData.collisionPoint = collisionPoint;
                 collisionData.collisionNormal = collisionNormal;
                 collisionData.penetrationDepth = penetrationDepth;
 
@@ -417,7 +417,7 @@ namespace ac
                     continue;
                     
                 glm::vec2 collisionNormal;
-				std::vector<CollisionPoint> collisionPoint;
+				std::vector<CollisionPoint2D> collisionPoint;
                 float penetrationDepth;
                 
                 // Check for collision
@@ -426,24 +426,28 @@ namespace ac
                     continue;
 
                 // Create collision data
-                //CollisionData collisionData;
-                //collisionData.entityA = entityA;
-                //collisionData.entityB = entityB;
-                //collisionData.collisionPoint = {};
-                //collisionData.collisionNormal = collisionNormal;
-                //collisionData.penetrationDepth = penetrationDepth;
+                CollisionData2D collisionData;
+                collisionData.entityA = entityA;
+                collisionData.entityB = entityB;
+                collisionData.collisionNormal = collisionNormal;
+                collisionData.penetrationDepth = penetrationDepth;
+                collisionData.collisionPointCnt = collisionPoint.size();
+                if (collisionData.collisionPointCnt > 0)
+                    collisionData.collisionPoint1 = collisionPoint[0];
+                if (collisionData.collisionPointCnt > 1)
+                    collisionData.collisionPoint2 = collisionPoint[1];
 
                 // If either collider is a trigger, send trigger event
                 if (colliderA->isTrigger || colliderB->isTrigger)
                 {
-                    //OnTriggerEnter triggerEvent{ collisionData, world };
-                    //eventManager.Invoke(triggerEvent, AllowToken<OnTriggerEnter>());
+                    OnTriggerEnter triggerEvent{ collisionData, world };
+                    eventManager.Invoke(triggerEvent, AllowToken<OnTriggerEnter>());
                 }
                 else
                 {
                     // Send collision event
-                    //OnCollision collisionEvent{ collisionData, world };
-                    //eventManager.Invoke(collisionEvent, AllowToken<OnCollision>());
+                    OnCollision collisionEvent{ collisionData, world };
+                    eventManager.Invoke(collisionEvent, AllowToken<OnCollision>());
 
                     // Collision resolution for RigidBody2D components
                     bool hasRbA = world.Has<RigidBody2D>(entityA);
@@ -459,8 +463,6 @@ namespace ac
                     if (rbA.isKinematic && rbB.isKinematic)
                         continue;
                     bool b = true;
-                    for (int t = 0; t < 10; ++t)
-                    {
                         for (const auto& point : collisionPoint)
                         {
                             // Calculate impulse for collision response
@@ -468,7 +470,6 @@ namespace ac
                             SolveFriction(rbA, rbB, transformA, transformB, penetrationDepth, collisionNormal, point.rbA);
                             b = false; // Only apply position correction once per collision
                         }
-                    }
                     
                 }
             }

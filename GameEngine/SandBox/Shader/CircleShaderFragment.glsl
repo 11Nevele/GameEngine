@@ -33,5 +33,5 @@ void main()
 
     //s = 1;
     // gl_FragColor的取值可能为vec4(0., 0., 0., 1.)或vec4(1.,1.,1.,1.)
-    gl_FragColor=vec4(s,s,s , 1);
+    gl_FragColor=vec4(u_Color.rgb, s);
 }

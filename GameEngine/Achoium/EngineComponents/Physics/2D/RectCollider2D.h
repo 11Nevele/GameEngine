@@ -3,6 +3,9 @@
 
 namespace ac
 {
+    class PolygonCollider2D;
+    class CircleCollider2D;
+    class RectCollider2D;
     /**
      * @brief 2D rectangle collision shape.
      * 
@@ -12,6 +15,8 @@ namespace ac
     class RectCollider2D : public Collider2D
     {
     public:
+        friend class PolygonCollider2D;
+        friend class CircleCollider2D;
         glm::vec2 halfSize; ///< Half-extents of the rectangle (half width, height, depth)
         
         /**
@@ -47,7 +52,7 @@ namespace ac
             const Collider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const override;
@@ -74,7 +79,7 @@ namespace ac
             const RectCollider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
@@ -86,7 +91,7 @@ namespace ac
             const class CircleCollider2D* circle,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
@@ -98,7 +103,7 @@ namespace ac
             const class PolygonCollider2D* polygon,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;

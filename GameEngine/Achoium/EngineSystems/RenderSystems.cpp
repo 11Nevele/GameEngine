@@ -45,7 +45,7 @@ namespace ac
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 		TextureManager& textureManager = world.GetResourse<TextureManager>();
 		ModelManager& modelManager = world.GetResourse<ModelManager>();
-		float radius = 250;
+		float radius = 100;
 		static Transform t;
 		t.position.x += 1;
 		t.RotateZ(0.1);
@@ -65,6 +65,11 @@ namespace ac
 				t.scale.y *= colli.halfSize.y * 2;
 				glm::mat4 m = t.asMat4() * glm::translate(glm::mat4(1),offset);
 				renderer.SubmitDebug(&modelManager.GetModel(0), m);
+			});
+
+		world.View<CircleCollider2D, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, CircleCollider2D& colli, Transform& trans)
+			{
+				renderer.SubmitCircle(&modelManager.GetModel(0), colli.radius, trans);
 			});
 	}
 }

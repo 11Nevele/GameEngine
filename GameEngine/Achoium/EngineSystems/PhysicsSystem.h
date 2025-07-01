@@ -1,18 +1,21 @@
 #pragma once
 #include "Core/World.hpp"
 #include <glm/glm.hpp>
+#include "EngineComponents/Physics/Physics.h"
 namespace ac
 {
     /**
      * @brief Collision data structure containing information about a collision event.
      */
-    struct CollisionData
+    struct CollisionData2D
     {
-        Entity entityA; ///< First entity in the collision
-        Entity entityB; ///< Second entity in the collision
-        glm::vec3 collisionPoint; ///< Point of contact in world space
-        glm::vec3 collisionNormal; ///< Normal of the collision surface (points from A to B)
-        float penetrationDepth; ///< How far the objects are interpenetrating
+        Entity entityA = 0; ///< First entity in the collision
+        Entity entityB = 0; ///< Second entity in the collision
+        int collisionPointCnt = 0;
+        CollisionPoint2D collisionPoint1{};
+        CollisionPoint2D collisionPoint2{};
+        glm::vec2 collisionNormal{0,0}; ///< Normal of the collision surface (points from A to B)
+        float penetrationDepth = 0; ///< How far the objects are interpenetrating
     };
 
     
@@ -47,7 +50,7 @@ namespace ac
      */
     struct OnCollision
     {
-        CollisionData data; ///< Data about the collision
+        CollisionData2D data; ///< Data about the collision
         World& world; ///< Reference to the world
     };
 
@@ -58,7 +61,7 @@ namespace ac
      */
     struct OnTriggerEnter
     {
-        CollisionData data; ///< Data about the trigger
+        CollisionData2D data; ///< Data about the trigger
         World& world; ///< Reference to the world
     };
 

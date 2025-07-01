@@ -2,8 +2,13 @@
 #include "Collider2D.h"
 #include <vector>
 
+
 namespace ac
 {
+    class PolygonCollider2D;
+    class CircleCollider2D;
+    class RectCollider2D;
+
     /**
      * @brief 2D polygon collision shape.
      * 
@@ -13,6 +18,9 @@ namespace ac
     class PolygonCollider2D : public Collider2D
     {
     public:
+        friend class CircleCollider2D;
+        friend class RectCollider2D;
+
         /**
          * @brief Default constructor creates a triangle.
          */
@@ -66,7 +74,7 @@ namespace ac
             const Collider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const override;
@@ -115,7 +123,7 @@ namespace ac
             const PolygonCollider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
@@ -129,7 +137,7 @@ namespace ac
             const class CircleCollider2D* circle,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;

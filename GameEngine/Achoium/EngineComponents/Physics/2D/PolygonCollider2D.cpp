@@ -83,7 +83,7 @@ namespace ac
         const Collider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
@@ -266,7 +266,7 @@ namespace ac
         const PolygonCollider2D* other,
         const Transform& myTransform,
         const Transform& otherTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
@@ -341,20 +341,20 @@ namespace ac
         const CircleCollider2D* circle,
         const Transform& myTransform,
         const Transform& otherTransform,
-        std::vector<CollisionPoint>& collisionPoints,
+        std::vector<CollisionPoint2D>& collisionPoints,
         glm::vec2& collisionNormal,
         float& penetrationDepth
     ) const
     {
         // Delegate to the circle's implementation but flip the normal
-        bool result = circle->CircleVsPolygon(this, otherTransform, myTransform,
-                                            collisionPoints, collisionNormal, penetrationDepth);
+        //bool result = circle->CircleVsPolygon(this, otherTransform, myTransform,
+                                            //collisionPoints, collisionNormal, penetrationDepth);
         
-        if (result)
-        {
-            collisionNormal = -collisionNormal;
-        }
+        //if (result)
+        //{
+        //    collisionNormal = -collisionNormal;
+        //}
         
-        return result;
+        return false;
     }
 }

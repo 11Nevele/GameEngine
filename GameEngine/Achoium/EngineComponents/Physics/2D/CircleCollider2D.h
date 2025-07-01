@@ -3,6 +3,9 @@
 
 namespace ac
 {
+    class PolygonCollider2D;
+    class CircleCollider2D;
+    class RectCollider2D;
     /**
      * @brief 2D circular collision shape.
      * 
@@ -12,6 +15,8 @@ namespace ac
     class CircleCollider2D : public Collider2D
     {
     public:
+        friend class PolygonCollider2D;
+        friend class RectCollider2D;
         float radius; ///< Radius of the circle
         
         /**
@@ -45,7 +50,7 @@ namespace ac
             const Collider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const override;
@@ -58,33 +63,10 @@ namespace ac
             const CircleCollider2D* other,
             const Transform& myTransform,
             const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
+            std::vector<CollisionPoint2D>& collisionPoints,
             glm::vec2& collisionNormal,
             float& penetrationDepth
         ) const;
 
-        /**
-         * @brief Circle vs Rectangle collision detection.
-         */
-        bool CircleVsRect(
-            const class RectCollider2D* rect,
-            const Transform& myTransform,
-            const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
-            glm::vec2& collisionNormal,
-            float& penetrationDepth
-        ) const;
-        
-        /**
-         * @brief Circle vs Polygon collision detection.
-         */
-        bool CircleVsPolygon(
-            const class PolygonCollider2D* polygon,
-            const Transform& myTransform,
-            const Transform& otherTransform,
-            std::vector<CollisionPoint>& collisionPoints,
-            glm::vec2& collisionNormal,
-            float& penetrationDepth
-        ) const;
     };
 }
