@@ -251,7 +251,6 @@ namespace ac
 		 * @tparam T The component type.
 		 * @param id The entity ID.
 		 * @param obj The component instance (default constructed if not provided).
-		 * @return Reference to the added component.
 		 */
 		template <class T>
 		void Add(Entity id, T&& obj = {})
