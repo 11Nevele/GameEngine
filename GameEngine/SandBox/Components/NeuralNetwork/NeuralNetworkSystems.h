@@ -18,7 +18,9 @@ private:
 	};
 	static float Compute(const NeuralNetwork& net, const vector<float>& input);
 	static float EvaluateAsOrGate(const NeuralNetwork& network);
+	
 public:
+	static std::pair<float,float> EvaluatePrisonerDilemma(const NeuralNetwork& networkA, const NeuralNetwork& networkB);
 	static void UpdateNeuralNetworkSystem(World& world);
 };
 

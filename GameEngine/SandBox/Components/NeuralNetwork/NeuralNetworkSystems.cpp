@@ -56,17 +56,51 @@ float NeuralNetworkSystems::EvaluateAsOrGate(const NeuralNetwork& network)
     return score / testCases.size();
 }
 
+std::pair<float, float> NeuralNetworkSystems::EvaluatePrisonerDilemma(const NeuralNetwork& networkA, const NeuralNetwork& networkB)
+{
+    const int matrix[2][2]{ {-1, 5}, {-5, 1} };
+    int scoreA = 0, scoreB = 0;
+    int gameTime = rand() % 10 + 5;
+    vector<float> aHistory, bHistory;
+    aHistory.reserve(gameTime);
+    bHistory.reserve(gameTime);
+    for (int i = 0; i < gameTime; ++i)
+    {
+        int begin = max(i - 2, 0);
+
+        float OutputA = Compute(networkA, std::vector<float>(bHistory.begin() + begin, bHistory.end()));
+        float OutputB = Compute(networkB, std::vector<float>(aHistory.begin() + begin, aHistory.end()));
+        OutputA = OutputA > 0.5f ? 1 : 0;
+        OutputB = OutputB > 0.5f ? 1 : 0;
+        scoreA += matrix[(int)OutputA][(int)OutputB];
+        scoreB += matrix[(int)OutputB][(int)OutputA];
+        aHistory.push_back(OutputA);
+        bHistory.push_back(OutputB);
+    }
+    return { scoreA, scoreB };
+}
+
 void NeuralNetworkSystems::UpdateNeuralNetworkSystem(World& world)
 {
     // Evaluate each network as an OR gate
     std::vector<networkScore> networksWithScores;
     world.View<NeuralNetwork>().ForEach([&networksWithScores](Entity id, NeuralNetwork& network)
         {
-            networkScore tmp{EvaluateAsOrGate(network), id };
+            networkScore tmp{0, id };
             networksWithScores.push_back(tmp);
 
         });
-
+    for (int i = 0; i < networksWithScores.size(); ++i)
+    {
+        for (int j = i + 1; j < networksWithScores.size(); ++j)
+        {
+            auto res = EvaluatePrisonerDilemma(
+                world.Get<NeuralNetwork>(networksWithScores[i].ID),
+                world.Get<NeuralNetwork>(networksWithScores[j].ID));
+            networksWithScores[i].score += res.first;
+            networksWithScores[j].score += res.second;
+        }
+    }
     // Sort by score (descending)
     std::sort(networksWithScores.begin(), networksWithScores.end(),
         [](const auto& a, const auto& b) { return a.score > b.score; });
@@ -81,7 +115,7 @@ void NeuralNetworkSystems::UpdateNeuralNetworkSystem(World& world)
     }
     for (int i = 0; i < keepCount; ++i)
     {
-        cout << networksWithScores[i].score << "\n";
+        cout << networksWithScores[networksWithScores.size() - 1 - i].score << "\n";
     }
     cout << "Next Round\n";
 }

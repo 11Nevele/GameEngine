@@ -102,7 +102,7 @@ void GenerateOrganisms(World& world)
 	for (int i = 0; i < 100; ++i)
 	{
 		Entity e = world.CreateEntity();
-		world.Add<NeuralNetwork>(e, std::move(NeuralNetwork::Create(5, { 2,4,4,4,4 })));
+		world.Add<NeuralNetwork>(e, std::move(NeuralNetwork::Create(3, { 2,4,4 })));
 	}
 }
 
