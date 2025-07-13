@@ -40,6 +40,9 @@
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
     <ClInclude Include="Achoium\Core\sparseset.hpp" />
     <ClInclude Include="Achoium\InitEngine.h" />
+    <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.h" />
+    <ClInclude Include="SandBox\Components\Components.h" />
+    <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetwork.h" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />
@@ -98,6 +101,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
+    <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.cpp" />
+    <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetwork.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestPhysics.cpp" />
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />

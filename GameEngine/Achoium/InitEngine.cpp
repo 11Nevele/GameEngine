@@ -20,7 +20,6 @@ namespace ac
 	//Do not change things unless you truely know what you are doing
 	void InitEngine(World& world)
 	{
-
 		world.RegisterType<Sprite>();
 		world.RegisterType<Transform>();
 		world.RegisterType<Collider>();

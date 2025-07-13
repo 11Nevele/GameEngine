@@ -186,6 +186,15 @@
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetwork.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\Components\Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -297,6 +306,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\Collider2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetwork.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
