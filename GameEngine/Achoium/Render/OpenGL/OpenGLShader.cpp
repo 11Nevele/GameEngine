@@ -1,6 +1,7 @@
 #include <acpch.h>
 #include "Debug.h"
 #include "OpenGLShader.h"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/type_ptr.hpp>
 
 namespace ac
