@@ -4,20 +4,23 @@
 #include <glad/glad.h>  
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>  
+#include <filesystem>
 #include "Util/util.h"
 namespace ac  
 {
 	OpenGLRenderer::OpenGLRenderer(): s_SceneData()
 	{
+		std::string currentPath = filesystem::current_path().string();
+		std::cout << "Current Path: " << currentPath << std::endl;
 		shader2D = new OpenGLShader("name",
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
+			util::ReadFile(currentPath + "/SandBox/Shader/2DVertexShader.txt"),
+			util::ReadFile(currentPath + "/SandBox/Shader/2DFragmentShader.txt"));
 		shaderDebug = new OpenGLShader("name",
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugVertexShader.txt"),
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugFragmentShader.txt"));
+			util::ReadFile(currentPath + "/SandBox/Shader/DebugVertexShader.txt"),
+			util::ReadFile(currentPath + "/SandBox/Shader/DebugFragmentShader.txt"));
 		circleShader = new OpenGLShader("circleShader",
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/CircleShaderVertex.glsl"),
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/CircleShaderFragment.glsl"));
+			util::ReadFile(currentPath + "/SandBox/Shader/CircleShaderVertex.glsl"),
+			util::ReadFile(currentPath + "/SandBox/Shader/CircleShaderFragment.glsl"));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
 	}

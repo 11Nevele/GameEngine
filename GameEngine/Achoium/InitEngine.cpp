@@ -14,6 +14,7 @@
 #include "EngineSystems/PhysicsSystem.h" // Added physics system
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineSystems/TimeSystem.h"
+#include <filesystem>
 namespace ac
 {
 
@@ -40,10 +41,11 @@ namespace ac
 		world.AddResource<ModelManager>(new ModelManager());
 		world.AddResource<CollisionLayer>(new CollisionLayer());
 
+		std::string currentPath = std::filesystem::current_path().string();
 		world.GetResourse<TextureManager>()
-			.AddTexture("Default", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/null.png")
-			.AddTexture("Grass", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/grass.png")
-			.AddTexture("Red", "C:/C++Projet/GameEngine/GameEngine/SandBox/Image/red.jpg");
+			.AddTexture("Default", currentPath + "/SandBox/Image/null.png")
+			.AddTexture("Grass", currentPath + "/SandBox/Image/grass.png")
+			.AddTexture("Red", currentPath + "/SandBox/Image/red.jpg");
 		
 		world.GetResourse<EventManager>()
 			.AddListener<OnAdded<Sprite>>(OnSpriteAdded)
