@@ -195,6 +195,18 @@
     <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Tilemap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\Components\Interface\Interface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Input\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -314,6 +326,18 @@
     <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Tilemap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\Components\Interface\Interface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\Global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\Input\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
@@ -332,6 +356,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="SandBox\Image\null.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="C:\Users\Nickwsy\Desktop\White.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="SandBox\Image\White.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

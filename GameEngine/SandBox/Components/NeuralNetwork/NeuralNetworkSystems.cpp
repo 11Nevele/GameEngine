@@ -1,6 +1,7 @@
 #include "acpch.h"
 #include "NeuralNetworkSystems.h"
 #include "NeuralNetwork.h"
+#include "Achoium.h"
 
 float NeuralNetworkSystems::Compute(const NeuralNetwork& net, const vector<float>& input)
 {
@@ -106,7 +107,7 @@ void NeuralNetworkSystems::UpdateNeuralNetworkSystem(World& world)
         [](const auto& a, const auto& b) { return a.score > b.score; });
 
     // Keep top 10%
-    int keepCount = std::max(1, static_cast<int>(networksWithScores.size() * 0.5));
+    int keepCount = std::max(1, static_cast<int>(networksWithScores.size() * 0.2));
     for (int i = keepCount; i < networksWithScores.size(); ++i)
     {
         int id = (i - keepCount) % (keepCount);
@@ -118,5 +119,113 @@ void NeuralNetworkSystems::UpdateNeuralNetworkSystem(World& world)
         cout << networksWithScores[networksWithScores.size() - 1 - i].score << "\n";
     }
     cout << "Next Round\n";
+}
+
+void NeuralNetworkSystems::UpdateNeuralNetworkSystemV2(World& world)
+{
+    world.View<NeuralNetwork,TilemapElement >().ForEach([&world](Entity entity, NeuralNetwork& nn, TilemapElement& tilemapElement)
+        {
+            Tilemap& tilemap = world.Get<Tilemap>(tilemapElement.tilemap);
+            if (tilemapElement.x + 1 < tilemap.map.size())
+            {
+                Entity other = tilemap.map[tilemapElement.x + 1][tilemapElement.y];
+                if (other != 0 && world.Has<NeuralNetwork>(other))
+                {
+                    NeuralNetwork& otherNN = world.Get<NeuralNetwork>(other);
+                    auto res = EvaluatePrisonerDilemma(nn, otherNN);
+                    nn.score += res.first;
+                    otherNN.score += res.second;
+                }
+                
+            }
+            if (tilemapElement.y + 1 < tilemap.map[tilemapElement.x].size())
+            {
+                Entity other = tilemap.map[tilemapElement.x][tilemapElement.y + 1];
+                if (other != 0 && world.Has<NeuralNetwork>(other))
+                {
+                    NeuralNetwork& otherNN = world.Get<NeuralNetwork>(other);
+                    auto res = EvaluatePrisonerDilemma(nn, otherNN);
+                    nn.score += res.first;
+                    otherNN.score += res.second;
+                }
+
+            }
+        });
+}
+
+void NeuralNetworkSystems::ReproduceNuralNetworkSystem(World& world)
+{
+    world.View<NeuralNetwork>().ForEach([&world](Entity entity, NeuralNetwork& nn)
+        {
+            if (nn.score <= 0)
+            {
+                world.Delete<NeuralNetwork>(entity);
+            }
+        });
+    world.View<Tilemap>().ForEach([&world](Entity entity, Tilemap& map)
+        {
+            vector < pair<Entity, NeuralNetwork>> newNeuralNetworks;
+            int dir[4][2]{ {1,0},{-1,0},{0, 1},{0,-1} };
+            for (int x = 0; x < map.map.size(); ++x)
+                for (int y = 0; y < map.map[x].size(); ++y)
+                {
+                    if (map.map[x][y] == 0)
+                        continue;
+                    Entity e = map.map[x][y];
+                    if (world.Has<NeuralNetwork>(e))
+                        continue;
+                    uint32_t totScore = 0;
+                    vector<uint32_t> scores(4);
+                    vector<Entity> nns(4);
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        int nx = x + dir[i][0], ny = y + dir[i][1];
+                        if (nx < 0 || nx >= map.map.size() || ny < 0 || ny >= map.map[nx].size())
+                            continue;
+                        Entity neibourgh = map.map[nx][ny];
+                        if (neibourgh == 0 || !world.Has<NeuralNetwork>(neibourgh))
+                            continue;
+                        nns[i] = neibourgh;
+                        scores[i] = world.Get<NeuralNetwork>(neibourgh).score;
+                        totScore += scores[i];
+                    }
+                    if (totScore <= 0)
+                        continue;
+                    int choice = rand() % totScore;
+                    int cur = 0;
+                    for (int i = 0; i < 4; ++i)
+                    {
+                        cur += scores[i];
+                        if (cur > choice)
+                        {
+                            newNeuralNetworks.emplace_back(e, NeuralNetwork::Spawn(world.Get<NeuralNetwork>(nns[i])));
+                            break;
+                        }
+                    }
+                }
+            for (auto& i : newNeuralNetworks)
+            {
+                world.Add<NeuralNetwork>(i.first, std::move(i.second));
+            }
+        });
+    
+}
+
+void NeuralNetworkSystems::ChangeNeuralNetworkColor(World& world)
+{
+    world.View<TilemapElement, Sprite>().ForEach([&world](Entity entity, TilemapElement& te, Sprite& sprite)
+        {
+            if (world.Has<NeuralNetwork>(entity))
+            {
+
+                NeuralNetwork& nn = world.Get<NeuralNetwork>(entity);
+                sprite.color = { 1.0f - nn.friendlyness, nn.friendlyness,0 ,1 };
+                //sprite.color = { 0,((float)nn.score) / 100.0 ,0,1};
+            }
+            else
+            {
+                sprite.color = { 0,0,0,1 };
+            }
+        });
 }
 

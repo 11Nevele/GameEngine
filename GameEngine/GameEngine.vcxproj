@@ -25,10 +25,13 @@
     <ClInclude Include="Achoium\EngineComponents\Physics\Physics.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\RigidBody.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\3D\SphereCollider.h" />
+    <ClInclude Include="Achoium\EngineComponents\Tilemap.h" />
     <ClInclude Include="Achoium\EngineSystems\PhysicsSystem.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderSystems.h" />
     <ClInclude Include="Achoium\EngineSystems\TimeSystem.h" />
     <ClInclude Include="Achoium\Event\AllowToken.h" />
+    <ClInclude Include="Achoium\Global.h" />
+    <ClInclude Include="Achoium\Input\InputManager.h" />
     <ClInclude Include="Achoium\stb_image.h" />
     <ClInclude Include="Achoium\Math\Transform.h" />
     <ClInclude Include="Achoium\Event\KeyEvent.h" />
@@ -40,6 +43,7 @@
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
     <ClInclude Include="Achoium\Core\sparseset.hpp" />
     <ClInclude Include="Achoium\InitEngine.h" />
+    <ClInclude Include="SandBox\Components\Interface\Interface.h" />
     <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.h" />
     <ClInclude Include="SandBox\Components\Components.h" />
     <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetwork.h" />
@@ -87,6 +91,7 @@
     <ClCompile Include="Achoium\EngineComponents\Physics\CollisionLayer.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\RigidBody.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\3D\SphereCollider.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Tilemap.cpp" />
     <ClCompile Include="Achoium\EngineSystems\PhysicsSystem.cpp" />
     <ClCompile Include="Achoium\EngineSystems\RenderSystems.cpp" />
     <ClCompile Include="Achoium\EngineSystems\TimeSystem.cpp" />
@@ -94,6 +99,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Achoium\Global.cpp" />
+    <ClCompile Include="Achoium\Input\InputManager.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLTexture2D.cpp" />
     <ClCompile Include="Achoium\AssetManagement\AssetManager.cpp" />
     <ClCompile Include="Achoium\stb_image.c">
@@ -101,6 +108,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
+    <ClCompile Include="SandBox\Components\Interface\Interface.cpp" />
     <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.cpp" />
     <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetwork.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
@@ -129,10 +137,12 @@
     <Text Include="SandBox\Shader\TextureVertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="C:\Users\Nickwsy\Desktop\White.png" />
     <Image Include="SandBox\Image\grass.png" />
     <Image Include="SandBox\Image\grass2.jpg" />
     <Image Include="SandBox\Image\null.png" />
     <Image Include="SandBox\Image\red.jpg" />
+    <Image Include="SandBox\Image\White.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

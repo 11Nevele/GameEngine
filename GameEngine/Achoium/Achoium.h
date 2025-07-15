@@ -7,6 +7,7 @@
 #include "Util/util.h"
 #include "Math/Transform.h"
 #include "Input/Keycode.h"
+#include "Input/InputManager.h"
 #include "AssetManagement/AssetManager.h"
 
 #include "InitEngine.h"
@@ -18,3 +19,6 @@
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Sprite.h"
 #include "EngineComponents/Time.h"
+#include "EngineComponents/Tilemap.h"
+
+#include "Global.h"

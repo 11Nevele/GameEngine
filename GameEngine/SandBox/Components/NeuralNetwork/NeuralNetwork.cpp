@@ -9,6 +9,7 @@ NeuralNetwork NeuralNetwork::Create(int layerCnt, const std::vector<int>& nodeIn
     };
     for (int i = 0; i < layerCnt; ++i)
     {
+        network.score = 30;
         network.network[i] = std::vector<std::vector<float>>
             (nodeInLayer[i],
             std::vector<float>(i == layerCnt - 1 ? 1 : nodeInLayer[i + 1]));
@@ -41,5 +42,12 @@ NeuralNetwork NeuralNetwork::Spawn(const NeuralNetwork& other)
             }
         }
     }
+    if (rand() % 100 < 20)
+    {
+        network.friendlyness += (float)(rand() % 200 - 100) / 1000.0f;
+        network.friendlyness = std::clamp(network.friendlyness, 0.0f, 1.0f);
+    }
+    network.score = 30;
+    
 	return network;
 }

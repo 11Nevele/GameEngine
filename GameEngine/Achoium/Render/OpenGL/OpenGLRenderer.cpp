@@ -68,7 +68,7 @@ void OpenGLRenderer::EndScene()
 /// @param shader The shader program to use for rendering.  
 /// @param vertexArray The vertex array containing the geometry data.  
 /// @param transform The transformation matrix for the object being rendered.  
-void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform)  
+void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform, const glm::vec4& color)
 {  
 	glm::mat4 projection = glm::perspective(  
 		glm::radians(45.0f),  // Field of View (FOV) angle  
@@ -88,6 +88,7 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	shader2D->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
 	shader2D->SetMat4("u_Transform", transform);
 	shader2D->SetMat4("projection", projection);
+	shader2D->SetFloat4("uColor", color);
 
 	// Bind the vertex array  
 	vertexArray->Bind();  

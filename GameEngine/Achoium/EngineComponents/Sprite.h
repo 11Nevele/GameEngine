@@ -20,11 +20,13 @@ namespace ac
 		 * @param width The width of the sprite in pixels.
 		 * @param height The height of the sprite in pixels.
 		 */
-		Sprite(uint32_t textureID, uint32_t width, uint32_t height);
+		Sprite(uint32_t textureID, uint32_t width, uint32_t height, const glm::vec4& color = glm::vec4(1,1,1,1));
+
 		
 		uint32_t width;   ///< The width of the sprite in pixels.
 		uint32_t height;  ///< The height of the sprite in pixels.
 		uint32_t textureID; ///< Identifier for the texture used by this sprite.
+		glm::vec4 color;
 
 		/**
 		 * @brief Creates a sprite by looking up a texture in the provided texture manager.

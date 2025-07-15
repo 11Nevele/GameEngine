@@ -62,7 +62,7 @@ namespace ac
 		 * @param vertexArray The vertex array containing the geometry to render
 		 * @param transform The model transformation matrix to apply
 		 */
-		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
+		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
 
 		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
 

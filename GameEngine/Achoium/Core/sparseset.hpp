@@ -184,6 +184,8 @@ namespace ac
 		 */
 		Type& Set(Entity element, Type&& obj)
 		{
+			if (element > maxValue)
+				sparse.resize(10 * maxValue);
 			if (Contains(element))
 			{
 				size_t ind = GetDenseID(element);
@@ -191,8 +193,7 @@ namespace ac
 				return objects[ind];
 			}
 
-			if (element > maxValue)
-				sparse.resize(10 * maxValue);
+			
 			dense.push_back(element);
 			objects.emplace_back(std::forward<Type>(obj));
 			sparse[element] = dense.size() - 1;

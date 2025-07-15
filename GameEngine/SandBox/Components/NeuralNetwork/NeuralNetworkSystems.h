@@ -22,5 +22,9 @@ private:
 public:
 	static std::pair<float,float> EvaluatePrisonerDilemma(const NeuralNetwork& networkA, const NeuralNetwork& networkB);
 	static void UpdateNeuralNetworkSystem(World& world);
+	static void UpdateNeuralNetworkSystemV2(World& world);
+	static void ReproduceNuralNetworkSystem(World& world);
+	static void ChangeNeuralNetworkColor(World& world);
+
 };
 

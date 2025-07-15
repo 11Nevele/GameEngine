@@ -15,6 +15,8 @@ namespace ac
 	class WindowsInput
 	{
 	public:
+		WindowsInput(WinWindow* window) : mWindow(window) {}
+
 		/**
 		 * @brief Checks if a specific key is currently pressed.
 		 * 
@@ -23,7 +25,8 @@ namespace ac
 		 * @return true If the key is currently pressed
 		 * @return false If the key is not currently pressed
 		 */
-		bool IsKeyPressed(int keycode, const WinWindow& window);
+		bool IsKeyPressed(int keycode);
+
 
 		/**
 		 * @brief Checks if a specific mouse button is currently pressed.
@@ -33,7 +36,7 @@ namespace ac
 		 * @return true If the mouse button is currently pressed
 		 * @return false If the mouse button is not currently pressed
 		 */
-		bool IsMouseButtonPressed(int button, const WinWindow& window);
+		bool IsMouseButtonPressed(int button);
 
 		/**
 		 * @brief Gets the current mouse cursor position.
@@ -41,6 +44,8 @@ namespace ac
 		 * @param window The window to check input against
 		 * @return glm::vec2 The current mouse position in screen coordinates (x, y)
 		 */
-		glm::vec2 GetMousePosition(const WinWindow& window);
+		glm::vec2 GetMousePosition();
+	private:
+		WinWindow* mWindow; // Pointer to the associated window
 	};
 }

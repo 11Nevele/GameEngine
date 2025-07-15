@@ -189,6 +189,8 @@ namespace ac
 		Entity CreateEntity(std::string_view str = "")
 		{
 			Entity id;
+			if (maxEnity == 1000)
+				maxEnity = maxEnity;
 			if (entityPool.empty())
 			{
 				ECS_ASSERT(maxEnity < NULL_ENTITY, "Enity Exceed max Entity");
