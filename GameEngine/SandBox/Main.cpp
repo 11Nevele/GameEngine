@@ -103,6 +103,35 @@ void LoadAssets(World& world)
 	world.GetResourse<TextureManager>().AddTexture("White", curPath + "/SandBox/Image/White.png");
 }
 
+void TestAudioSystem(World& world)
+{
+	InputManager& input = world.GetResourse<InputManager>();
+	if (input.IsKeyDown(AC_KEY_SPACE))
+	{
+		world.View<Sprite, AudioSource>().ForEach([&world](Entity entity, Sprite& sprite, AudioSource& audioSource)
+		{
+			if (audioSource.audioID != INVALID_AUDIO_ID)
+			{
+				AudioManager& audioManager = world.GetResourse<AudioManager>();
+				AudioClip* clip = audioManager.GetAudioClip(audioSource.audioID);
+				if (clip && clip->loaded)
+				{
+					audioManager.Play(audioSource.audioID, audioSource.loop, audioSource.volume);
+					ACMSG("Playing audio: " << clip->name);
+				}
+				else
+				{
+					ACMSG("Audio clip not loaded or invalid ID: " << audioSource.audioID);
+				}
+			}
+			else
+			{
+				ACMSG("Invalid audio ID for entity: " << entity);
+			}
+			});
+	}
+}
+
 int main()
 {
 	
@@ -116,6 +145,7 @@ int main()
 
 
 	world.Add<Camera>(camera, Camera{ { 100.0f, 100.0f, 0 } });
+	world.Add<AudioListener>(camera, AudioListener());
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0 };
 
@@ -131,6 +161,17 @@ int main()
 	Entity tilemap = world.CreateEntity();
 	const int width = 10, height = 10;
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(width, height, 40, 40));
+
+	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/SandBox/Audio/test.wav");
+	
+	Entity audioTest = world.CreateEntity();
+	world.Add<AudioSource>(audioTest, AudioSource::Create(world, "Test", true, 0.5f, AudioType::Music, true));
+	world.Add<Sprite>(audioTest, Sprite::Create("Red", world.GetResourse<TextureManager>()));
+	world.Get<Sprite>(audioTest).width = 100;
+	world.Get<Sprite>(audioTest).height = 100;
+	world.Add<Transform>(audioTest, Transform());
+
+	world.AddUpdateSystem(TestAudioSystem, 0);
 
 	for(int i = 0; i < width; ++i)
 		for (int j = 0; j < height; ++j)

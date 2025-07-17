@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Achoium\AssetManagement\AudioManager.h" />
     <ClInclude Include="Achoium\Core\ECSDebug.h" />
     <ClInclude Include="Achoium\Core\ECSEvents.h" />
     <ClInclude Include="Achoium\Core\World.hpp" />
+    <ClInclude Include="Achoium\EngineComponents\Audio\Audio.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h" />
@@ -26,6 +28,7 @@
     <ClInclude Include="Achoium\EngineComponents\Physics\RigidBody.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\3D\SphereCollider.h" />
     <ClInclude Include="Achoium\EngineComponents\Tilemap.h" />
+    <ClInclude Include="Achoium\EngineSystems\AudioSystem.h" />
     <ClInclude Include="Achoium\EngineSystems\PhysicsSystem.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderSystems.h" />
     <ClInclude Include="Achoium\EngineSystems\TimeSystem.h" />
@@ -77,6 +80,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Achoium\AssetManagement\AudioManager.cpp" />
+    <ClCompile Include="Achoium\EngineComponents\Audio\Audio.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\Collider2D.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.cpp" />
@@ -88,6 +93,7 @@
     <ClCompile Include="Achoium\EngineComponents\Physics\RigidBody.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Physics\3D\SphereCollider.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Tilemap.cpp" />
+    <ClCompile Include="Achoium\EngineSystems\AudioSystem.cpp" />
     <ClCompile Include="Achoium\EngineSystems\PhysicsSystem.cpp" />
     <ClCompile Include="Achoium\EngineSystems\RenderSystems.cpp" />
     <ClCompile Include="Achoium\EngineSystems\TimeSystem.cpp" />
@@ -139,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="SandBox\Audio\test.ogg" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

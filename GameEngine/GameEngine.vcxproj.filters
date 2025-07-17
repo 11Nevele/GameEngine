@@ -186,25 +186,22 @@
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetwork.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SandBox\Components\Components.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Achoium\EngineComponents\Tilemap.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SandBox\Components\Interface\Interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Achoium\Global.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Achoium\Input\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\AssetManagement\AudioManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Audio\Audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineSystems\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -320,22 +317,22 @@
     <ClCompile Include="Achoium\EngineComponents\Physics\2D\Collider2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetwork.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SandBox\Components\NeuralNetwork\NeuralNetworkSystems.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Achoium\EngineComponents\Tilemap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SandBox\Components\Interface\Interface.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Achoium\Global.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Achoium\Input\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\AssetManagement\AudioManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineComponents\Audio\Audio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Achoium\EngineSystems\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -367,5 +364,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />
+    <None Include="SandBox\Audio\test.ogg" />
   </ItemGroup>
 </Project>

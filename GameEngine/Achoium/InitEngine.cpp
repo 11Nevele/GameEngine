@@ -8,10 +8,13 @@
 #include "Math/Transform.h"
 #include "Input/Keycode.h"
 #include "AssetManagement/AssetManager.h"
+#include "AssetManagement/AudioManager.h"
 #include "EngineComponents/Sprite.h"
 #include "EngineComponents/Time.h"
+#include "EngineComponents/Audio/Audio.h"
 #include "EngineSystems/RenderSystems.h"
 #include "EngineSystems/PhysicsSystem.h" // Added physics system
+#include "EngineSystems/AudioSystem.h"
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Tilemap.h"
 #include "EngineSystems/TimeSystem.h"
@@ -37,6 +40,9 @@ namespace ac
 		world.RegisterType<RigidBody2D>();
 		world.RegisterType<Tilemap>();
 		world.RegisterType<TilemapElement>();
+		// 注册音频组件
+		world.RegisterType<AudioSource>();
+		world.RegisterType<AudioListener>();
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
@@ -47,6 +53,8 @@ namespace ac
 		world.AddResource<ModelManager>(new ModelManager());
 		world.AddResource<CollisionLayer>(new CollisionLayer());
 		world.AddResource<InputManager>(new InputManager());
+		// 添加音频管理器资源
+		world.AddResource<AudioManager>(new AudioManager());
 
 		std::string currentPath = std::filesystem::current_path().string();
 		world.GetResourse<TextureManager>()
@@ -56,7 +64,9 @@ namespace ac
 		
 		world.GetResourse<EventManager>()
 			.AddListener<OnAdded<Sprite>>(OnSpriteAdded)
-			.AddListener<OnDeleted<Sprite>>(OnSpriteDelete);
+			.AddListener<OnDeleted<Sprite>>(OnSpriteDelete)
+			.AddListener<OnAdded<AudioSource>>(OnAudioSourceAdded)
+			.AddListener<OnDeleted<AudioSource>>(OnAudioSourceDeleted);
 
 		world.AddPreUpdateSystem(UpdateTimeSystem, 0);
 		world.AddPreUpdateSystem(InputManagerSystem::UpdateInput, 1); // Update input before other systems
@@ -64,6 +74,8 @@ namespace ac
 		// Register physics systems
 		world.AddUpdateSystem(PhysicsSystem::PhysicsStep, 1); // Run physics step early in update
 		world.AddUpdateSystem(PhysicsSystem::CollisionSystem, 2); // Run collision detection after physics update
+		// 注册音频系统
+		world.AddPostUpdateSystem(AudioSystem::UpdateAudio, 0); // 在物理系统之后更新音频
 		
 		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
 		world.AddPostUpdateSystem(PhysicsSystem::Collision2DSystem, 2); // Run collision detection after physics update
