@@ -3,6 +3,7 @@
 #include "AssetManagement\AssetManager.h"
 #include "Math/Transform.h"
 #include "EngineComponents/Physics/Physics.h"
+#include "EngineComponents/Tilemap.h"
 namespace ac
 {
 	bool OnSpriteAdded(const OnAdded<Sprite>& event)
@@ -37,7 +38,7 @@ namespace ac
 				Transform t = trans;
 				t.scale.x *= sprite.width;
 				t.scale.y *= sprite.height;
-				renderer.Submit(&(vao), t.asMat4());
+				renderer.Submit(&(vao), t.asMat4(), sprite.color);
 			});
 	}
 	void RenderCircle(World& world)
@@ -70,6 +71,26 @@ namespace ac
 		world.View<CircleCollider2D, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, CircleCollider2D& colli, Transform& trans)
 			{
 				renderer.SubmitCircle(&modelManager.GetModel(0), colli.radius, trans);
+			});
+	}
+	void RenderTilemap(World& world)
+	{
+		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+		TextureManager& textureManager = world.GetResourse<TextureManager>();
+		ModelManager& modelManager = world.GetResourse<ModelManager>();
+		world.View<TilemapElement, Sprite>().ForEach([&world, &modelManager, &textureManager, &renderer](Entity e, TilemapElement& tilemapElement, Sprite& sprite)
+			{
+				textureManager.GetTexture(sprite.textureID).Bind();
+				OpenGLVertexArray& vao = modelManager.GetModel(0);
+				Tilemap& tilemap = world.Get<Tilemap>(tilemapElement.tilemap);
+				Transform t;
+				if (world.Has<Transform>(tilemapElement.tilemap))
+					Transform t = world.Get<Transform>(tilemapElement.tilemap);
+				t.position += glm::vec3(tilemap.gridWidth, tilemap.gridHeight, 0) * t.scale * glm::vec3(tilemapElement.x, tilemapElement.y,0);
+				t.scale.x = sprite.width;
+				t.scale.y = sprite.height;
+
+				renderer.Submit(&(vao), t.asMat4(), sprite.color);
 			});
 	}
 }

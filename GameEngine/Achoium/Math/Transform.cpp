@@ -1,8 +1,8 @@
 #include <acpch.h>  
 #include "Transform.h"  
 #include "util.h"  
-#include <glm/gtc/matrix_transform.hpp>  
 #define GLM_ENABLE_EXPERIMENTAL  
+#include <glm/gtc/matrix_transform.hpp>  
 #include <glm/gtx/quaternion.hpp>  
 
 namespace ac  

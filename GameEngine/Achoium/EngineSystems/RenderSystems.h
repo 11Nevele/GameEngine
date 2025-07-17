@@ -9,5 +9,6 @@ namespace ac
 	void RenderSprite(World& world);
 	void RenderCircle(World& world);
 	void RenderCollider(World& world);
+	void RenderTilemap(World& world);
 
 }

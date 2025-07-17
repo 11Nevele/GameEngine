@@ -4,8 +4,8 @@
 namespace ac
 {
 
-	Sprite::Sprite(uint32_t textureID, uint32_t width, uint32_t height):
-		textureID(textureID),width(width), height(height)
+	Sprite::Sprite(uint32_t textureID, uint32_t width, uint32_t height, const glm::vec4& color):
+		textureID(textureID),width(width), height(height), color(color)
 	{
 	}
 	Sprite Sprite::Create(const std::string& name, TextureManager& textureManager)

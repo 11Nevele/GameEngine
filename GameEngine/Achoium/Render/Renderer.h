@@ -1,4 +1,5 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include "Render/VertexArray.h"
 #include "Render/Shader.h"
@@ -16,7 +17,7 @@ namespace ac
 		virtual void BeginScene() = 0;
 		virtual void EndScene() = 0;
 
-		virtual void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) = 0;
+		virtual void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) = 0;
 
 		virtual void SubmitCircle(VertexArray* vertexArray, float radius, Transform transform) = 0;
 

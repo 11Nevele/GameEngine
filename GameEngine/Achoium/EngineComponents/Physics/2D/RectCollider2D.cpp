@@ -3,6 +3,7 @@
 #include "CircleCollider2D.h"
 #include "PolygonCollider2D.h"
 #include "Math/Transform.h"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/norm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <numeric>

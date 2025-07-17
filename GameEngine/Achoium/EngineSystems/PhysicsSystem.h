@@ -1,5 +1,6 @@
 #pragma once
 #include "Core/World.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include "EngineComponents/Physics/Physics.h"
 namespace ac

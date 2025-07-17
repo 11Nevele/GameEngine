@@ -2,21 +2,25 @@
 #include "OpenGLRenderer.h"  
 #include "OpenGLShader.h"  
 #include <glad/glad.h>  
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtc/matrix_transform.hpp>  
+#include <filesystem>
 #include "Util/util.h"
 namespace ac  
 {
 	OpenGLRenderer::OpenGLRenderer(): s_SceneData()
 	{
+		std::string currentPath = filesystem::current_path().string();
+		std::cout << "Current Path: " << currentPath << std::endl;
 		shader2D = new OpenGLShader("name",
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DVertexShader.txt"),
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/2DFragmentShader.txt"));
+			util::ReadFile(currentPath + "/SandBox/Shader/2DVertexShader.txt"),
+			util::ReadFile(currentPath + "/SandBox/Shader/2DFragmentShader.txt"));
 		shaderDebug = new OpenGLShader("name",
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugVertexShader.txt"),
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/DebugFragmentShader.txt"));
+			util::ReadFile(currentPath + "/SandBox/Shader/DebugVertexShader.txt"),
+			util::ReadFile(currentPath + "/SandBox/Shader/DebugFragmentShader.txt"));
 		circleShader = new OpenGLShader("circleShader",
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/CircleShaderVertex.glsl"),
-			util::ReadFile("C:/C++Projet/GameEngine/GameEngine/SandBox/Shader/CircleShaderFragment.glsl"));
+			util::ReadFile(currentPath + "/SandBox/Shader/CircleShaderVertex.glsl"),
+			util::ReadFile(currentPath + "/SandBox/Shader/CircleShaderFragment.glsl"));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
 	}
@@ -64,7 +68,7 @@ void OpenGLRenderer::EndScene()
 /// @param shader The shader program to use for rendering.  
 /// @param vertexArray The vertex array containing the geometry data.  
 /// @param transform The transformation matrix for the object being rendered.  
-void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform)  
+void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform, const glm::vec4& color)
 {  
 	glm::mat4 projection = glm::perspective(  
 		glm::radians(45.0f),  // Field of View (FOV) angle  
@@ -84,6 +88,7 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	shader2D->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
 	shader2D->SetMat4("u_Transform", transform);
 	shader2D->SetMat4("projection", projection);
+	shader2D->SetFloat4("uColor", color);
 
 	// Bind the vertex array  
 	vertexArray->Bind();  
