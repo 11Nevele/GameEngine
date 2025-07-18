@@ -23,6 +23,8 @@ namespace ac
 
 		virtual void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) = 0;
 
+		virtual void SubmitText(const string& text, const Transform& transform) = 0;
+
 
 		virtual void UpdateCamera(const glm::mat4& cameraTransform) = 0;
 	};

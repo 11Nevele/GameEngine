@@ -146,6 +146,8 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="SandBox\Audio\test.ogg" />
+    <None Include="SandBox\Shader\TextFragmentShader.glsl" />
+    <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -183,7 +185,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
@@ -200,13 +203,13 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependency\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

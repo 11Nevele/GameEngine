@@ -65,6 +65,7 @@ namespace ac
 		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
 
 		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
+		virtual void SubmitText(const string& text, const Transform& transform) override;
 
 		void SubmitCircle(VertexArray* vertexArray, float radius, Transform transform) override;
 		/**
@@ -86,6 +87,17 @@ namespace ac
 		Shader* shaderDebug;
 
 		Shader* circleShader;
+
+		Shader* textShader;
+
+		struct Character {
+			GLuint     TextureID;  // 字形纹理ID
+			glm::ivec2 Size;       // 字形大大小
+			glm::ivec2 Bearing;    // 字形基于基线和起点的位置
+			GLuint     Advance;    // 起点到下一个字形起点的距离
+		};
+
+		std::map<GLchar, Character> Characters;
 
 		struct SceneData
 		{

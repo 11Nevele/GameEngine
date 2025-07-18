@@ -173,17 +173,6 @@ int main()
 	world.Add<Transform>(audioTest, Transform());
 
 	world.AddUpdateSystem(TestAudioSystem, 0);
-
-	for(int i = 0; i < width; ++i)
-		for (int j = 0; j < height; ++j)
-		{
-			Entity renderObject = world.CreateEntity();
-			world.Add<ac::TilemapElement>(renderObject, ac::TilemapElement(tilemap, i, j));
-			world.Add<Sprite>(renderObject, Sprite::Create("White", world.GetResourse<TextureManager>()));
-			world.Get<Sprite>(renderObject).color = {0,0,0,1};
-			world.Get<Sprite>(renderObject).width = 40;
-			world.Get<Sprite>(renderObject).height = 40;
-		}
 	
 
 
@@ -191,6 +180,10 @@ int main()
 	{
 		mWindow& win = world.GetResourse<mWindow>();
 		
+		mRenderer& renderer = world.GetResourse<mRenderer>();
+		Transform t;
+		t.scale = { 2, 1, 1 };
+		renderer.SubmitText("Hello World", t);
 		world.Update();
 
 		win.OnUpdate();

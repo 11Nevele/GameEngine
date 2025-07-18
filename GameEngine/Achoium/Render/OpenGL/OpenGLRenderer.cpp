@@ -21,8 +21,66 @@ namespace ac
 		circleShader = new OpenGLShader("circleShader",
 			util::ReadFile(currentPath + "/SandBox/Shader/CircleShaderVertex.glsl"),
 			util::ReadFile(currentPath + "/SandBox/Shader/CircleShaderFragment.glsl"));
+		textShader = new OpenGLShader("textShader",
+			util::ReadFile(currentPath + "/SandBox/Shader/TextVertexShader.glsl"),
+			util::ReadFile(currentPath + "/SandBox/Shader/TextFragmentShader.glsl"));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //禁用byte-alignment限制
+        FT_Library ft;
+        if (FT_Init_FreeType(&ft))
+            std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+        // 检查文件是否存在
+        if (!std::filesystem::exists((currentPath + "/Assets/Fonts/arial.ttf")))
+            std::cout << "ERROR: Font file does not exist!" << std::endl;
+        FT_Face face;
+        if (FT_New_Face(ft, (currentPath + "/Assets/Fonts/arial.ttf").c_str(), 0, &face))
+        {
+            std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+            std::cout << "Attempted to load: " << (currentPath + "/Assets/Fonts/arial.ttf") << std::endl;
+            
+        }
+
+        // 设置字体大小 - 宽度为0表示动态计算宽度
+        FT_Set_Pixel_Sizes(face, 0, 48);  // 48像素高
+
+        for (GLubyte c = 0; c < 128; c++)
+        {
+            // 加载字符的字形 
+            if (FT_Load_Char(face, c, FT_LOAD_RENDER))
+            {
+                std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+                continue;
+            }
+            // 生成字形纹理
+            GLuint texture;
+            glGenTextures(1, &texture);
+            glBindTexture(GL_TEXTURE_2D, texture);
+            glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RED,
+                face->glyph->bitmap.width,
+                face->glyph->bitmap.rows,
+                0,
+                GL_RED,
+                GL_UNSIGNED_BYTE,
+                face->glyph->bitmap.buffer
+            );
+            // 设置纹理选项
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+            // 将字符存储到字符表中备用
+            Character character = {
+                texture,
+                glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+                glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+                face->glyph->advance.x
+            };
+            Characters.insert(std::pair<GLchar, Character>(c, character));
+        }
 	}
 	/// Initializes the OpenGL renderer.  
 /// Enables depth testing for proper rendering of 3D objects.  
@@ -121,6 +179,85 @@ void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& tran
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+}
+
+void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
+{
+    glm::mat4 projection = glm::ortho(
+        0.0f, 1280.0f,        // Left, Right  
+        0.0f, 720.0f          // Bottom, Top  
+    );
+
+    // Activate the text shader
+    textShader->Bind();
+
+    // Set the projection matrix in the shader
+    textShader->SetMat4("projection", projection);
+
+    // Set text color (default to white if not specified)
+    textShader->SetFloat3("textColor", glm::vec3(1.0f, 1.0f, 1.0f));
+
+    // Create and configure VAO/VBO for rendering characters
+    unsigned int VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+    // Each character is represented by 6 vertices (2 triangles forming a quad)
+    // Each vertex has 4 components (x, y positions and texture coordinates)
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+
+    // Set texture unit for the sampler
+    glActiveTexture(GL_TEXTURE0);
+    textShader->SetInt("text", 0);
+
+    // Starting position for text rendering based on the transform
+    float x = transform.position.x;
+    float y = transform.position.y;
+    float scale = transform.scale.x;  // Use x scale for consistent text scaling
+
+    // Render each character in the text string
+    for (char c : text)
+    {
+
+        Character ch = Characters[c];
+
+        GLfloat xpos = x + ch.Bearing.x * scale;
+        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+
+        GLfloat w = ch.Size.x * scale;
+        GLfloat h = ch.Size.y * scale;
+        // 当前字符的VBO
+        GLfloat vertices[6][4] = {
+            { xpos,     ypos + h,   0.0, 0.0 },
+            { xpos,     ypos,       0.0, 1.0 },
+            { xpos + w, ypos,       1.0, 1.0 },
+
+            { xpos,     ypos + h,   0.0, 0.0 },
+            { xpos + w, ypos,       1.0, 1.0 },
+            { xpos + w, ypos + h,   1.0, 0.0 }
+        };
+        // 在方块上绘制字形纹理
+        glBindTexture(GL_TEXTURE_2D, ch.TextureID);
+        // 更新当前字符的VBO
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        // 绘制方块
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        // 更新位置到下一个字形的原点，注意单位是1/64像素
+        x += (ch.Advance >> 6) * scale; //(2^6 = 64)
+    }
+
+    // Clean up
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
 }
 
 void OpenGLRenderer::SubmitCircle(VertexArray* vertexArray, float radius, Transform transform)
