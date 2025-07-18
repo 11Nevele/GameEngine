@@ -188,7 +188,8 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -219,15 +220,15 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\FreeType\release dll\win64;$(SolutionDir)Dependency\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
