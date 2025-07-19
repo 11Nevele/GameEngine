@@ -6,7 +6,6 @@
 			::abort(); \
 		}
 #endif
-#define ECS_INFO_ENABLED
 #ifndef ECS_INFO
 #ifdef ECS_INFO_ENABLED
 #define ECS_INFO(msg) std::cout << "[ECS info]: " << msg << "\n";

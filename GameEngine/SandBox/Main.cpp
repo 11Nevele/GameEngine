@@ -1,4 +1,9 @@
 #include "acpch.h"
+#define ECS_INFO_ENABLED
+#define SHOW_WARNING
+#define SHOW_MESSAGE
+
+
 #include <gl/GL.h>
 #include <gl/GLU.h>
 #include <glfw3.h>
@@ -11,6 +16,7 @@
 #include "GamePlaySystems/GameplayerSystems.h"
 #include "UnitTests/TestUnit.h"
 #include "Render/UISystems.h"
+#include"GamePlaySystems//SceneFinishChecks.h"
 using namespace ac;
 
 
@@ -48,6 +54,7 @@ void LoadAssets(World& world)
 		.AddTexture("PlayerLeft", curPath + "Player/player_14.png")
 		.AddTexture("PlayerRight", curPath + "Player/player_11.png")
 		.AddTexture("Ground1", curPath + "Ground/ground_01.png")
+		.AddTexture("Ground2", curPath + "Ground/ground_02.png")
 		.AddTexture("Wall1", curPath + "Blocks/block_06.png")
 		.AddTexture("Box1", curPath + "Crates/crate_07.png")
 		.AddTexture("Box2", curPath + "Crates/crate_09.png");
@@ -83,10 +90,17 @@ void RegisterComponentsAndSystems(World& world)
 	world.RegisterType<Number>();
 	world.RegisterType<WinCondition>();
 	world.RegisterType<Box>();
+	world.RegisterType<LevelEntrance>();
 
 	world.AddUpdateSystem(JumpToLevel, 0);
+	world.AddUpdateSystem(SceneFinishChecks::CheckWinLevel, 0);
+	world.AddUpdateSystem(SceneFinishChecks::CheckExitLevel, 0);
+	world.AddUpdateSystem(SceneFinishChecks::CheckRestartLevel, 0);
+	world.AddUpdateSystem(SceneFinishChecks::CheckTransitionLevel, 0);
+
 	world.AddUpdateSystem(GameplayerSystems::PlayerMovement, 1);
 	world.AddPostUpdateSystem(RenderTileSystems::UpdateNumber, 9);
+	world.AddPostUpdateSystem(RenderTileSystems::UpdateWinCondition, 7);
 	world.AddPostUpdateSystem(UISystems::UpdateUI, 9);
 }
 
@@ -155,8 +169,6 @@ int main()
 		t.scale = { 2, 1, 1 };
 		//renderer.SubmitText("Hello World", t);
 		world.Update();
-		if(input.IsKeyDown(AC_KEY_ESCAPE))
-			LevelManagementSystems::ResetLevel(world);
 		win.OnUpdate();
 		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

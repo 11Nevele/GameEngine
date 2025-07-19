@@ -2,14 +2,11 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#define SHOW_MESSAGE
-#define SHOW_WARNING
-#define SHOW_ERROR
 
 #ifdef SHOW_MESSAGE
 	#define ACMSG(str) std::cout<< "[AC msg]: " << str << std::endl
 #else
-	#define ACDEBUG(str)
+	#define ACMSG(str)
 #endif
 
 #ifdef SHOW_WARNING

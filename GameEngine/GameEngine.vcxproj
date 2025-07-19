@@ -79,6 +79,7 @@
     <ClInclude Include="SandBox\UnitTests\TimeTest.h" />
     <ClInclude Include="SandBox\UnitTests\WorldTest.h" />
     <ClInclude Include="SandBox\Render\UISystems.h" />
+    <ClInclude Include="SandBox\GamePlaySystems\SceneFinishChecks.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -137,6 +138,7 @@
     <ClCompile Include="Achoium\EngineComponents\Time.cpp" />
     <ClCompile Include="SandBox\UnitTests\WorldTest.cpp" />
     <ClCompile Include="SandBox\Render\UISystems.cpp" />
+    <ClCompile Include="SandBox\GamePlaySystems\SceneFinishChecks.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\fragmentShader.txt" />

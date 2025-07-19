@@ -204,6 +204,24 @@
     <ClInclude Include="Achoium\EngineSystems\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\GamePlaySystems\GameplayerSystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\GamePlaySystems\LevelManagementSystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\GameComponents\GameComponents.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\Render\RenderTileSystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\Render\UISystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\GamePlaySystems\SceneFinishChecks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -335,6 +353,21 @@
     <ClCompile Include="Achoium\EngineSystems\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SandBox\GamePlaySystems\GameplayerSystems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\GamePlaySystems\LevelManagementSystems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\Render\RenderTileSystems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\Render\UISystems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\GamePlaySystems\SceneFinishChecks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
@@ -343,9 +376,6 @@
     <Text Include="SandBox\Shader\TextureVertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="SandBox\Image\grass.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="SandBox\Image\grass2.jpg">
       <Filter>Resource Files</Filter>
     </Image>
@@ -365,5 +395,7 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="SandBox\Audio\test.ogg" />
+    <None Include="SandBox\Shader\TextFragmentShader.glsl" />
+    <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>
 </Project>

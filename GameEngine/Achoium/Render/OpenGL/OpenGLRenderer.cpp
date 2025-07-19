@@ -218,10 +218,18 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
     textShader->SetInt("text", 0);
 
     // Starting position for text rendering based on the transform
-    float x = transform.position.x;
-    float y = transform.position.y;
-    float scale = transform.scale.x;  // Use x scale for consistent text scaling
+    
 
+	float totalWidth = 0.0f, mxHeight = 0;
+    for(char c : text)
+    {
+        Character ch = Characters[c];
+        totalWidth += (ch.Advance >> 6); // Advance is in 1/64 pixels
+		mxHeight = std::max(mxHeight, (float)ch.Size.y);
+	}
+	float scale = min(1.0f, 64.0f / totalWidth); // Scale to fit the text in the desired width
+    float x = transform.position.x - totalWidth * scale / 2;
+    float y = transform.position.y - mxHeight / 2;
     // Render each character in the text string
     for (char c : text)
     {
