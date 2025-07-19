@@ -25,6 +25,26 @@ namespace ac
 		 * identity rotation, and unit scale).
 		 */
 		Transform();
+
+		/**
+		 * @brief Constructor that initializes the transform with specific values.
+		 * 
+		 * @param position The position in 3D space
+		 * @param rotation The rotation as a quaternion
+		 * @param scale The scale in 3D space
+		 */
+		Transform(glm::vec3 position, glm::quat rotation, glm::vec3 scale);
+
+		/**
+		 * @brief Constructor that initializes the transform with position and scale.
+		 * 
+		 * @param position The position in 3D space
+		 * @param scale The scale in 3D space
+		 */
+		Transform(glm::vec3 position, glm::vec3 scale)
+			: position(position), rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)), scale(scale) {
+		}
+
 		
 		/**
 		 * @brief Converts the transform to a 4x4 matrix.

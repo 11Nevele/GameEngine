@@ -3,8 +3,8 @@
 #include "Debug.h"
 namespace ac
 {
-	ac::Tilemap::Tilemap(uint32_t width, uint32_t height, uint32_t gridWidth, uint32_t gridHeight):
-		map(width, std::vector<Entity>(height, 0)), gridWidth(gridWidth), gridHeight(gridHeight)
+	ac::Tilemap::Tilemap(uint32_t width, uint32_t height, uint32_t gridWidth, uint32_t gridHeight, uint32_t layer):
+		map(width, std::vector<Entity>(height, 0)), gridWidth(gridWidth), gridHeight(gridHeight), layer(layer)
 	{
 
 	}

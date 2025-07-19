@@ -5,8 +5,12 @@
 #include "Achoium.h"
 #include <fstream>
 
-
+#include "GameComponents/GameComponents.h"
+#include "Render/RenderTileSystems.h"
+#include "GamePlaySystems/LevelManagementSystems.h"
+#include "GamePlaySystems/GameplayerSystems.h"
 #include "UnitTests/TestUnit.h"
+#include "Render/UISystems.h"
 using namespace ac;
 
 
@@ -18,21 +22,12 @@ using mInput = WindowsInput;
 using mWindow = WinWindow;
 using mRenderer = OpenGLRenderer;
 
+
 struct Camera {
-	glm::vec3 movementSpeed;
-};
-struct movement
-{
-	glm::vec3 velocity;
-};
-
-struct PlayerMovement
-{
-
 };
 void CameraMovement(ac::World& world)
 {
-	
+
 	mInput& input = world.GetResourse<mInput>();
 	mWindow& win = world.GetResourse<mWindow>();
 	mRenderer& rend = world.GetResourse<mRenderer>();
@@ -41,67 +36,58 @@ void CameraMovement(ac::World& world)
 	for (auto i : t)
 	{
 		auto& transform = get<1>(i.components);
-		auto& camera = get < 0> (i.components);
-		if (input.IsKeyPressed(AC_KEY_A))
-			transform.position.x -= camera.movementSpeed.x * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_D))
-			transform.position.x += camera.movementSpeed.x * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_W))
-			transform.position.z -= camera.movementSpeed.z * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_S))
-			transform.position.z += camera.movementSpeed.z * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_LEFT_SHIFT))
-			transform.position.y += camera.movementSpeed.y * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_LEFT_CONTROL))
-			transform.position.y -= camera.movementSpeed.y * time.Delta();
-		
 		rend.UpdateCamera(transform.asMat4(true));
 	}
 }
-
-void RandomCircleGenerator(World& world)
-{
-	WindowsInput& input = world.GetResourse<WindowsInput>();
-	mWindow& win = world.GetResourse<mWindow>();
-	static bool pressed = false;
-	if (input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_2) && pressed == false)
-	{
-		pressed = true;
-		//randomly generate width height and angular  velocity
-		float radius = rand() % 100 + 50; // Width between 50 and 150
-		float angularVelocity = 0.0f; // Angular velocity between -5 and 5
-		float mass = radius * radius * 0.01f;
-		float v = rand() % 200 + 100;
-
-
-		glm::vec2 mousePos = input.GetMousePosition();
-		mousePos.y = 720 - mousePos.y; // Invert Y coordinate for OpenGL
-		Entity block = world.CreateEntity();
-		world.Add<Transform>(block, Transform());
-		world.Get<Transform>(block).position = { mousePos.x, mousePos.y, 0 };
-		world.Add<RigidBody2D>(block, RigidBody2D(mass, 0.5, 0.1, true, false, false));
-		world.Add<CircleCollider2D>(block, CircleCollider2D(radius));
-		world.Get<CircleCollider2D>(block).offset = glm::vec3(0, 0, 0);
-		world.Get<RigidBody2D>(block).inertiaTensor = mass * std::pow(radius, 2);
-		world.Get<RigidBody2D>(block).angularVelocity = angularVelocity;
-		world.Get<RigidBody2D>(block).velocity.y = v;
-
-		
-	}
-	if (!input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_2))
-		pressed = false;
-}
-
-
 void LoadAssets(World& world)
 {
-	std::string curPath = filesystem::current_path().string();
-	world.GetResourse<TextureManager>().AddTexture("White", curPath + "/SandBox/Image/White.png");
+	std::string curPath = filesystem::current_path().string() + "/Assets/Image/";
+	world.GetResourse<TextureManager>().AddTexture("White", curPath + "White.png")
+		.AddTexture("PlayerDown", curPath + "Player/player_23.png")
+		.AddTexture("PlayerUp", curPath + "Player/player_02.png")
+		.AddTexture("PlayerLeft", curPath + "Player/player_14.png")
+		.AddTexture("PlayerRight", curPath + "Player/player_11.png")
+		.AddTexture("Ground1", curPath + "Ground/ground_01.png")
+		.AddTexture("Wall1", curPath + "Blocks/block_06.png")
+		.AddTexture("Box1", curPath + "Crates/crate_07.png")
+		.AddTexture("Box2", curPath + "Crates/crate_09.png");
+
+	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/Assets/Audio/test.wav");
+}
+
+void JumpToLevel(World& world)
+{
+	InputManager& input = world.GetResourse<InputManager>();
+	if(input.IsKeyDown(AC_KEY_0))
+		
+	{
+		LevelManagementSystems::ResetLevel(world);
+		LevelManagementSystems::LoadLevel(world, Levels::MAIN_MENU);
+	}
+	else if (input.IsKeyDown(AC_KEY_1))
+	{
+		LevelManagementSystems::ResetLevel(world);
+		LevelManagementSystems::LoadLevel(world, Levels::TEST_LEVEL);
+	}
+	else if (input.IsKeyDown(AC_KEY_2))
+	{
+		LevelManagementSystems::ResetLevel(world);
+		LevelManagementSystems::LoadLevel(world, Levels::LEVEL_1);
+	}
+}
+
+void RegisterComponentsAndSystems(World& world)
+{
+	world.RegisterType<Wall>();
+	world.RegisterType<Player>();
+	world.RegisterType<Number>();
+	world.RegisterType<WinCondition>();
+	world.RegisterType<Box>();
+
+	world.AddUpdateSystem(JumpToLevel, 0);
+	world.AddUpdateSystem(GameplayerSystems::PlayerMovement, 1);
+	world.AddPostUpdateSystem(RenderTileSystems::UpdateNumber, 9);
+	world.AddPostUpdateSystem(UISystems::UpdateUI, 9);
 }
 
 void TestAudioSystem(World& world)
@@ -135,47 +121,31 @@ void TestAudioSystem(World& world)
 
 int main()
 {
-	
-
 	srand(time(0));
 	
 	ac::World world;
 	InitEngine(world);
 	
 	Entity camera = world.CreateEntity();
-
-
-	world.Add<Camera>(camera, Camera{ { 100.0f, 100.0f, 0 } });
-	world.Add<AudioListener>(camera, AudioListener());
 	world.Add<Transform>(camera, Transform());
-	world.Get<Transform>(camera).position = { 0, 0, 0 };
-
+	world.Add<Camera>(camera, Camera());
 	world.AddUpdateSystem(CameraMovement, 0);
-	world.AddPostUpdateSystem(RandomCircleGenerator, 0);
 
-	//GenerateOrganisms(world);
-
-	//world.AddPostUpdateSystem(RenderCollider, 9);
 
 	LoadAssets(world);
+	RegisterComponentsAndSystems(world);
 
-	Entity tilemap = world.CreateEntity();
-	const int width = 10, height = 10;
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(width, height, 40, 40));
-
-	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/SandBox/Audio/test.wav");
-	
-	Entity audioTest = world.CreateEntity();
-	world.Add<AudioSource>(audioTest, AudioSource::Create(world, "Test", true, 0.5f, AudioType::Music, true));
-	world.Add<Sprite>(audioTest, Sprite::Create("Red", world.GetResourse<TextureManager>()));
-	world.Get<Sprite>(audioTest).width = 100;
-	world.Get<Sprite>(audioTest).height = 100;
-	world.Add<Transform>(audioTest, Transform());
+	world.AddResource<SceneData>(new SceneData(100, 64, 64));
 
 	world.AddUpdateSystem(TestAudioSystem, 0);
 	
+	
+	RenderTileSystems::Init(world);
+	world.AddUpdateSystem(RenderTileSystems::UpdateTileSprites, 9);
 
-
+	LevelManagementSystems::LoadLevel(world, Levels::TEST_LEVEL);
+	
+	InputManager& input = world.GetResourse<InputManager>();
 	while (true)
 	{
 		mWindow& win = world.GetResourse<mWindow>();
@@ -183,11 +153,12 @@ int main()
 		mRenderer& renderer = world.GetResourse<mRenderer>();
 		Transform t;
 		t.scale = { 2, 1, 1 };
-		renderer.SubmitText("Hello World", t);
+		//renderer.SubmitText("Hello World", t);
 		world.Update();
-
+		if(input.IsKeyDown(AC_KEY_ESCAPE))
+			LevelManagementSystems::ResetLevel(world);
 		win.OnUpdate();
-		glClearColor(0.1, 0.1, 0.1, 1);
+		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 	

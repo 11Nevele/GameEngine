@@ -46,7 +46,7 @@ namespace ac
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
-		world.AddResource<WinWindow>(new WinWindow({ "AC", 1280, 720 }, world.GetResourse<EventManager>()));
+		world.AddResource<WinWindow>(new WinWindow({ "AC", SCREEN_WIDTH, SCREEN_HEIGHT }, world.GetResourse<EventManager>()));
 		world.AddResource<OpenGLRenderer>(new OpenGLRenderer());
 		world.AddResource<WindowsInput>(new WindowsInput(&world.GetResourse<WinWindow>()));
 		world.AddResource<TextureManager>(new TextureManager());
@@ -58,9 +58,9 @@ namespace ac
 
 		std::string currentPath = std::filesystem::current_path().string();
 		world.GetResourse<TextureManager>()
-			.AddTexture("Default", currentPath + "/SandBox/Image/null.png")
-			.AddTexture("Grass", currentPath + "/SandBox/Image/grass.png")
-			.AddTexture("Red", currentPath + "/SandBox/Image/red.jpg");
+			.AddTexture("Default", currentPath + "/Assets/Image/null.png")
+			.AddTexture("Grass", currentPath + "/Assets/Image/grass.png")
+			.AddTexture("Red", currentPath + "/Assets/Image/red.jpg");
 		
 		world.GetResourse<EventManager>()
 			.AddListener<OnAdded<Sprite>>(OnSpriteAdded)
@@ -79,8 +79,9 @@ namespace ac
 		
 		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
 		world.AddPostUpdateSystem(PhysicsSystem::Collision2DSystem, 2); // Run collision detection after physics update
-		world.AddPostUpdateSystem(RenderSprite, 9);
-		world.AddPostUpdateSystem(RenderTilemap, 9);
+		world.AddPostUpdateSystem(RenderTilemap, 7);
+		world.AddPostUpdateSystem(RenderSprite, 8);
+		
 		
 
 		

@@ -6,8 +6,14 @@
 #include <glm/gtx/quaternion.hpp>  
 
 namespace ac  
-{  
-   /// Converts the transform into a 4x4 matrix representation.  
+{
+    Transform::Transform(glm::vec3 position, glm::quat rotation, glm::vec3 scale)
+    {
+        this->position = position;  
+        this->rotation = rotation;  
+		this->scale = scale;
+    }
+    /// Converts the transform into a 4x4 matrix representation.  
    /// @param invPosition If true, the position is inverted in the transformation.  
    /// @return A 4x4 matrix representing the transform.  
    glm::mat4 Transform::asMat4(bool invPosition) const

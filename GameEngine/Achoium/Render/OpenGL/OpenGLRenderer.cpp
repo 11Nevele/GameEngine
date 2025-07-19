@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>  
 #include <filesystem>
 #include "Util/util.h"
+#include "Global.h"
 namespace ac  
 {
 	OpenGLRenderer::OpenGLRenderer(): s_SceneData()
@@ -25,6 +26,7 @@ namespace ac
 			util::ReadFile(currentPath + "/SandBox/Shader/TextVertexShader.glsl"),
 			util::ReadFile(currentPath + "/SandBox/Shader/TextFragmentShader.glsl"));
 		glEnable(GL_BLEND);
+        //glEnable(GL_DEPTH_TEST);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //Ω˚”√byte-alignmentœﬁ÷∆
         FT_Library ft;
@@ -130,13 +132,13 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 {  
 	glm::mat4 projection = glm::perspective(  
 		glm::radians(45.0f),  // Field of View (FOV) angle  
-		16.0f / 9.0f,         // Aspect ratio (width/height)  
+		(float)SCREEN_WIDTH/(float)SCREEN_HEIGHT,         // Aspect ratio (width/height)  
 		0.1f,                 // Near clipping plane  
 		100.0f                // Far clipping plane  
 	);  
 	projection = glm::ortho(  
-		0.0f, 1280.0f,        // Left, Right  
-		0.0f, 720.0f          // Bottom, Top  
+		0.0f, (float)SCREEN_WIDTH,        // Left, Right  
+		0.0f, (float)SCREEN_HEIGHT          // Bottom, Top  
 	);  
 
 	// Bind the shader program  
@@ -159,8 +161,8 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform)
 {
 	glm::mat4 projection = glm::ortho(
-		0.0f, 1280.0f,        // Left, Right  
-		0.0f, 720.0f          // Bottom, Top  
+        0.0f, (float)SCREEN_WIDTH,        // Left, Right  
+        0.0f, (float)SCREEN_HEIGHT          // Bottom, Top  
 	);
 
 	// Bind the shader program  
@@ -184,8 +186,8 @@ void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& tran
 void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
 {
     glm::mat4 projection = glm::ortho(
-        0.0f, 1280.0f,        // Left, Right  
-        0.0f, 720.0f          // Bottom, Top  
+        0.0f, (float)SCREEN_WIDTH,        // Left, Right  
+        0.0f, (float)SCREEN_HEIGHT          // Bottom, Top  
     );
 
     // Activate the text shader
@@ -263,8 +265,8 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
 void OpenGLRenderer::SubmitCircle(VertexArray* vertexArray, float radius, Transform transform)
 {
 	glm::mat4 projection = glm::ortho(
-		0.0f, 1280.0f,        // Left, Right  
-		0.0f, 720.0f          // Bottom, Top  
+        0.0f, (float)SCREEN_WIDTH,        // Left, Right  
+        0.0f, (float)SCREEN_HEIGHT          // Bottom, Top  
 	);
 
 	radius *= transform.scale.x;

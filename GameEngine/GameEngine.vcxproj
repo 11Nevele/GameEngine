@@ -46,6 +46,10 @@
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
     <ClInclude Include="Achoium\Core\sparseset.hpp" />
     <ClInclude Include="Achoium\InitEngine.h" />
+    <ClInclude Include="SandBox\GamePlaySystems\GameplayerSystems.h" />
+    <ClInclude Include="SandBox\GamePlaySystems\LevelManagementSystems.h" />
+    <ClInclude Include="SandBox\GameComponents\GameComponents.h" />
+    <ClInclude Include="SandBox\Render\RenderTileSystems.h" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />
@@ -74,6 +78,7 @@
     <ClInclude Include="Achoium\EngineComponents\Time.h" />
     <ClInclude Include="SandBox\UnitTests\TimeTest.h" />
     <ClInclude Include="SandBox\UnitTests\WorldTest.h" />
+    <ClInclude Include="SandBox\Render\UISystems.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -110,6 +115,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
+    <ClCompile Include="SandBox\GamePlaySystems\GameplayerSystems.cpp" />
+    <ClCompile Include="SandBox\GamePlaySystems\LevelManagementSystems.cpp" />
+    <ClCompile Include="SandBox\Render\RenderTileSystems.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestPhysics.cpp" />
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />
@@ -128,6 +136,7 @@
     <ClCompile Include="Achoium\EngineComponents\Sprite.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Time.cpp" />
     <ClCompile Include="SandBox\UnitTests\WorldTest.cpp" />
+    <ClCompile Include="SandBox\Render\UISystems.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\fragmentShader.txt" />
@@ -137,7 +146,6 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="C:\Users\Nickwsy\Desktop\White.png" />
-    <Image Include="SandBox\Image\grass.png" />
     <Image Include="SandBox\Image\grass2.jpg" />
     <Image Include="SandBox\Image\null.png" />
     <Image Include="SandBox\Image\red.jpg" />

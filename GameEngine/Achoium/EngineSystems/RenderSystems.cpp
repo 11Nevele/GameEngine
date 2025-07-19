@@ -78,19 +78,35 @@ namespace ac
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 		TextureManager& textureManager = world.GetResourse<TextureManager>();
 		ModelManager& modelManager = world.GetResourse<ModelManager>();
-		world.View<TilemapElement, Sprite>().ForEach([&world, &modelManager, &textureManager, &renderer](Entity e, TilemapElement& tilemapElement, Sprite& sprite)
-			{
-				textureManager.GetTexture(sprite.textureID).Bind();
-				OpenGLVertexArray& vao = modelManager.GetModel(0);
-				Tilemap& tilemap = world.Get<Tilemap>(tilemapElement.tilemap);
-				Transform t;
-				if (world.Has<Transform>(tilemapElement.tilemap))
-					Transform t = world.Get<Transform>(tilemapElement.tilemap);
-				t.position += glm::vec3(tilemap.gridWidth, tilemap.gridHeight, 0) * t.scale * glm::vec3(tilemapElement.x, tilemapElement.y,0);
-				t.scale.x = sprite.width;
-				t.scale.y = sprite.height;
-
-				renderer.Submit(&(vao), t.asMat4(), sprite.color);
+		auto list = world.View<Tilemap>().GetPacked();
+		//sort by layer increasing
+		vector<Tilemap*> tilemaps;
+		for (auto& i : list)
+		{
+			auto& tilemap = get<0>(i.components);
+			tilemaps.push_back(&tilemap);
+		}
+		std::sort(tilemaps.begin(), tilemaps.end(), [](Tilemap* a, Tilemap* b) {
+			return a->layer < b->layer;
 			});
+		for (Tilemap* tilemap : tilemaps)
+		{
+			for (uint32_t x = 0; x < tilemap->map.size(); ++x)
+			{
+				for (uint32_t y = 0; y < tilemap->map[0].size(); ++y)
+				{
+					Entity tileEntity = tilemap->map[x][y];
+					if (tileEntity == 0) continue; // Skip empty tiles
+					if (!world.Has<Sprite>(tileEntity)) continue; // Skip entities without sprites
+					Sprite& sprite = world.Get<Sprite>(tileEntity);
+					textureManager.GetTexture(sprite.textureID).Bind();
+					Transform t(glm::vec3(x * tilemap->gridWidth, y * tilemap->gridHeight, tilemap->layer), glm::vec3(1.0f));
+					t.scale.x *= tilemap->gridWidth;
+					t.scale.y *= tilemap->gridHeight;
+					renderer.Submit(&modelManager.GetModel(0), t.asMat4(), sprite.color);
+
+				}
+			}
+		}
 	}
 }

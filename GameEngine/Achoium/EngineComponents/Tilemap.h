@@ -8,8 +8,9 @@ namespace ac
 	{
 		std::vector<std::vector<Entity>> map;
 		uint32_t gridWidth, gridHeight;
+		uint32_t layer = 0;
 		Tilemap() = default;
-		Tilemap(uint32_t width, uint32_t height, uint32_t gridWidth, uint32_t gridHeight);
+		Tilemap(uint32_t width, uint32_t height, uint32_t gridWidth, uint32_t gridHeight, uint32_t layer = 0);
 	};
 	struct TilemapElement
 	{
