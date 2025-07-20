@@ -63,27 +63,6 @@ void LoadAssets(World& world)
 	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/Assets/Audio/test.wav");
 }
 
-void JumpToLevel(World& world)
-{
-	InputManager& input = world.GetResourse<InputManager>();
-	if(input.IsKeyDown(AC_KEY_0))
-		
-	{
-		LevelManagementSystems::ResetLevel(world);
-		LevelManagementSystems::LoadLevel(world, Levels::MAIN_MENU);
-	}
-	else if (input.IsKeyDown(AC_KEY_1))
-	{
-		LevelManagementSystems::ResetLevel(world);
-		LevelManagementSystems::LoadLevel(world, Levels::TEST_LEVEL);
-	}
-	else if (input.IsKeyDown(AC_KEY_2))
-	{
-		LevelManagementSystems::ResetLevel(world);
-		LevelManagementSystems::LoadLevel(world, Levels::LEVEL_1);
-	}
-}
-
 void RegisterComponentsAndSystems(World& world)
 {
 	world.RegisterType<Wall>();
@@ -93,7 +72,7 @@ void RegisterComponentsAndSystems(World& world)
 	world.RegisterType<Box>();
 	world.RegisterType<LevelEntrance>();
 
-	world.AddUpdateSystem(JumpToLevel, 0);
+	world.AddUpdateSystem(GameplayerSystems::UndoLastStep, 0);
 	world.AddUpdateSystem(SceneFinishChecks::CheckWinLevel, 0);
 	world.AddUpdateSystem(SceneFinishChecks::CheckExitLevel, 0);
 	world.AddUpdateSystem(SceneFinishChecks::CheckRestartLevel, 0);

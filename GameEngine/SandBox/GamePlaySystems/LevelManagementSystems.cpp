@@ -1,5 +1,6 @@
 #include "acpch.h"
 #include "LevelManagementSystems.h"
+#include "GameplayerSystems.h"
 
 void LevelManagementSystems::ResetLevel(World& world)
 {
@@ -98,6 +99,9 @@ void LevelManagementSystems::LoadLevel(World& world, Levels level)
 			Level9(world);
 			break;
 	}
+	auto t = world.View<Player, TilemapElement>().GetPacked();
+	Tilemap& tile = world.Get<Tilemap>(std::get<1>(t[0].components).tilemap);
+	GameplayerSystems::AddStep(world, tile);
 }
 void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map)
 {
@@ -361,8 +365,8 @@ void LevelManagementSystems::Level1(World& world)
 	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 6, 3);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 6, 1);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 8, 2);
-	AddWinCondition(world, tilemap, background, 9, 9, "3", [](Number n) {return n.data == 3; });
-	AddWinCondition(world, tilemap, background, 5, 9, "9", [](Number n) {return n.data == 9; });
+	AddWinCondition(world, tilemap, background, 9, 9, "", [](Number n) {return true; });
+	AddWinCondition(world, tilemap, background, 5, 9, "", [](Number n) {return true; });
 }
 
 void LevelManagementSystems::Level5(World& world)
@@ -436,7 +440,7 @@ void LevelManagementSystems::Level6(World& world)
 	AddWinCondition(world, tilemap, background, 06, 3, "min", [](Number n) {return n.data == 3; });
 }
 
-void LevelManagementSystems::Level7(World& world)
+void LevelManagementSystems::Level9(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -538,7 +542,7 @@ void LevelManagementSystems::Level8(World& world)
 	AddWinCondition(world, tilemap, background, 13, 7, "25", [](Number n) {return n.data == 25; });
 }
 
-void LevelManagementSystems::Level9(World& world)
+void LevelManagementSystems::Level7(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -573,8 +577,8 @@ void LevelManagementSystems::Level9(World& world)
 	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 10, 2);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 10, 1);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 9, 10, 2);
-	AddNumber(world, world.Get<Tilemap>(tilemap), 10, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 10, 10, 1);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 12, 10, 3);
 	AddWinCondition(world, tilemap, background, 7, 1, "512", [](Number n) {return n.data == 512; });
-	AddWinCondition(world, tilemap, background, 7, 3, "256", [](Number n) {return n.data == 256; });
+	AddWinCondition(world, tilemap, background, 7, 3, "64", [](Number n) {return n.data == 64; });
 }

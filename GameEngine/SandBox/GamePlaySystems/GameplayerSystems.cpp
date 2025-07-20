@@ -1,6 +1,9 @@
 #include "acpch.h"
 #include "GameplayerSystems.h"
 
+
+// 修复：为静态成员变量 stepHistory 提供类型和作用域
+std::vector<GameplayerSystems::StepInfo> GameplayerSystems::stepHistory;
 void GameplayerSystems::PlayerMovement(World& world)
 {
 	InputManager& input = world.GetResourse<InputManager>();
@@ -14,7 +17,8 @@ void GameplayerSystems::PlayerMovement(World& world)
 			player.dx = 0;
 			player.dy = 1;
 			sprite.textureID = player.upTextureID;
-			HasSpaceToMove(world, tilemap, x, y, 0, 1);
+			if(HasSpaceToMove(world, tilemap, x, y, 0, 1))
+				AddStep(world, tilemap);
 		});
 	}
 	else if (input.IsKeyDown(AC_KEY_S))
@@ -27,7 +31,8 @@ void GameplayerSystems::PlayerMovement(World& world)
 			player.dx = 0;
 			player.dy = -1;
 			sprite.textureID = player.downTextureID;
-			HasSpaceToMove(world, tilemap, x, y, 0, -1);
+			if(HasSpaceToMove(world, tilemap, x, y, 0, -1))
+				AddStep(world, tilemap);;
 			});
 	}
 	else if (input.IsKeyDown(AC_KEY_A))
@@ -40,7 +45,8 @@ void GameplayerSystems::PlayerMovement(World& world)
 			player.dx = -1;
 			player.dy = 0;
 			sprite.textureID = player.leftTextureID;
-			HasSpaceToMove(world, tilemap, x, y, -1, 0);
+			if(HasSpaceToMove(world, tilemap, x, y, -1, 0))
+				AddStep(world, tilemap);
 			});
 	}
 	else if (input.IsKeyDown(AC_KEY_D))
@@ -53,9 +59,77 @@ void GameplayerSystems::PlayerMovement(World& world)
 			player.dx = 1;
 			player.dy = 0;
 			sprite.textureID = player.rightTextureID;
-			HasSpaceToMove(world, tilemap, x, y, 1, 0);
-			});
+			if(HasSpaceToMove(world, tilemap, x, y, 1, 0))
+				AddStep(world, tilemap);
+		});
 	}
+}
+
+void GameplayerSystems::AddStep(World& world, Tilemap& tilemap)
+{
+	StepInfo stepInfo;
+	world.View<Player, TilemapElement>().ForEach([&stepInfo](Entity entity, Player& player, TilemapElement& tilemapElement)
+	{
+		stepInfo.playerPos.emplace_back(tilemapElement.x, tilemapElement.y);
+	});
+	world.View<Box, TilemapElement>().ForEach([&stepInfo](Entity entity, Box& box, TilemapElement& tilemapElement)
+	{
+		stepInfo.boxPos.emplace_back(tilemapElement.x, tilemapElement.y);
+	});
+	world.View<Number, TilemapElement>().ForEach([&stepInfo](Entity entity, Number& number, TilemapElement& tilemapElement)
+	{
+		stepInfo.numberPos.emplace_back(tilemapElement.x, tilemapElement.y);
+		stepInfo.numbers.push_back(number); // Store the number for undo
+	});
+	stepHistory.push_back(stepInfo);
+}
+
+void GameplayerSystems::UndoLastStep(World& world)
+{
+	InputManager& input = world.GetResourse<InputManager>();
+	if (!input.IsKeyDown(AC_KEY_Z))
+		return;
+	if (stepHistory.size() <= 1)
+		return;
+	stepHistory.pop_back(); // Remove the last step
+	StepInfo& lastStep = stepHistory.back();
+	Tilemap& tilemap = world.Get<Tilemap>(std::get<1>(world.View<Player,TilemapElement>().GetPacked()[0].components).tilemap);
+	world.View<Player, TilemapElement>().ForEach([&world, &lastStep](Entity entity, Player& player, TilemapElement& tilemapElement)
+	{
+			world.Delete<Player>(entity); // Remove the current player sprite
+			world.Delete<Sprite>(entity); // Remove the current player sprite
+		});
+	world.View<Box, TilemapElement>().ForEach([&world](Entity entity, Box& box, TilemapElement& tilemapElement)
+		{
+			world.Delete<Box>(entity); // Remove the current box sprite
+			world.Delete<Sprite>(entity); // Remove the current box sprite
+		});
+	world.View<Number, TilemapElement>().ForEach([&world](Entity entity, Number& number, TilemapElement& tilemapElement)
+		{
+			world.Delete<Number>(entity); // Remove the current number sprite
+			world.Delete<Sprite>(entity); // Remove the current number sprite
+		});
+	for (const auto& pos : lastStep.playerPos)
+		{
+		Entity tile = tilemap.map[pos.first][pos.second];
+		world.Add<Player>(tile, Player::Create(world));
+		world.Add<Sprite>(tile, Sprite::Create("PlayerDown", world.GetResourse<TextureManager>())); // Default sprite
+	}
+	for (const auto& pos : lastStep.boxPos)
+		{
+		Entity tile = tilemap.map[pos.first][pos.second];
+		world.Add<Box>(tile, Box());
+		world.Add<Sprite>(tile, Sprite::Create("Box1", world.GetResourse<TextureManager>())); // Default box sprite
+	}
+	for (int i = 0; i < lastStep.numberPos.size(); ++i)
+		{
+		auto& pos = lastStep.numberPos[i];
+		Entity tile = tilemap.map[pos.first][pos.second];
+		Number num = lastStep.numbers[i];
+		world.Add<Number>(tile, std::move(num)); // Reset number to 0
+		world.Add<Sprite>(tile, Sprite::Create("Box2", world.GetResourse<TextureManager>())); // Default number sprite
+	}
+
 }
 
 long long powm(long long base, long long exp)

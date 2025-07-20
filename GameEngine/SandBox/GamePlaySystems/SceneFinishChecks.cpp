@@ -1,5 +1,6 @@
 #include "acpch.h"
 #include "SceneFinishChecks.h"
+#include "GameplayerSystems.h"
 
 void SceneFinishChecks::CheckWinLevel(World& world)
 {
@@ -50,6 +51,7 @@ void SceneFinishChecks::CheckWinLevel(World& world)
 	if (win)
 	{
 		PlaySoundA("Assets/Audio/bell.wav", NULL, SND_FILENAME | SND_SYNC);
+		GameplayerSystems::ResetStepHistory();
 		LevelManagementSystems::ResetLevel(world);
 		LevelManagementSystems::LoadLevel(world, Levels::MAIN_MENU);
 	}
@@ -60,6 +62,7 @@ void SceneFinishChecks::CheckExitLevel(World& world)
 	InputManager& input = world.GetResourse<InputManager>();
 	if(input.IsKeyDown(AC_KEY_ESCAPE))
 	{
+		GameplayerSystems::ResetStepHistory();
 		LevelManagementSystems::ResetLevel(world);
 		LevelManagementSystems::LoadLevel(world, Levels::MAIN_MENU);
 	}
@@ -70,6 +73,7 @@ void SceneFinishChecks::CheckRestartLevel(World& world)
 	InputManager& input = world.GetResourse<InputManager>();
 	if(input.IsKeyDown(AC_KEY_R))
 	{
+		GameplayerSystems::ResetStepHistory();
 		LevelManagementSystems::ResetLevel(world);
 		LevelManagementSystems::LoadLevel(world, world.GetResourse<SceneData>().currentLevel);
 	}
@@ -80,6 +84,7 @@ void SceneFinishChecks::CheckTransitionLevel(World& world)
 	world.View<LevelEntrance, Player>().ForEach([&world](Entity entity, LevelEntrance& entrance, Player& player)
 	{
 		Levels l = entrance.targetLevel;
+		GameplayerSystems::ResetStepHistory();
 		LevelManagementSystems::ResetLevel(world);
 		LevelManagementSystems::LoadLevel(world, l);
 	});
