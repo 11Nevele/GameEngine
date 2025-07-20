@@ -44,7 +44,6 @@ namespace ac
 		world.RegisterType<AudioSource>();
 		world.RegisterType<AudioListener>();
 
-		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
 		world.AddResource<WinWindow>(new WinWindow({ "AC", SCREEN_WIDTH, SCREEN_HEIGHT }, world.GetResourse<EventManager>()));
 		world.AddResource<OpenGLRenderer>(new OpenGLRenderer());

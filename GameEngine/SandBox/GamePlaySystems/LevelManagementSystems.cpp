@@ -91,6 +91,12 @@ void LevelManagementSystems::LoadLevel(World& world, Levels level)
 		case LEVEL_7:
 			Level7(world);
 			break;
+		case LEVEL_8:
+			Level8(world);
+			break;
+		case LEVEL_9:
+			Level9(world);
+			break;
 	}
 }
 void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map)
@@ -149,7 +155,7 @@ void LevelManagementSystems::TestLevel(World& world)
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,3,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -187,7 +193,7 @@ void LevelManagementSystems::MainMenu(World& world)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,3,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
@@ -200,17 +206,18 @@ void LevelManagementSystems::MainMenu(World& world)
 	Entity tilemap = world.CreateEntity();
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64, 1));
 	LoadMap(world, tilemap, background, map);
-	AddLevelEntrance(world, tilemap, background, 7, 6, Levels::TEST_LEVEL, "Test Level");
-	AddLevelEntrance(world, tilemap, background, 1, 1, Levels::LEVEL_1, "1");
-	AddLevelEntrance(world, tilemap, background, 1, 2, Levels::LEVEL_2, "2");
-	AddLevelEntrance(world, tilemap, background, 1, 3, Levels::LEVEL_3, "3");
-	AddLevelEntrance(world, tilemap, background, 1, 4, Levels::LEVEL_4, "4");
-	AddLevelEntrance(world, tilemap, background, 1, 5, Levels::LEVEL_5, "5");
-	AddLevelEntrance(world, tilemap, background, 1, 6, Levels::LEVEL_6, "6");
-	AddLevelEntrance(world, tilemap, background, 1, 7, Levels::LEVEL_7, "7");
+	AddLevelEntrance(world, tilemap, background, 4, 4, Levels::LEVEL_1, "1");
+	AddLevelEntrance(world, tilemap, background, 7, 4, Levels::LEVEL_2, "2");
+	AddLevelEntrance(world, tilemap, background, 10, 4, Levels::LEVEL_3, "3");
+	AddLevelEntrance(world, tilemap, background, 4, 7, Levels::LEVEL_4, "4");
+	AddLevelEntrance(world, tilemap, background, 7, 7, Levels::LEVEL_5, "5");
+	AddLevelEntrance(world, tilemap, background, 10, 7, Levels::LEVEL_6, "6");
+	AddLevelEntrance(world, tilemap, background, 4, 10, Levels::LEVEL_7, "7");
+	AddLevelEntrance(world, tilemap, background, 7, 10, Levels::LEVEL_8, "8");
+	AddLevelEntrance(world, tilemap, background, 10, 10, Levels::LEVEL_9, "9");
 }
 
-void LevelManagementSystems::Level1(World& world)
+void LevelManagementSystems::Level2(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -247,7 +254,7 @@ void LevelManagementSystems::Level1(World& world)
 	AddWinCondition(world, tilemap, background, 9, 5, "7", [](Number n) {return n.data == 7; });
 }
 
-void LevelManagementSystems::Level2(World& world)
+void LevelManagementSystems::Level3(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -284,7 +291,7 @@ void LevelManagementSystems::Level2(World& world)
 	AddWinCondition(world, tilemap, background, 9, 5, "81", [](Number n) {return n.data == 81; });
 }
 
-void LevelManagementSystems::Level3(World& world)
+void LevelManagementSystems::Level4(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -320,7 +327,7 @@ void LevelManagementSystems::Level3(World& world)
 	AddWinCondition(world, tilemap, background, 12, 2, ">10", [](Number n) {return n.data > 10; });
 }
 
-void LevelManagementSystems::Level4(World& world)
+void LevelManagementSystems::Level1(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -351,10 +358,11 @@ void LevelManagementSystems::Level4(World& world)
 	LoadMap(world, tilemap, background, map);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 7, 7, 1);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 8, 1);
-	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 6, 1);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 6, 3);
 	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 6, 1);
-	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 8, 1);
-	AddWinCondition(world, tilemap, background, 9, 9, "", [](Number n) {return true; });
+	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 8, 2);
+	AddWinCondition(world, tilemap, background, 9, 9, "3", [](Number n) {return n.data == 3; });
+	AddWinCondition(world, tilemap, background, 5, 9, "9", [](Number n) {return n.data == 9; });
 }
 
 void LevelManagementSystems::Level5(World& world)
@@ -430,4 +438,143 @@ void LevelManagementSystems::Level6(World& world)
 
 void LevelManagementSystems::Level7(World& world)
 {
+	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().mod = 100; // Set the global number to 100
+	const int mapWidth = 15;
+	const int mapHeight = 15;
+	//prime even small 
+	vector<vector<int>> map = {
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	};
+	Entity background = world.CreateEntity();
+	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+	Entity tilemap = world.CreateEntity();
+	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64, 1));
+	LoadMap(world, tilemap, background, map);
+
+	AddNumber(world, world.Get<Tilemap>(tilemap), 3, 12, 8);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 11, 2, 7);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 11, 12, 9);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 3, 2, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 8, 3);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 6, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 8, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 6, 3);
+	AddWinCondition(world, tilemap, background, 2, 12, "<10", [](Number n) {return n.data < 10; });
+	AddWinCondition(world, tilemap, background, 13, 2, "prime", [](Number n) 
+		{
+			if (n.data < 2) return false; // 0 and 1 are not prime
+			for (int i = 2; i * i <= n.data; ++i) 
+			{
+				if (n.data % i == 0) return false; // Found a divisor, not prime
+			}
+			return true; // No divisors found, it's prime
+			; 
+		});
+	AddWinCondition(world, tilemap, background, 12, 12, "<10", [](Number n) {return n.data < 10; });
+	AddWinCondition(world, tilemap, background, 2, 2, "fibonacci ", [](Number n) 
+		{
+			int a = 0, b = 1;
+			while (a < n.data) 
+			{
+				int temp = a;
+				a = b;
+				b = temp + b;
+			}
+			return a == n.data; // Check if we reached the number
+		});
+}
+
+void LevelManagementSystems::Level8(World& world)
+{
+	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().mod = 1000; // Set the global number to 100
+	const int mapWidth = 15;
+	const int mapHeight = 15;
+	vector<vector<int>> map = {
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,1,1,1,1,0,0,0,0,0,1},
+		{1,1,1,1,1,1,0,0,1,0,0,0,0,0,1},
+		{1,1,0,0,0,0,0,0,1,1,1,1,1,1,1},
+		{1,1,0,1,1,0,0,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,0,0,2,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,1,1,1,0,0,1},
+		{1,1,1,1,1,1,1,0,0,1,0,1,1,1,1},
+		{1,0,0,0,0,0,1,1,1,1,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	};
+	Entity background = world.CreateEntity();
+	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+	Entity tilemap = world.CreateEntity();
+	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64, 1));
+	LoadMap(world, tilemap, background, map);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 2, 6, 1);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 4, 6, 3);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 5, 6, 4);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 7, 6, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 7, 8, 2);
+	AddWinCondition(world, tilemap, background, 7, 7, "8", [](Number n) {return n.data == 8; });
+	AddWinCondition(world, tilemap, background, 13, 7, "25", [](Number n) {return n.data == 25; });
+}
+
+void LevelManagementSystems::Level9(World& world)
+{
+	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().mod = 1000; // Set the global number to 100
+	const int mapWidth = 15;
+	const int mapHeight = 15;
+	vector<vector<int>> map = {
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,3,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,2,0,0,0,0,0,0,1},
+		{1,0,0,0,3,0,0,0,0,0,0,3,0,0,1},
+		{1,0,1,1,1,1,1,0,1,1,1,1,1,0,1},
+		{1,1,1,0,0,0,1,0,1,0,0,0,1,1,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,0,0,0,0,0,1,0,1,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	};
+	Entity background = world.CreateEntity();
+	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+	Entity tilemap = world.CreateEntity();
+	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64, 1));
+	LoadMap(world, tilemap, background, map);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 2, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 3, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 5, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 6, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 8, 10, 1);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 9, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 10, 10, 2);
+	AddNumber(world, world.Get<Tilemap>(tilemap), 12, 10, 3);
+	AddWinCondition(world, tilemap, background, 7, 1, "512", [](Number n) {return n.data == 512; });
+	AddWinCondition(world, tilemap, background, 7, 3, "256", [](Number n) {return n.data == 256; });
 }

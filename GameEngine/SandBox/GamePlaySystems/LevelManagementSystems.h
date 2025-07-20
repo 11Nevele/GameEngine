@@ -20,6 +20,8 @@ public:
 	static void Level5(World& world);
 	static void Level6(World& world);
 	static void Level7(World& world);
+	static void Level8(World& world);
+	static void Level9(World& world);
 
 
 };

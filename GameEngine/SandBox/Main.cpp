@@ -2,6 +2,7 @@
 #define ECS_INFO_ENABLED
 #define SHOW_WARNING
 #define SHOW_MESSAGE
+#define SHOW_ERROR
 
 
 #include <gl/GL.h>
@@ -157,7 +158,7 @@ int main()
 	RenderTileSystems::Init(world);
 	world.AddUpdateSystem(RenderTileSystems::UpdateTileSprites, 9);
 
-	LevelManagementSystems::LoadLevel(world, Levels::TEST_LEVEL);
+	LevelManagementSystems::LoadLevel(world, Levels::MAIN_MENU);
 	
 	InputManager& input = world.GetResourse<InputManager>();
 	while (true)
