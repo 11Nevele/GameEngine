@@ -18,6 +18,8 @@
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Tilemap.h"
 #include "EngineSystems/TimeSystem.h"
+#include "EngineSystems/RenderTextSystems.h"
+#include "EngineComponents/TextComponent.h"
 #include "Global.h"
 #include "Input/InputManager.h"
 #include <filesystem>
@@ -43,6 +45,7 @@ namespace ac
 		// 注册音频组件
 		world.RegisterType<AudioSource>();
 		world.RegisterType<AudioListener>();
+		world.RegisterType<Text>();
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
@@ -76,11 +79,13 @@ namespace ac
 		world.AddUpdateSystem(PhysicsSystem::CollisionSystem, 2); // Run collision detection after physics update
 		// 注册音频系统
 		world.AddPostUpdateSystem(AudioSystem::UpdateAudio, 0); // 在物理系统之后更新音频
+		world.AddPostUpdateSystem(SyncCamera, 0); // Sync camera after audio update
 		
 		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
 		world.AddPostUpdateSystem(PhysicsSystem::Collision2DSystem, 2); // Run collision detection after physics update
 		world.AddPostUpdateSystem(RenderSprite, 9);
 		world.AddPostUpdateSystem(RenderTilemap, 9);
+		world.AddPostUpdateSystem(RenderTextSystem, 9);
 		
 
 		

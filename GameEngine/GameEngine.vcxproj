@@ -16,6 +16,7 @@
     <ClInclude Include="Achoium\Core\ECSEvents.h" />
     <ClInclude Include="Achoium\Core\World.hpp" />
     <ClInclude Include="Achoium\EngineComponents\Audio\Audio.h" />
+    <ClInclude Include="Achoium\EngineComponents\Camera.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h" />
@@ -46,6 +47,8 @@
     <ClInclude Include="Achoium\AssetManagement\AssetManager.h" />
     <ClInclude Include="Achoium\Core\sparseset.hpp" />
     <ClInclude Include="Achoium\InitEngine.h" />
+    <ClInclude Include="Achoium\EngineComponents\TextComponent.h" />
+    <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />
@@ -110,6 +113,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
+    <ClCompile Include="Achoium\EngineSystems\RenderTextSystems.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestPhysics.cpp" />
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />

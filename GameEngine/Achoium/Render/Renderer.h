@@ -4,6 +4,7 @@
 #include "Render/VertexArray.h"
 #include "Render/Shader.h"
 #include "Math/Transform.h"
+#include <string>
 namespace ac
 {
 	class Renderer
@@ -23,7 +24,8 @@ namespace ac
 
 		virtual void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) = 0;
 
-		virtual void SubmitText(const string& text, const Transform& transform) = 0;
+		virtual void SubmitText(const string& text, const Transform& transform,
+			const glm::vec3& color = { 1,1,1 }, const glm::vec2& pivot = { 0,0 }) = 0;
 
 
 		virtual void UpdateCamera(const glm::mat4& cameraTransform) = 0;

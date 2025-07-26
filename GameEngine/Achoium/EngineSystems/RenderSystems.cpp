@@ -93,4 +93,12 @@ namespace ac
 				renderer.Submit(&(vao), t.asMat4(), sprite.color);
 			});
 	}
+	void SyncCamera(World& world)
+	{
+		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+		world.View<Camera, Transform>().ForEach([&renderer](Entity e, Camera& camera, Transform& transform)
+			{
+				renderer.UpdateCamera(transform.asMat4(true));
+			});
+	}
 }

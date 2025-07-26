@@ -18,83 +18,41 @@ using mInput = WindowsInput;
 using mWindow = WinWindow;
 using mRenderer = OpenGLRenderer;
 
-struct Camera {
-	glm::vec3 movementSpeed;
-};
+
 struct movement
 {
+	int up, down, left, right;
 	glm::vec3 velocity;
 };
+
 
 struct PlayerMovement
 {
 
 };
-void CameraMovement(ac::World& world)
+void Movement(ac::World& world)
 {
 	
 	mInput& input = world.GetResourse<mInput>();
-	mWindow& win = world.GetResourse<mWindow>();
 	mRenderer& rend = world.GetResourse<mRenderer>();
 	Time& time = world.GetResourse<Time>();
-	auto t = world.View<Camera, Transform>().GetPacked();
+	auto t = world.View<movement, Transform>().GetPacked();
 	for (auto i : t)
 	{
 		auto& transform = get<1>(i.components);
-		auto& camera = get < 0> (i.components);
-		if (input.IsKeyPressed(AC_KEY_A))
-			transform.position.x -= camera.movementSpeed.x * time.Delta();
+		auto& m = get < 0> (i.components);
+		if (input.IsKeyPressed(m.left))
+			transform.position.x -= m.velocity.x * time.Delta();
 
-		if (input.IsKeyPressed(AC_KEY_D))
-			transform.position.x += camera.movementSpeed.x * time.Delta();
+		if (input.IsKeyPressed(m.right))
+			transform.position.x += m.velocity.x * time.Delta();
 
-		if (input.IsKeyPressed(AC_KEY_W))
-			transform.position.z -= camera.movementSpeed.z * time.Delta();
+		if (input.IsKeyPressed(m.down))
+			transform.position.y -= m.velocity.y * time.Delta();
 
-		if (input.IsKeyPressed(AC_KEY_S))
-			transform.position.z += camera.movementSpeed.z * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_LEFT_SHIFT))
-			transform.position.y += camera.movementSpeed.y * time.Delta();
-
-		if (input.IsKeyPressed(AC_KEY_LEFT_CONTROL))
-			transform.position.y -= camera.movementSpeed.y * time.Delta();
-		
-		rend.UpdateCamera(transform.asMat4(true));
+		if (input.IsKeyPressed(m.up))
+			transform.position.y += m.velocity.y * time.Delta();
 	}
-}
-
-void RandomCircleGenerator(World& world)
-{
-	WindowsInput& input = world.GetResourse<WindowsInput>();
-	mWindow& win = world.GetResourse<mWindow>();
-	static bool pressed = false;
-	if (input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_2) && pressed == false)
-	{
-		pressed = true;
-		//randomly generate width height and angular  velocity
-		float radius = rand() % 100 + 50; // Width between 50 and 150
-		float angularVelocity = 0.0f; // Angular velocity between -5 and 5
-		float mass = radius * radius * 0.01f;
-		float v = rand() % 200 + 100;
-
-
-		glm::vec2 mousePos = input.GetMousePosition();
-		mousePos.y = 720 - mousePos.y; // Invert Y coordinate for OpenGL
-		Entity block = world.CreateEntity();
-		world.Add<Transform>(block, Transform());
-		world.Get<Transform>(block).position = { mousePos.x, mousePos.y, 0 };
-		world.Add<RigidBody2D>(block, RigidBody2D(mass, 0.5, 0.1, true, false, false));
-		world.Add<CircleCollider2D>(block, CircleCollider2D(radius));
-		world.Get<CircleCollider2D>(block).offset = glm::vec3(0, 0, 0);
-		world.Get<RigidBody2D>(block).inertiaTensor = mass * std::pow(radius, 2);
-		world.Get<RigidBody2D>(block).angularVelocity = angularVelocity;
-		world.Get<RigidBody2D>(block).velocity.y = v;
-
-		
-	}
-	if (!input.IsMouseButtonPressed(GLFW_MOUSE_BUTTON_2))
-		pressed = false;
 }
 
 
@@ -145,17 +103,14 @@ int main()
 	Entity camera = world.CreateEntity();
 
 
-	world.Add<Camera>(camera, Camera{ { 100.0f, 100.0f, 0 } });
+	world.Add<Camera>(camera, Camera{ });
 	world.Add<AudioListener>(camera, AudioListener());
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0 };
+	world.Add<movement>(camera, movement{ AC_KEY_W, AC_KEY_S, AC_KEY_A, AC_KEY_D, {200.0f, 200.0f, 0.0f} });
 
-	world.AddUpdateSystem(CameraMovement, 0);
-	world.AddPostUpdateSystem(RandomCircleGenerator, 0);
+	world.AddUpdateSystem(Movement, 0);
 
-	//GenerateOrganisms(world);
-
-	//world.AddPostUpdateSystem(RenderCollider, 9);
 
 	LoadAssets(world);
 
@@ -165,14 +120,11 @@ int main()
 
 	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/SandBox/Audio/test.wav");
 	
-	Entity audioTest = world.CreateEntity();
-	world.Add<AudioSource>(audioTest, AudioSource::Create(world, "Test", true, 0.5f, AudioType::Music, true));
-	world.Add<Sprite>(audioTest, Sprite::Create("Red", world.GetResourse<TextureManager>()));
-	world.Get<Sprite>(audioTest).width = 100;
-	world.Get<Sprite>(audioTest).height = 100;
-	world.Add<Transform>(audioTest, Transform());
 
-	world.AddUpdateSystem(TestAudioSystem, 0);
+	Entity TextEntity = world.CreateEntity("TextEntity");
+	world.Add<Text>(TextEntity, Text("Hello world", 48, {0.5,0.5}));
+	world.Add<Transform>(TextEntity, Transform());
+	world.Add<movement>(TextEntity, movement{ AC_KEY_UP, AC_KEY_DOWN, AC_KEY_LEFT, AC_KEY_RIGHT, {200.0f, 200.0f, 0.0f} });
 	
 
 
@@ -181,9 +133,7 @@ int main()
 		mWindow& win = world.GetResourse<mWindow>();
 		
 		mRenderer& renderer = world.GetResourse<mRenderer>();
-		Transform t;
-		t.scale = { 2, 1, 1 };
-		renderer.SubmitText("Hello World", t);
+
 		world.Update();
 
 		win.OnUpdate();

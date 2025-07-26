@@ -17,11 +17,13 @@
 #include "EngineSystems/PhysicsSystem.h"
 #include "EngineSystems/TimeSystem.h"
 #include "EngineSystems/AudioSystem.h"
+#include "EngineSystems/RenderTextSystems.h"
 
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Sprite.h"
 #include "EngineComponents/Time.h"
 #include "EngineComponents/Tilemap.h"
 #include "EngineComponents/Audio/Audio.h"
+#include "EngineComponents/TextComponent.h"
 
 #include "Global.h"

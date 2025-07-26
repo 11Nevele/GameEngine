@@ -65,7 +65,18 @@ namespace ac
 		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
 
 		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
-		virtual void SubmitText(const string& text, const Transform& transform) override;
+		/**
+		 * @brief Submits a text rendering command.
+		 * 
+		 * Renders text at the specified position with the given transformation and color.
+		 * 
+		 * @param text The text string to render
+		 * @param transform The transformation to apply to the text
+		 * @param color The color of the text (default is white)
+		 * @param pivot The pivot point for the text rendering (default is bottom left)
+		 */
+		virtual void SubmitText(const string& text, const Transform& transform, 
+			const glm::vec3& color = { 1,1,1 }, const glm::vec2& pivot = {0,0}) override;
 
 		void SubmitCircle(VertexArray* vertexArray, float radius, Transform transform) override;
 		/**

@@ -181,11 +181,11 @@ void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& tran
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
+void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, const glm::vec3& color, const glm::vec2& pivot)
 {
     glm::mat4 projection = glm::ortho(
-        0.0f, 1280.0f,        // Left, Right  
-        0.0f, 720.0f          // Bottom, Top  
+        0.0f, (float)1280,        // Left, Right  
+        0.0f, (float)720          // Bottom, Top  
     );
 
     // Activate the text shader
@@ -193,9 +193,10 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
 
     // Set the projection matrix in the shader
     textShader->SetMat4("projection", projection);
+	textShader->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
 
     // Set text color (default to white if not specified)
-    textShader->SetFloat3("textColor", glm::vec3(1.0f, 1.0f, 1.0f));
+    textShader->SetFloat3("textColor", color);
 
     // Create and configure VAO/VBO for rendering characters
     unsigned int VAO, VBO;
@@ -215,22 +216,33 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
     glActiveTexture(GL_TEXTURE0);
     textShader->SetInt("text", 0);
 
-    // Starting position for text rendering based on the transform
-    float x = transform.position.x;
-    float y = transform.position.y;
-    float scale = transform.scale.x;  // Use x scale for consistent text scaling
 
+    // Starting position for text rendering based on the transform
+
+
+    float totalWidth = 0.0f, mxHeight = 0;
+    for (char c : text)
+    {
+        Character ch = Characters[c];
+        totalWidth += (ch.Advance >> 6); // Advance is in 1/64 pixels
+        mxHeight = std::max(mxHeight, (float)ch.Size.y);
+    }
+	totalWidth *= transform.scale.x; // Scale the total width by the transform's scale
+	mxHeight *= transform.scale.y; // Scale the max height by the transform's scale
+
+    float x = transform.position.x - totalWidth * pivot.x;
+    float y = transform.position.y - mxHeight * pivot.y;
     // Render each character in the text string
     for (char c : text)
     {
 
         Character ch = Characters[c];
 
-        GLfloat xpos = x + ch.Bearing.x * scale;
-        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
+        GLfloat xpos = x + ch.Bearing.x * transform.scale.x;
+        GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * transform.scale.y;
 
-        GLfloat w = ch.Size.x * scale;
-        GLfloat h = ch.Size.y * scale;
+        GLfloat w = ch.Size.x * transform.scale.x;
+        GLfloat h = ch.Size.y * transform.scale.y;
         // 当前字符的VBO
         GLfloat vertices[6][4] = {
             { xpos,     ypos + h,   0.0, 0.0 },
@@ -250,7 +262,7 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform)
         // 绘制方块
         glDrawArrays(GL_TRIANGLES, 0, 6);
         // 更新位置到下一个字形的原点，注意单位是1/64像素
-        x += (ch.Advance >> 6) * scale; //(2^6 = 64)
+        x += (ch.Advance >> 6) * transform.scale.x; //(2^6 = 64)
     }
 
     // Clean up
