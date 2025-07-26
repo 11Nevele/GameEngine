@@ -61,9 +61,9 @@ namespace ac
 
 		std::string currentPath = std::filesystem::current_path().string();
 		world.GetResourse<TextureManager>()
-			.AddTexture("Default", currentPath + "/SandBox/Image/null.png")
-			.AddTexture("Grass", currentPath + "/SandBox/Image/grass.png")
-			.AddTexture("Red", currentPath + "/SandBox/Image/red.jpg");
+			.AddTexture("Default", currentPath + "/Assets/Image/null.png")
+			.AddTexture("Grass", currentPath + "/Assets/Image/grass.png")
+			.AddTexture("Red", currentPath + "/Assets/Image/red.jpg");
 		
 		world.GetResourse<EventManager>()
 			.AddListener<OnAdded<Sprite>>(OnSpriteAdded)

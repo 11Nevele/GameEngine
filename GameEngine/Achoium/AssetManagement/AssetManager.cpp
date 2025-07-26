@@ -77,7 +77,7 @@ void TextureManager::DeleteReference(uint32_t id)
 	referenceCount[id]--;
 	if (referenceCount[id] == 0)
 	{
-		textureList[id].Delete();
+		//textureList[id].Delete();
 	}
 	return;
 }
@@ -90,7 +90,7 @@ void TextureManager::DeleteReference(const std::string& name)
 	referenceCount[id]--;
 	if (referenceCount[id] == 0)
 	{
-		textureList[id].Delete();
+		//textureList[id].Delete();
 	}
 	return;
 }
@@ -123,6 +123,7 @@ TextureManager& ac::TextureManager::AddTexture(const std::string& name, const st
 	ACASSERT(data, "FAIL TO READ DATA FROM" << path);  
 	textureList.emplace_back(data, info); 
 	referenceCount.emplace_back(0);
+	textureList.back().Upload();
 	return *this;  
 }  
 

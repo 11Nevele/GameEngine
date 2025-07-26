@@ -11,6 +11,11 @@
 #include "AssetManagement/AssetManager.h"
 #include "AssetManagement/AudioManager.h"
 
+#include "Event/WindowEvent.h"
+#include "Event/MouseEvent.h"
+#include "Event/KeyEvent.h"
+
+
 #include "InitEngine.h"
 
 #include "EngineSystems/RenderSystems.h"

@@ -25,6 +25,42 @@ namespace ac
 		 * identity rotation, and unit scale).
 		 */
 		Transform();
+
+		/**
+		 * @brief Constructs a Transform with specified position, rotation, and scale.
+		 * 
+		 * @param position The position in 3D space
+		 * @param rotation The rotation as a quaternion
+		 * @param scale The scale in 3D space
+		 */
+		Transform(const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale = { 1,1,1 })
+			: position(position), rotation(rotation), scale(scale) {
+		}
+		Transform(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale = { 1,1,1 })
+			: position(position), rotation(glm::quat(rotation)), scale(scale) {
+		}
+		Transform(const glm::vec3& position)
+			: position(position), rotation(glm::quat(1.0f, 0.0f, 0.0f, 0.0f)), scale(1.0f, 1.0f, 1.0f) {
+		}
+		Transform(const glm::quat& rotation)
+			: position(0.0f, 0.0f, 0.0f), rotation(rotation), scale(1.0f, 1.0f, 1.0f) {
+		}
+		Transform(const glm::vec3& position, float rotation)
+			: position(position), rotation(glm::quat(glm::vec3(0, 0, glm::radians(rotation)))), scale(1.0f, 1.0f, 1.0f) {
+		}
+		Transform(const glm::vec3& position, const glm::vec3& rotation, float scale)
+			: position(position), rotation(glm::quat(rotation)), scale(scale, scale, scale) {
+		}
+		Transform(const glm::vec3& position, float rotation, float scale)
+			: position(position), rotation(glm::quat(glm::vec3(0, 0, glm::radians(rotation)))), scale(scale, scale, scale) {
+		}
+		Transform(const glm::vec3& position, float rotation, glm::vec3& scale)
+			: position(position), rotation(glm::quat(glm::vec3(0, 0, glm::radians(rotation)))), scale(scale) {
+		}
+		Transform(const glm::vec3& position, const glm::quat& rotation, float scale)
+			: position(position), rotation(rotation), scale(scale, scale, scale) {
+		}
+
 		
 		/**
 		 * @brief Converts the transform to a 4x4 matrix.

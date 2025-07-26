@@ -30,6 +30,29 @@ struct PlayerMovement
 {
 
 };
+
+bool exitgame = false;
+
+bool HandelGameExit(const WindowCloseEvent& event)
+{
+	exitgame = true;
+	ACMSG("Game exit requested.");
+	return true;
+}
+ac::World world;
+bool HandleWindowResize(const WindowResizeEvent& event)
+{
+	ACMSG("Window resized: " << event.width << " x " << event.height);
+
+	// 通知渲染器调整视口大小
+	mRenderer& renderer = world.GetResourse<mRenderer>();
+	renderer.OnWindowResize(event.width, event.height);
+
+	// 如果您的游戏逻辑需要知道窗口大小，可以在这里更新
+
+	return true; // 返回 true 表示事件已被处理
+}
+
 void Movement(ac::World& world)
 {
 	
@@ -59,7 +82,7 @@ void Movement(ac::World& world)
 void LoadAssets(World& world)
 {
 	std::string curPath = filesystem::current_path().string();
-	world.GetResourse<TextureManager>().AddTexture("White", curPath + "/SandBox/Image/White.png");
+	world.GetResourse<TextureManager>().AddTexture("White", curPath + "/Assets/Image/White.png");
 }
 
 void TestAudioSystem(World& world)
@@ -96,8 +119,6 @@ int main()
 	
 
 	srand(time(0));
-	
-	ac::World world;
 	InitEngine(world);
 	
 	Entity camera = world.CreateEntity();
@@ -110,6 +131,9 @@ int main()
 	world.Add<movement>(camera, movement{ AC_KEY_W, AC_KEY_S, AC_KEY_A, AC_KEY_D, {200.0f, 200.0f, 0.0f} });
 
 	world.AddUpdateSystem(Movement, 0);
+	EventManager& eventManager = world.GetResourse<EventManager>();
+	eventManager.AddListener<WindowCloseEvent>(HandelGameExit);
+	eventManager.AddListener<WindowResizeEvent>(HandleWindowResize);
 
 
 	LoadAssets(world);
@@ -121,11 +145,17 @@ int main()
 	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/SandBox/Audio/test.wav");
 	
 
-	Entity TextEntity = world.CreateEntity("TextEntity");
-	world.Add<Text>(TextEntity, Text("Hello world", 48, {0.5,0.5}));
-	world.Add<Transform>(TextEntity, Transform());
-	world.Add<movement>(TextEntity, movement{ AC_KEY_UP, AC_KEY_DOWN, AC_KEY_LEFT, AC_KEY_RIGHT, {200.0f, 200.0f, 0.0f} });
+	Entity e1 = world.CreateEntity("TextEntity");
+	//world.Add<Text>(TextEntity, Text("Hello world", 48, {0.5,0.5}));
+	world.Add<Sprite>(e1, Sprite::Create("White", world.GetResourse<TextureManager>()));
+	world.Add<Transform>(e1, Transform(glm::vec3{500,500,0}, 0.0f, 100.0f));
+	world.Add<movement>(e1, movement{ AC_KEY_UP, AC_KEY_DOWN, AC_KEY_LEFT, AC_KEY_RIGHT, {200.0f, 200.0f, 0.0f} });
 	
+	Entity e2 = world.CreateEntity("TextEntity");
+	//world.Add<Text>(TextEntity, Text("Hello world", 48, {0.5,0.5}));
+	world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
+	world.Add<Transform>(e2, Transform());
+	world.Add<movement>(e2, movement{ AC_KEY_8, AC_KEY_5, AC_KEY_4, AC_KEY_6, {200.0f, 200.0f, 0.0f} });
 
 
 	while (true)
@@ -135,6 +165,8 @@ int main()
 		mRenderer& renderer = world.GetResourse<mRenderer>();
 
 		world.Update();
+		if (exitgame)
+			break;
 
 		win.OnUpdate();
 		glClearColor(0.1, 0.1, 0.1, 1);
