@@ -1,7 +1,7 @@
 #include "acpch.h"
-#define ECS_INFO_ENABLED
+//#define ECS_INFO_ENABLED
 #define SHOW_WARNING
-#define SHOW_MESSAGE
+//#define SHOW_MESSAGE
 #define SHOW_ERROR
 
 
@@ -113,17 +113,41 @@ void TestAudioSystem(World& world)
 	}
 }
 
+bool exitgame = false;
+
+bool HandelGameExit(const WindowCloseEvent& event)
+{
+	exitgame = true;
+	ACMSG("Game exit requested.");
+	return true;
+}
+ac::World world;
+bool HandleWindowResize(const WindowResizeEvent& event)
+{
+    ACMSG("Window resized: " << event.width << " x " << event.height);
+    
+    // 通知渲染器调整视口大小
+    mRenderer& renderer = world.GetResourse<mRenderer>();
+    renderer.OnWindowResize(event.width, event.height);
+    
+    // 如果您的游戏逻辑需要知道窗口大小，可以在这里更新
+    
+    return true; // 返回 true 表示事件已被处理
+}
+
 int main()
 {
 	srand(time(0));
 	
-	ac::World world;
+	
 	InitEngine(world);
 	
 	Entity camera = world.CreateEntity();
 	world.Add<Transform>(camera, Transform());
 	world.Add<Camera>(camera, Camera());
 	world.AddUpdateSystem(CameraMovement, 0);
+	world.GetResourse<EventManager>().AddListener<WindowCloseEvent>(HandelGameExit);
+	world.GetResourse<EventManager>().AddListener<WindowResizeEvent>(HandleWindowResize);
 
 
 	LoadAssets(world);
@@ -150,6 +174,11 @@ int main()
 		//renderer.SubmitText("Hello World", t);
 		world.Update();
 		win.OnUpdate();
+		if (exitgame)
+		{
+			ACMSG("Exiting game loop.");
+			break;
+		}
 		glClearColor(1, 1, 1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}

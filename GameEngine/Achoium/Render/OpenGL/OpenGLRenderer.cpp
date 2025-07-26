@@ -103,6 +103,8 @@ void OpenGLRenderer::Shutdown()
 /// @param height The new height of the window.  
 void OpenGLRenderer::OnWindowResize(uint32_t width, uint32_t height)  
 {  
+	
+
 	glViewport(0, 0, width, height);  
 }  
 

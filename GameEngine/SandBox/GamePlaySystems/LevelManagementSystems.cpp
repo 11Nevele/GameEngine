@@ -155,17 +155,17 @@ void LevelManagementSystems::TestLevel(World& world)
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
+		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{2,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	};
 	
 	Entity background = world.CreateEntity();
@@ -176,9 +176,9 @@ void LevelManagementSystems::TestLevel(World& world)
 	
 	LoadMap(world, tilemap, background, map);
 
-	AddNumber(world, world.Get<Tilemap>(tilemap), 2, 3, 3); // Add a number at (2, 3) with value 1
-	AddNumber(world, world.Get<Tilemap>(tilemap), 3, 3, 2); // Add a number at (3, 3) with value 2
-	AddWinCondition(world, tilemap, background, 5, 6, "5", [](Number n) {return n.data == 5; });
+	AddNumber(world, world.Get<Tilemap>(tilemap), 5, 8, 3); // Add a number at (2, 3) with value 1
+	AddNumber(world, world.Get<Tilemap>(tilemap), 5, 9, 2); // Add a number at (3, 3) with value 2
+	AddNumber(world, world.Get<Tilemap>(tilemap), 9, 9, 9); // Add a number at (3, 3) with value 2
 }
 
 void LevelManagementSystems::MainMenu(World& world)

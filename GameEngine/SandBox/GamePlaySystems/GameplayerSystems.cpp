@@ -134,14 +134,16 @@ void GameplayerSystems::UndoLastStep(World& world)
 
 long long powm(long long base, long long exp)
 {
+	const long long mod = 1000000007; // Use a large prime number as modulus
 	long long result = 1;
+	base = base % mod; // Ensure base is within mod
 	base = base; // Ensure base is within mod
 	while (exp > 0)
 	{
 		if (exp % 2 == 1) // If exp is odd
-			result = (result * base);
+			result = (result * base) % mod;
 		exp = exp >> 1; // Divide exp by 2
-		base = (base * base); // Square the base
+		base = (base * base) % mod; // Square the base
 	}
 	return result;
 }
@@ -208,7 +210,7 @@ int GameplayerSystems::HasSpaceToMove(World& world, Tilemap& tilemap, uint32_t x
 			Number& other = world.Get<Number>(tilemap.map[x + dx][y + dy]);
 			if (dy == 0)
 			{
-				other.data = (other.data + number.data);
+				other.data = (other.data + number.data) % 1000000007;
 			}
 			else if (dy == 1)
 			{

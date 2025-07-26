@@ -12,6 +12,8 @@
 #include "AssetManagement/AudioManager.h"
 
 #include "InitEngine.h"
+#include "Event/MouseEvent.h"
+#include "Event/WindowEvent.h"
 
 #include "EngineSystems/RenderSystems.h"
 #include "EngineSystems/PhysicsSystem.h"
