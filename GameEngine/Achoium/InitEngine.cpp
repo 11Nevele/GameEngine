@@ -29,6 +29,7 @@ namespace ac
 	//Do not change things unless you truely know what you are doing
 	void InitEngine(World& world)
 	{
+		
 		CURPATH = filesystem::current_path().string();
 		world.RegisterType<Sprite>();
 		world.RegisterType<Transform>();
@@ -92,6 +93,8 @@ namespace ac
 		//add event listener
 		EventManager& eventManager = world.GetResourse<EventManager>();
 		eventManager.AddListener<OnAdded<TilemapElement>>(OnTilemapElementAdded);
+
+		glEnable(GL_DEPTH_TEST);
 
 
 	}

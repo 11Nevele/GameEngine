@@ -12,5 +12,4 @@ void main()
 {
     textureCord = atextureCord;
     gl_Position = projection * u_ViewProjection * u_Transform * vec4(aPos, 1.0);
-    gl_Position.z = 0;
 }

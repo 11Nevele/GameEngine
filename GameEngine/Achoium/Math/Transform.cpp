@@ -14,18 +14,13 @@ namespace ac
    {  
        glm::mat4 transform = glm::mat4(1.0f);  
 
-       if (!invPosition)  
-       {  
-           transform = glm::translate(transform, position);  
-           transform *= glm::toMat4(rotation);  
-           transform = glm::scale(transform, scale);  
-       }  
-       else  
-       {  
-           transform = glm::translate(transform, -position);  
-           transform *= glm::toMat4(glm::inverse(rotation));  
-           transform = glm::scale(transform, glm::vec3(1.0f) / scale);  
-       }  
+
+       transform = glm::translate(transform, position);  
+       transform *= glm::toMat4(rotation);  
+       transform = glm::scale(transform, scale);  
+ 
+       if (invPosition)
+           transform = glm::inverse(transform);
 
        return transform;  
    }

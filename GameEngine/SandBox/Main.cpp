@@ -142,20 +142,24 @@ int main()
 	const int width = 10, height = 10;
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(width, height, 40, 40));
 
-	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/SandBox/Audio/test.wav");
+	world.GetResourse<AudioManager>().RegisterAudio("Test", CURPATH + "/Assets/Audio/test.wav");
 	
 
-	Entity e1 = world.CreateEntity("TextEntity");
+	Entity e1 = world.CreateEntity("");
 	//world.Add<Text>(TextEntity, Text("Hello world", 48, {0.5,0.5}));
 	world.Add<Sprite>(e1, Sprite::Create("White", world.GetResourse<TextureManager>()));
-	world.Add<Transform>(e1, Transform(glm::vec3{500,500,0}, 0.0f, 100.0f));
+	world.Add<Transform>(e1, Transform(glm::vec3{500,500,0.5}, 0.0f, 100.0f));
 	world.Add<movement>(e1, movement{ AC_KEY_UP, AC_KEY_DOWN, AC_KEY_LEFT, AC_KEY_RIGHT, {200.0f, 200.0f, 0.0f} });
 	
-	Entity e2 = world.CreateEntity("TextEntity");
+	Entity e2 = world.CreateEntity("");
 	//world.Add<Text>(TextEntity, Text("Hello world", 48, {0.5,0.5}));
 	world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
-	world.Add<Transform>(e2, Transform());
+	world.Add<Transform>(e2, Transform({0,0,0}));
 	world.Add<movement>(e2, movement{ AC_KEY_8, AC_KEY_5, AC_KEY_4, AC_KEY_6, {200.0f, 200.0f, 0.0f} });
+
+	Entity e3 = world.CreateEntity();
+	world.Add<Text>(e3, Text("Hello world", 48, { 0.5,0.5 }, {1,0,0}));
+	world.Add<Transform>(e3, Transform({ 500,500,-0.1 }));
 
 
 	while (true)

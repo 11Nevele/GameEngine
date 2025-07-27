@@ -134,9 +134,10 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 		0.1f,                 // Near clipping plane  
 		100.0f                // Far clipping plane  
 	);  
-	projection = glm::ortho(  
+	projection = glm::orthoRH_NO(  
 		0.0f, 1280.0f,        // Left, Right  
 		0.0f, 720.0f          // Bottom, Top  
+        ,1.0f, -1.0f
 	);  
 
 	// Bind the shader program  
@@ -147,6 +148,10 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	shader2D->SetMat4("u_Transform", transform);
 	shader2D->SetMat4("projection", projection);
 	shader2D->SetFloat4("uColor", color);
+
+    glm::vec4 t = transform* glm::vec4{ 1,1,0,1 };
+    t = s_SceneData.ViewProjectionMatrix * t;
+    t = projection * t;
 
 	// Bind the vertex array  
 	vertexArray->Bind();  
@@ -183,9 +188,10 @@ void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& tran
 
 void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, const glm::vec3& color, const glm::vec2& pivot)
 {
-    glm::mat4 projection = glm::ortho(
+    glm::mat4 projection = glm::orthoRH_NO(
         0.0f, (float)1280,        // Left, Right  
         0.0f, (float)720          // Bottom, Top  
+		, 1.0f, -1.0f
     );
 
     // Activate the text shader
@@ -207,10 +213,12 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, 
 
     // Each character is represented by 6 vertices (2 triangles forming a quad)
     // Each vertex has 4 components (x, y positions and texture coordinates)
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 5, NULL, GL_DYNAMIC_DRAW);
 
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
     // Set texture unit for the sampler
     glActiveTexture(GL_TEXTURE0);
@@ -244,14 +252,14 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, 
         GLfloat w = ch.Size.x * transform.scale.x;
         GLfloat h = ch.Size.y * transform.scale.y;
         // 当前字符的VBO
-        GLfloat vertices[6][4] = {
-            { xpos,     ypos + h,   0.0, 0.0 },
-            { xpos,     ypos,       0.0, 1.0 },
-            { xpos + w, ypos,       1.0, 1.0 },
+        GLfloat vertices[6][5] = {
+            { xpos,     ypos + h , transform.position.z,   0.0, 0.0 },
+            { xpos,     ypos,    transform.position.z,   0.0, 1.0 },
+            { xpos + w, ypos,     transform.position.z,   1.0, 1.0 },
 
-            { xpos,     ypos + h,   0.0, 0.0 },
-            { xpos + w, ypos,       1.0, 1.0 },
-            { xpos + w, ypos + h,   1.0, 0.0 }
+            { xpos,     ypos + h, transform.position.z,   0.0, 0.0 },
+            { xpos + w, ypos,    transform.position.z,    1.0, 1.0 },
+            { xpos + w, ypos + h, transform.position.z,   1.0, 0.0 }
         };
         // 在方块上绘制字形纹理
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
