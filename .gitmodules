@@ -1,12 +1,4 @@
-[submodule "GameEngine/glm"]
-	path = GameEngine/glm
-	url = https://github.com/g-truc/glm
-[submodule "glm"]
-	path = glm
-	url = https://github.com/icaven/glm.git
 [submodule "Dependency/glm"]
 	path = Dependency/glm
 	url = https://github.com/icaven/glm.git
-[submodule "Dependency/SoLoud"]
-	path = Dependency/SoLoud
-	url = https://github.com/jarikomppa/soloud
+
