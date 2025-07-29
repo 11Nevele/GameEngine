@@ -1,4 +1,3 @@
 [submodule "Dependency/glm"]
 	path = Dependency/glm
 	url = https://github.com/icaven/glm.git
-
