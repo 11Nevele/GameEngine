@@ -204,6 +204,15 @@
     <ClInclude Include="Achoium\EngineSystems\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\TextComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -335,6 +344,9 @@
     <ClCompile Include="Achoium\EngineSystems\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Achoium\EngineSystems\RenderTextSystems.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
@@ -365,5 +377,7 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="SandBox\Audio\test.ogg" />
+    <None Include="SandBox\Shader\TextFragmentShader.glsl" />
+    <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>
 </Project>
