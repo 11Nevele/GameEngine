@@ -49,6 +49,8 @@
     <ClInclude Include="Achoium\InitEngine.h" />
     <ClInclude Include="Achoium\EngineComponents\TextComponent.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h" />
+    <ClInclude Include="SandBox\GameComponents\LevelManager.h" />
+    <ClInclude Include="SandBox\GameComponents\Components.h" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />
@@ -114,6 +116,7 @@
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
     <ClCompile Include="Achoium\EngineSystems\RenderTextSystems.cpp" />
+    <ClCompile Include="SandBox\GameComponents\LevelManager.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestPhysics.cpp" />
     <ClCompile Include="SandBox\UnitTests\TimeTest.cpp" />
@@ -134,6 +137,10 @@
     <ClCompile Include="SandBox\UnitTests\WorldTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="SandBox\Shader\2DFragmentShader.txt" />
+    <Text Include="SandBox\Shader\2DVertexShader.txt" />
+    <Text Include="SandBox\Shader\DebugFragmentShader.txt" />
+    <Text Include="SandBox\Shader\DebugVertexShader.txt" />
     <Text Include="SandBox\Shader\fragmentShader.txt" />
     <Text Include="SandBox\Shader\ShaderTest.txt" />
     <Text Include="SandBox\Shader\TextureFragmentShader.txt" />
@@ -150,6 +157,8 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="SandBox\Audio\test.ogg" />
+    <None Include="SandBox\Shader\CircleShaderFragment.glsl" />
+    <None Include="SandBox\Shader\CircleShaderVertex.glsl" />
     <None Include="SandBox\Shader\TextFragmentShader.glsl" />
     <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>

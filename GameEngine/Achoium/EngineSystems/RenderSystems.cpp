@@ -85,11 +85,10 @@ namespace ac
 				Tilemap& tilemap = world.Get<Tilemap>(tilemapElement.tilemap);
 				Transform t;
 				if (world.Has<Transform>(tilemapElement.tilemap))
-					Transform t = world.Get<Transform>(tilemapElement.tilemap);
+					t = world.Get<Transform>(tilemapElement.tilemap);
 				t.position += glm::vec3(tilemap.gridWidth, tilemap.gridHeight, 0) * t.scale * glm::vec3(tilemapElement.x, tilemapElement.y,0);
-				t.position.z = world.Get<Transform > (tilemapElement.tilemap).position.z;
-				t.scale.x = sprite.width;
-				t.scale.y = sprite.height;
+				t.scale.x *= tilemap.gridHeight;
+				t.scale.y *= tilemap.gridHeight;
 
 				renderer.Submit(&(vao), t.asMat4(), sprite.color);
 			});

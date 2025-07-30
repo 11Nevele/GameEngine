@@ -95,6 +95,7 @@ namespace ac
 		eventManager.AddListener<OnAdded<TilemapElement>>(OnTilemapElementAdded);
 
 		glEnable(GL_DEPTH_TEST);
+		
 
 
 	}

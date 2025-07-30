@@ -213,6 +213,12 @@
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\GameComponents\Components.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\GameComponents\LevelManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -347,12 +353,19 @@
     <ClCompile Include="Achoium\EngineSystems\RenderTextSystems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SandBox\GameComponents\LevelManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
     <Text Include="SandBox\Shader\fragmentShader.txt" />
     <Text Include="SandBox\Shader\TextureFragmentShader.txt" />
     <Text Include="SandBox\Shader\TextureVertexShader.txt" />
+    <Text Include="SandBox\Shader\2DFragmentShader.txt" />
+    <Text Include="SandBox\Shader\2DVertexShader.txt" />
+    <Text Include="SandBox\Shader\DebugFragmentShader.txt" />
+    <Text Include="SandBox\Shader\DebugVertexShader.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="SandBox\Image\grass.png">
@@ -379,5 +392,7 @@
     <None Include="SandBox\Audio\test.ogg" />
     <None Include="SandBox\Shader\TextFragmentShader.glsl" />
     <None Include="SandBox\Shader\TextVertexShader.glsl" />
+    <None Include="SandBox\Shader\CircleShaderFragment.glsl" />
+    <None Include="SandBox\Shader\CircleShaderVertex.glsl" />
   </ItemGroup>
 </Project>
