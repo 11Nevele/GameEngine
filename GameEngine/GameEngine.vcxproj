@@ -189,13 +189,13 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

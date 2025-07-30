@@ -5,7 +5,6 @@
 #include "Achoium.h"
 #include <fstream>
 
-
 #include "UnitTests/TestUnit.h"
 using namespace ac;
 
@@ -90,27 +89,7 @@ void TestAudioSystem(World& world)
 	InputManager& input = world.GetResourse<InputManager>();
 	if (input.IsKeyDown(AC_KEY_SPACE))
 	{
-		world.View<Sprite, AudioSource>().ForEach([&world](Entity entity, Sprite& sprite, AudioSource& audioSource)
-		{
-			if (audioSource.audioID != INVALID_AUDIO_ID)
-			{
-				AudioManager& audioManager = world.GetResourse<AudioManager>();
-				AudioClip* clip = audioManager.GetAudioClip(audioSource.audioID);
-				if (clip && clip->loaded)
-				{
-					audioManager.Play(audioSource.audioID, audioSource.loop, audioSource.volume);
-					ACMSG("Playing audio: " << clip->name);
-				}
-				else
-				{
-					ACMSG("Audio clip not loaded or invalid ID: " << audioSource.audioID);
-				}
-			}
-			else
-			{
-				ACMSG("Invalid audio ID for entity: " << entity);
-			}
-			});
+		
 	}
 }
 
