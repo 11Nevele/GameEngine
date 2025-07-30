@@ -153,6 +153,11 @@
     <None Include="SandBox\Shader\TextFragmentShader.glsl" />
     <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dependency\SoLoud\build\SoLoudProjects\SoloudStatic.vcxproj">
+      <Project>{83540317-6fb7-92bb-183d-cb71047f5e3e}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -190,19 +195,19 @@
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
     <IncludePath>$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
     <IncludePath>$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);WITH_STATIC_PLUGINS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -213,7 +218,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependency\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -222,7 +227,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);WITH_STATIC_PLUGINS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -235,7 +240,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)Dependency\FreeType\release dll\win64;$(SolutionDir)Dependency\GLFW\lib-vc2022;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

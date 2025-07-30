@@ -87,6 +87,7 @@ namespace ac
 				if (world.Has<Transform>(tilemapElement.tilemap))
 					Transform t = world.Get<Transform>(tilemapElement.tilemap);
 				t.position += glm::vec3(tilemap.gridWidth, tilemap.gridHeight, 0) * t.scale * glm::vec3(tilemapElement.x, tilemapElement.y,0);
+				t.position.z = world.Get<Transform > (tilemapElement.tilemap).position.z;
 				t.scale.x = sprite.width;
 				t.scale.y = sprite.height;
 
