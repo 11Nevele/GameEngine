@@ -57,6 +57,9 @@ void InitGame()
 	world.RegisterType<Button>();
 	world.RegisterType<Door>();
 	world.RegisterType< Coorpse>();
+	world.RegisterType<Wall>();
+	world.RegisterType<Spike>();
+	world.RegisterType<HealthKit>();
 
 	//register all resources
 	world.AddResource<SceneData>(new SceneData);
@@ -70,6 +73,7 @@ void InitGame()
 	world.AddUpdateSystem(InteractionSystems::CheckSpike, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckButton, 0);
 	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 0);
+	world.AddUpdateSystem(InteractionSystems::CheckHealthKit, 0);
 
 	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
 
@@ -91,7 +95,9 @@ void InitGame()
 		.AddTexture("DoorOpenned", path + "DoorOpenned.png")
 		.AddTexture("DoorClosed", path + "DoorClosed.png")
 		.AddTexture("ButtonPressed", path + "ButtonPressed.png")
-		.AddTexture("ButtonUnpressed", path + "ButtonUnpressed.png");
+		.AddTexture("ButtonUnpressed", path + "ButtonUnpressed.png")
+		.AddTexture("HealthKit", path + "Healthkit.png")
+		.AddTexture("FinishPoint", path + "Ground/ground_02.png");
 
 
 

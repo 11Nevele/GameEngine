@@ -3,6 +3,12 @@
 #include "Achoium.h"
 #include "Components.h"
 
+//0 none
+//1 wall
+//2 spike
+//3 start
+//4 end
+//5 healthKit
 
 void LevelManager::ResetLevel(World& world)
 {
@@ -54,9 +60,7 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 	case LEVEL_9:
 		break;
 	}
-	SceneData& data = world.GetResourse<SceneData>();
-	Entity player = mCreate<Player>(world, data.startX, data.startY, "PlayerDown");
-	world.Add<CountDown>(player, CountDown(8));
+	
 }
 
 void AddDoorAndButton(World& world, int x, int y, const std::vector<std::pair<int, int>>& buttonPositions)
@@ -89,7 +93,7 @@ void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>
 			{
 				Entity tile = world.CreateEntity();
 				world.Add<TilemapElement>(tile, TilemapElement(tilemap, x, y));
-				switch (map[x][y])
+				switch (map[y][x])
 				{
 				case 1:
 					world.Add<Wall>(tile, Wall());
@@ -99,6 +103,31 @@ void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>
 					world.Add<Spike>(tile, Spike());
 					world.Add<Sprite>(tile, Sprite::Create("Spike", world.GetResourse<TextureManager>()));
 				}
+			}
+			switch (map[y][x])
+			{
+				case 3: // Start point
+				{
+					SceneData& data = world.GetResourse<SceneData>();
+					data.startX = x;
+					data.startY = y;
+					Entity player = mCreate<Player>(world, x, y, "PlayerDown");
+					world.Get<Player>(player).round = data.currentRound; // Start moving down
+					world.Add<CountDown>(player, CountDown(8));
+				}
+				break;
+				case 4: // End point
+				{
+					mCreate<FinishPoint>(world, x, y, "FinishPoint");
+				}
+				break;
+				case 5: // Health Kit
+				{
+					Entity healthKit = mCreate<HealthKit>(world, x, y, "HealthKit"); 
+				}
+				break;
+			default:
+				break;
 			}
 			
 			
@@ -134,24 +163,25 @@ void LevelManager::TestLevel(World& world, bool loadMap)
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,0,0,0,5,0,0,0,4,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+		{0,0,0,0,0,3,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	};
 	if (loadMap)
 	{
+		world.GetResourse<SceneData>().currentRound = 0; // Reset the current round
 		Entity background = world.CreateEntity();
 		world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
 		world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
 		Entity tilemap = world.CreateEntity();
 		world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
 		world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
-		LoadMap(world, tilemap, background, map);
 		MapInfo& info = world.GetResourse<MapInfo>();
 		info.tilemap = tilemap;
 		info.background = background;
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+		LoadMap(world, tilemap, background, map);
 		AddDoorAndButton(world, 5, 5, { {0,0},{5,8},{6,1} });
 	}
 	else
@@ -165,8 +195,6 @@ void LevelManager::TestLevel(World& world, bool loadMap)
 		}
 		LoadMap(world, tilemap, background, map, false);
 	}
-
-
 }
 
 void LevelManager::MainMenu(World& world, bool loadMap)

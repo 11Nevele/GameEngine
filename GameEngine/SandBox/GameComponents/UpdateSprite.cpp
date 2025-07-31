@@ -40,8 +40,10 @@ void UpdateSprite::Update(World& world)
 				else if(coorpse.type == 2)
 					sprite.textureID = textureManager.GetTextureID("Coorpse3");
 			}
-
-
+			else if (world.Has<HealthKit>(entity))
+			{
+				sprite.textureID = textureManager.GetTextureID("HealthKit");
+			}
 		}
 	);
 }

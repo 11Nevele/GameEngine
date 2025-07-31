@@ -26,9 +26,9 @@ void PlayerControlSystem::PlayerControl(World& world)
 		{
 			position.dx = playerReplay.directions[playerReplay.curInd].dx;
 			position.dy = playerReplay.directions[playerReplay.curInd].dy;
-			playerReplay.curInd++;
+			
 		}
-
+		playerReplay.curInd++;
 		});
 	//update sprite
 	TextureManager& textureManager = world.GetResourse<TextureManager>();
@@ -107,6 +107,7 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 			Entity e = mCreate<PlayerReplay>(world, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY, "PlayerDown"); // 创建回放实体
 			world.Add<CountDown>(e, CountDown(8)); // 添加倒计时组件
 			world.Get<PlayerReplay>(e).directions = player.directions; // 复制玩家的方向向量
+			world.Get<PlayerReplay>(e).round = player.round; // 复制玩家的回合数
 			RemoveEntity(world, entity); // 删除玩家实体
 		});
 	world.View<Coorpse>().ForEach([&world](Entity entity, Coorpse& position)
@@ -117,13 +118,29 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 		{
 			world.Delete<Ghost>(entity); // 删除鬼魂实体
 		});
-	world.View<PlayerReplay, CountDown, Position>().ForEach([&world](Entity entity, PlayerReplay& replay, CountDown& cd, Position& pos)
+	world.View<FinishPoint>().ForEach([&world](Entity entity, FinishPoint& fp)
+		{
+			RemoveEntity(world, entity); // 删除终点实体
+		});
+	world.View<HealthKit>().ForEach([&world](Entity entity, HealthKit& hk)
+		{
+			RemoveEntity(world, entity); // 删除健康包实体
+		});
+	world.View<PlayerReplay, Position>().ForEach([&world](Entity entity, PlayerReplay& replay, Position& pos)
 		{
 			replay.curInd = 0; // 重置回放位置
 			MoveEntity(world, entity, pos.x, pos.y, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY);
 			world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
-			cd.remain = 8; // 重置倒计时
+			if(world.Has<CountDown>(entity))
+				{
+				world.Get<CountDown>(entity).remain = 8; // 重置倒计时
+			}
+			else
+			{
+				world.Add<CountDown>(entity, CountDown(8)); // 添加倒计时组件
+			}
 		});
+	world.GetResourse<SceneData>().currentRound++;
 	LevelManager::LoadLevel(world, (Levels)world.GetResourse<SceneData>().currentLevel, false);
 }
 
@@ -291,6 +308,11 @@ void PlayerControlSystem::AnimationSystem(World& world)
 {
 	if(!isInAnimation)
 		return;
+	if (animationTime - 0.2f >= 0)
+	{
+		animationTime = 0.0f; // 重置动画时间
+		isInAnimation = false; // 动画结束
+	}
 	Time& time = world.GetResourse<Time>();
 	world.View<Position,Transform>().ForEach([&world, &time](Entity entity, Position& position, Transform& transform)
 	{
@@ -331,7 +353,7 @@ void PlayerControlSystem::AnimationSystem(World& world)
 				else if (world.Has<PlayerReplay>(entity) )
 				{
 					PlayerReplay& playerReplay = world.Get<PlayerReplay>(entity);
-					if(playerReplay.directions[playerReplay.curInd -1] != direction{ 0,0 })
+					if(playerReplay.curInd - 1 < playerReplay.directions.size() && playerReplay.directions[playerReplay.curInd - 1] != direction{ 0,0 })
 					{
 						countDown.remain--;
 					}

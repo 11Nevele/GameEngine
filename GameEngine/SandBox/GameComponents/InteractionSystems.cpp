@@ -28,6 +28,7 @@ void InteractionSystems::CheckSpike(World& world)
 				if (!hasCoorpse)
 				{
 					world.Add<Ghost>(entity, Ghost());
+					world.Delete<CountDown>(entity); // 删除倒计时组件
 					world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("GhostDown");
 					mCreate<Coorpse>(world, pos.x, pos.y, "Coorpse1");
 				}
@@ -51,6 +52,7 @@ void InteractionSystems::CheckSpike(World& world)
 				{
 					if (world.Has<Coorpse>(entityVec))
 					{
+
 						hasCoorpse = true;
 						break;
 					}
@@ -58,6 +60,7 @@ void InteractionSystems::CheckSpike(World& world)
 				if (!hasCoorpse)
 				{
 					world.Add<Ghost>(entity, Ghost());
+					world.Delete<CountDown>(entity); // 删除倒计时组件
 					world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("GhostDown");
 					mCreate<Coorpse>(world, pos.x, pos.y, "Coorpse1");
 				}
@@ -106,10 +109,6 @@ void InteractionSystems::CountDownSystem(World& world)
 		{
 			if (countDown.remain > 0)
 			{
-				Transform t = transform;
-				t.position += glm::vec3(world.GetResourse<SceneData>().gridWidth / 2.0f, pos.y * world.GetResourse<SceneData>().gridHeight, -0.5f);
-				renderer.SubmitText(to_string(countDown.remain),
-					t, { 1,1,1 }, { 0.5,0.5 });
 			}
 			else
 			{
@@ -132,6 +131,52 @@ void InteractionSystems::RenderText(World& world)
 				renderer.SubmitText(to_string(countDown.remain),
 					t, { 1,1,1 }, { 0.5,0.5 });
 
+		});
+}
+
+void InteractionSystems::CheckHealthKit(World& world)
+{
+	auto& map = world.GetResourse<MapInfo>().map;
+	world.View<Position, HealthKit>().ForEach([&world, &map](Entity entity, Position& pos, HealthKit& hk)
+		{
+			//get all entities at the position and check if any player or player replay is present
+			for(Entity e : map[pos.x][pos.y])
+			{
+				if ((world.Has<Player>(e) && !world.Has<Ghost>(e)))
+				{
+					// Player or player replay is present, remove health kit
+					
+					world.View<PlayerReplay, Ghost>().ForEach([&world, e, entity](Entity ee, PlayerReplay& replay, Ghost& ghost)
+					{
+							if (replay.round == world.Get<Player>(e).round - 1)
+							{
+								world.Delete<Ghost>(ee);
+								world.Get<Sprite>(ee).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
+								world.Add<CountDown>(ee, CountDown(8)); // Add countdown component
+								RemoveEntity(world, entity);
+							}
+							
+					});
+					break; // Exit the loop after finding a player
+				}
+				if ((world.Has<PlayerReplay>(e) && !world.Has<Ghost>(e)))
+				{
+					// Player or player replay is present, remove health kit
+					
+					world.View<PlayerReplay, Ghost>().ForEach([&world, e, entity](Entity ee, PlayerReplay& replay, Ghost& ghost)
+						{
+							if (replay.round == world.Get<PlayerReplay>(e).round - 1)
+							{
+								world.Delete<Ghost>(ee);
+								world.Get<Sprite>(ee).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
+								world.Add<CountDown>(ee, CountDown(8)); // Add countdown component
+								RemoveEntity(world, entity);
+							}
+								
+						});
+					break; // Exit the loop after finding a player
+				}
+			}
 		});
 }
 
