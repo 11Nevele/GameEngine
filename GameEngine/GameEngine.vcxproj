@@ -49,6 +49,7 @@
     <ClInclude Include="Achoium\InitEngine.h" />
     <ClInclude Include="Achoium\EngineComponents\TextComponent.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h" />
+    <ClInclude Include="SandBox\GameComponents\InteractionSystems.h" />
     <ClInclude Include="SandBox\GameComponents\PlayerControlSystem.h" />
     <ClInclude Include="SandBox\GameComponents\LevelManager.h" />
     <ClInclude Include="SandBox\GameComponents\Components.h" />
@@ -118,6 +119,8 @@
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
     <ClCompile Include="Achoium\EngineSystems\RenderTextSystems.cpp" />
+    <ClCompile Include="SandBox\GameComponents\InteractionSystems.cpp" />
+    <ClCompile Include="SandBox\GameComponents\Components.cpp" />
     <ClCompile Include="SandBox\GameComponents\PlayerControlSystem.cpp" />
     <ClCompile Include="SandBox\GameComponents\LevelManager.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />

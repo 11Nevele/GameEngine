@@ -21,7 +21,8 @@ public:
 
 	static void UndoSystem(World& world);
 	static void PlayerControl(World& world);
-	
+	static void ResetSystem(World& world);
+	static void NewTurnSystem(World& world);
 	static void AnimationSystem(World& world);
 
 };

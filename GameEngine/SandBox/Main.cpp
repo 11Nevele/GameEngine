@@ -8,6 +8,7 @@
 #include "GameComponents/LevelManager.h"
 #include "GameComponents/PlayerControlSystem.h"
 #include "GameComponents/UpdateSprite.h"
+#include "GameComponents/InteractionSystems.h"
 
 #include "UnitTests/TestUnit.h"
 using namespace ac;
@@ -65,6 +66,11 @@ void InitGame()
 	world.AddUpdateSystem(PlayerControlSystem::PlayerControl, 0);
 	world.AddUpdateSystem(UpdateSprite::Update, 2);
 	world.AddUpdateSystem(PlayerControlSystem::AnimationSystem, 1);
+	world.AddUpdateSystem(PlayerControlSystem::NewTurnSystem, 3);
+	world.AddUpdateSystem(InteractionSystems::CheckSpike, 0);
+	world.AddUpdateSystem(InteractionSystems::CheckButton, 0);
+	world.AddUpdateSystem(InteractionSystems::CheckDoor, 0);
+	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 0);
 
 	//register pictures
 	string path = CURPATH + "/Assets/Image/";
@@ -75,7 +81,12 @@ void InitGame()
 		.AddTexture("PlayerUp", path + "Player/player_02.png")
 		.AddTexture("PlayerDown", path + "Player/player_23.png")
 		.AddTexture("PlayerLeft", path + "Player/player_14.png")
-		.AddTexture("PlayerRight", path + "Player/player_11.png");
+		.AddTexture("PlayerRight", path + "Player/player_11.png")
+		.AddTexture("GhostUp", path + "Player/ghostup.png")
+		.AddTexture("GhostDown", path + "Player/ghostdown.png")
+		.AddTexture("GhostLeft", path + "Player/ghostleft.png")
+		.AddTexture("GhostRight", path + "Player/ghostright.png")
+		.AddTexture("Coorpse1", path + "Player/player_dead.png");
 
 
 

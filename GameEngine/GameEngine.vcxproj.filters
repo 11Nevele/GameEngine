@@ -225,6 +225,9 @@
     <ClInclude Include="SandBox\GameComponents\UpdateSprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\GameComponents\InteractionSystems.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -366,6 +369,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SandBox\GameComponents\UpdateSprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\GameComponents\Components.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\GameComponents\InteractionSystems.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

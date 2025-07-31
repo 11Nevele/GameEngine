@@ -1,6 +1,7 @@
 #include "acpch.h"
 #include "PlayerControlSystem.h"
 #include "Components.h"
+#include "LevelManager.h"
 std::vector<PlayerControlSystem::step> PlayerControlSystem::history;
 bool PlayerControlSystem::isInAnimation = false;
 float PlayerControlSystem::animationTime = 0.0f;
@@ -16,14 +17,113 @@ void PlayerControlSystem::PlayerControl(World& world)
 {
 	if (isInAnimation)
 		return;
-	bool actionPerformed = false;
-	actionPerformed |= MovementSystem(world);
-	actionPerformed |= SuicideSystem(world);
-	actionPerformed |= HealSystem(world);
+	bool actionPerformed = MovementSystem(world) || SuicideSystem(world)|| HealSystem(world);
 	if (!actionPerformed)
 		return;
+	world.View<PlayerReplay, Position>().ForEach([&world](Entity entity, PlayerReplay& playerReplay, Position& position)
+	{
+		if (playerReplay.curInd < playerReplay.directions.size())
+		{
+			position.dx = playerReplay.directions[playerReplay.curInd].dx;
+			position.dy = playerReplay.directions[playerReplay.curInd].dy;
+			playerReplay.curInd++;
+		}
+
+		});
+	//update sprite
+	TextureManager& textureManager = world.GetResourse<TextureManager>();
+	world.View<Sprite, Position, Player>().ForEach([&world, &textureManager](Entity entity, Sprite& sprite, Position& pos, Player& player)
+	{
+				string textureType = "Player";
+				if (world.Has<Ghost>(entity))
+				{
+					textureType = "Ghost";
+				}
+				if (pos.dx == 1 && pos.dy == 0)
+				{
+					sprite.textureID = textureManager.GetTextureID(textureType + "Right");
+				}
+				else if (pos.dx == -1 && pos.dy == 0)
+				{
+					sprite.textureID = textureManager.GetTextureID(textureType + "Left");
+				}
+				else if (pos.dx == 0 && pos.dy == 1)
+				{
+					sprite.textureID = textureManager.GetTextureID(textureType + "Up");
+				}
+				else if (pos.dx == 0 && pos.dy == -1)
+				{
+					sprite.textureID = textureManager.GetTextureID(textureType + "Down");
+				}
+	});
+	world.View<Sprite, Position, PlayerReplay>().ForEach([&world, &textureManager](Entity entity, Sprite& sprite, Position& pos, PlayerReplay& player)
+		{
+			string textureType = "Player";
+			if (world.Has<Ghost>(entity))
+			{
+				textureType = "Ghost";
+			}
+			if (pos.dx == 1 && pos.dy == 0)
+			{
+				sprite.textureID = textureManager.GetTextureID(textureType + "Right");
+			}
+			else if (pos.dx == -1 && pos.dy == 0)
+			{
+				sprite.textureID = textureManager.GetTextureID(textureType + "Left");
+			}
+			else if (pos.dx == 0 && pos.dy == 1)
+			{
+				sprite.textureID = textureManager.GetTextureID(textureType + "Up");
+			}
+			else if (pos.dx == 0 && pos.dy == -1)
+			{
+				sprite.textureID = textureManager.GetTextureID(textureType + "Down");
+			}
+		});
 	NextStep(world);
 	isInAnimation = true; // 开始动画
+}
+void ClearAll(World& world)
+{
+	world.View<Position>().ForEach([&world](Entity entity, Position& position)
+	{
+			world.DeleteEntity(entity);
+		});
+
+}
+void PlayerControlSystem::ResetSystem(World& world)
+{
+
+}
+
+void PlayerControlSystem::NewTurnSystem(World& world)
+{
+	if(isInAnimation)
+		return;
+	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_E))
+		return;
+	world.View<Player>().ForEach([&world](Entity entity, Player& player)
+		{
+			Entity e = mCreate<PlayerReplay>(world, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY, "PlayerDown"); // 创建回放实体
+			world.Get<PlayerReplay>(e).directions = player.directions; // 复制玩家的方向向量
+			RemoveEntity(world, entity); // 删除玩家实体
+		});
+	world.View<Coorpse>().ForEach([&world](Entity entity, Coorpse& position)
+		{
+			RemoveEntity(world, entity); // 删除尸体实体
+		});
+	world.View<Ghost>().ForEach([&world](Entity entity, Ghost& g)
+		{
+			world.Delete<Ghost>(entity); // 删除鬼魂实体
+		});
+	world.View<PlayerReplay>().ForEach([&world](Entity entity, PlayerReplay& position)
+		{
+			position.curInd = 0; // 重置回放位置
+			Position& pos = world.Get<Position>(entity);
+			MoveEntity(world, entity, pos.x, pos.y, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY);
+			world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
+		});
+	LevelManager::LoadLevel(world, (Levels)world.GetResourse<SceneData>().currentLevel, false);
 }
 
 bool PlayerControlSystem::MovementSystem(World& world)
@@ -36,24 +136,28 @@ bool PlayerControlSystem::MovementSystem(World& world)
 		{
 			position.dx = -1;
 			position.dy = 0;
+			playerControl.directions.push_back({ -1, 0 });
 			hasMovement = true;
 		}
 		else if (inputManager.IsKeyPressed(AC_KEY_D))
 		{
 			position.dx = 1;
 			position.dy = 0;
+			playerControl.directions.push_back({ 1, 0 });
 			hasMovement = true;
 		}
 		else if (inputManager.IsKeyPressed(AC_KEY_S))
 		{
 			position.dx = 0;
 			position.dy = -1;
+			playerControl.directions.push_back({ 0, -1 });
 			hasMovement = true;
 		}
 		else if (inputManager.IsKeyPressed(AC_KEY_W))
 		{
 			position.dx = 0;
 			position.dy = 1;
+			playerControl.directions.push_back({ 0, 1 });
 			hasMovement = true;
 		}
 		else if (inputManager.IsKeyDown(AC_KEY_SPACE))
@@ -61,6 +165,7 @@ bool PlayerControlSystem::MovementSystem(World& world)
 			// 如果按下空格键，清除移动意图
 			position.dx = 0;
 			position.dy = 0;
+			playerControl.directions.push_back({ 0, 0 });
 			hasMovement = true;
 		}
 	});
@@ -100,30 +205,34 @@ int RecursivePush(World& world, Entity& e, Position& p)
 	}
 
 	bool hasSpace = true;
-	// 检查地图上该位置是否有实体
-	for (const auto& entityVec : map[tx][ty])
+	if (!world.Has<Ghost>(e))
 	{
-		Entity entity = entityVec;
-		// 检查是否是Player或PlayerReplay实体
-		if ((world.Has<Player>(entity) || world.Has<PlayerReplay>(entity)) &&
-			world.Has<Position>(entity))
+		// 检查地图上该位置是否有实体
+		for (const auto& entityVec : map[tx][ty])
 		{
-			Position& blockingEntityPos = world.Get<Position>(entity);
-			if (blockingEntityPos.dx != 0 || blockingEntityPos.dy != 0)
+			Entity entity = entityVec;
+			// 检查是否是Player或PlayerReplay实体
+			if ((world.Has<Player>(entity) || world.Has<PlayerReplay>(entity)) &&
+				world.Has<Position>(entity) && !world.Has<Ghost>(entity))
 			{
+				Position& blockingEntityPos = world.Get<Position>(entity);
+				if (blockingEntityPos.dx != 0 || blockingEntityPos.dy != 0)
+				{
+
+				}
+				else
+				{
+					blockingEntityPos.dx = p.dx;
+					blockingEntityPos.dy = p.dy;
+					hasSpace &= RecursivePush(world, entity, blockingEntityPos) == 1; // 递归推动实体
+					blockingEntityPos.dx = 0;
+					blockingEntityPos.dy = 0;
+				}
 
 			}
-			else
-			{
-				blockingEntityPos.dx = p.dx;
-				blockingEntityPos.dy = p.dy;
-				hasSpace &= RecursivePush(world, entity, blockingEntityPos) == 1; // 递归推动实体
-				blockingEntityPos.dx = 0;
-				blockingEntityPos.dy = 0;
-			}
-			
 		}
 	}
+	
 	if (hasSpace)
 	{
 		p.targetX = tx;
@@ -160,14 +269,7 @@ void PlayerControlSystem::NextStep(World& world)
     // 完成移动后实际更新所有实体的位置
     world.View<Position>().ForEach([&mapInfo](Entity entity, Position& position) 
     {
-        if (position.targetX != position.x || position.targetY != position.y)
-        {
-			mapInfo[position.x][position.y].erase(
-				std::find(mapInfo[position.x][position.y].begin(),
-					mapInfo[position.x][position.y].end(),
-					entity));
-			mapInfo[position.targetX][position.targetY].push_back(entity);
-        }
+        
         
         // 清除移动意向，为下一步做准备
         position.dx = 0;
@@ -193,8 +295,18 @@ void PlayerControlSystem::AnimationSystem(World& world)
 	{
 		animationTime = 0.0f; // 重置动画时间
 		isInAnimation = false; // 动画结束
-		world.View<Position, Transform>().ForEach([&world, &time](Entity entity, Position& position, Transform& transform)
+		auto& mapInfo = world.GetResourse<MapInfo>().map;
+		world.View<Position, Transform>().ForEach([&world, &mapInfo](Entity entity, Position& position, Transform& transform)
 			{
+
+				if (position.targetX != position.x || position.targetY != position.y)
+				{
+					mapInfo[position.x][position.y].erase(
+						std::find(mapInfo[position.x][position.y].begin(),
+							mapInfo[position.x][position.y].end(),
+							entity));
+					mapInfo[position.targetX][position.targetY].push_back(entity);
+				}
 				position.x = position.targetX;
 				position.y = position.targetY;
 				transform.position.x = position.x * world.GetResourse<SceneData>().gridWidth;

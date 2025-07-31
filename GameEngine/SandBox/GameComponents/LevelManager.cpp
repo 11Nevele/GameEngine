@@ -22,64 +22,42 @@ void LevelManager::ResetLevel(World& world)
 
 }
 
-void AddPlayerReplay(World& world)
-{
-	Entity playerReplay = world.CreateEntity("PlayerReplay");
-	world.Add<PlayerReplay>(playerReplay, PlayerReplay());
-	world.Add<Transform>(playerReplay, Transform(glm::vec3(0, 0, -0.2f)));
-	world.Add<Sprite>(playerReplay, Sprite::Create("PlayerDown", world.GetResourse<TextureManager>()));
-	world.Add<Position>(playerReplay, Position(2, 2, 0, 0, 0, 0));
-	world.GetResourse<MapInfo>().map[2][2].push_back(playerReplay);
-}
 
-void LevelManager::LoadLevel(World& world, Levels level)
+void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 {
 	world.GetResourse<SceneData>().currentLevel = level;
 	switch (level)
 	{
 	case MAIN_MENU:
-		MainMenu(world);
+		MainMenu(world, loadMap);
 		break;
 	case TEST_LEVEL:
-		TestLevel(world);
+		TestLevel(world, loadMap);
 		break;
 	case LEVEL_1:
-		Level1(world);
+		Level1(world, loadMap);
 		break;
 	case LEVEL_2:
-		Level2(world);
 		break;
 	case LEVEL_3:
-		Level3(world);
 		break;
 	case LEVEL_4:
-		Level4(world);
 		break;
 	case LEVEL_5:
-		Level5(world);
 		break;
 	case LEVEL_6:
-		Level6(world);
 		break;
 	case LEVEL_7:
-		Level7(world);
 		break;
 	case LEVEL_8:
-		Level8(world);
 		break;
 	case LEVEL_9:
-		Level9(world);
 		break;
 	}
 	SceneData& data = world.GetResourse<SceneData>();
-	Entity player = world.CreateEntity("Player");
-	world.Add<Player>(player, Player());
-	world.Add<Transform>(player, Transform(glm::vec3(data.startX * data.gridWidth, data.startY * data.gridHeight, -0.2)));
-	world.Add<Sprite>(player, Sprite::Create("Wall", world.GetResourse<TextureManager>()));
-	world.Add<Position>(player, Position(data.startX, data.startY, data.startX, data.startY, 0, 0));
-	world.GetResourse<MapInfo>().map[data.startX][data.startY].push_back(player);
+	mCreate<Player>(world, data.startX, data.startY, "PlayerDown");
 }
-void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map)
+void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map, bool loadTile = true)
 {
 	//flip the map vertically to match the tilemap coordinate system
 	for (int y = 0; y < map.size() / 2; ++y)
@@ -93,28 +71,36 @@ void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>
 	{
 		for (int y = 0; y < map[0].size(); ++y)
 		{
-
-			Entity tile = world.CreateEntity();
-			world.Add<TilemapElement>(tile, TilemapElement(tilemap, x, y));
-			
-			switch (map[x][y])
+			if (loadTile)
 			{
-			case 1:
-				world.Add<Wall>(tile, Wall());
-				world.Add<Sprite>(tile, Sprite::Create("Wall", world.GetResourse<TextureManager>()));
-				break;
-			case 2:
-				world.Add<Spike>(tile, Spike());
-				world.Add<Sprite>(tile, Sprite::Create("Spike", world.GetResourse<TextureManager>()));
+				Entity tile = world.CreateEntity();
+				world.Add<TilemapElement>(tile, TilemapElement(tilemap, x, y));
+				switch (map[x][y])
+				{
+				case 1:
+					world.Add<Wall>(tile, Wall());
+					world.Add<Sprite>(tile, Sprite::Create("Wall", world.GetResourse<TextureManager>()));
+					break;
+				case 2:
+					world.Add<Spike>(tile, Spike());
+					world.Add<Sprite>(tile, Sprite::Create("Spike", world.GetResourse<TextureManager>()));
+				}
 			}
-			Entity backgroundTile = world.CreateEntity();
-			world.Add<TilemapElement>(backgroundTile, TilemapElement(background, x, y));
-			world.Add<Sprite>(backgroundTile, Sprite::Create("Ground", world.GetResourse<TextureManager>()));
+			
+			
+			
+			if (loadTile)
+			{
+				Entity backgroundTile = world.CreateEntity();
+				world.Add<TilemapElement>(backgroundTile, TilemapElement(background, x, y));
+				world.Add<Sprite>(backgroundTile, Sprite::Create("Ground", world.GetResourse<TextureManager>()));
+			}
+			
 		}
 	}
 }
 
-void LevelManager::TestLevel(World& world)
+void LevelManager::TestLevel(World& world, bool loadMap)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -139,23 +125,36 @@ void LevelManager::TestLevel(World& world)
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
 	};
+	if (loadMap)
+	{
+		Entity background = world.CreateEntity();
+		world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
+		Entity tilemap = world.CreateEntity();
+		world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
+		LoadMap(world, tilemap, background, map);
+		MapInfo& info = world.GetResourse<MapInfo>();
+		info.tilemap = tilemap;
+		info.background = background;
+		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+	}
+	else
+	{
+		Entity background = world.GetResourse<MapInfo>().background;
+		Entity tilemap = world.GetResourse<MapInfo>().tilemap;
+		if (background == NULL_ENTITY || tilemap == NULL_ENTITY)
+		{
+			cout << "Map not loaded, cannot load test level." << endl;
+			return;
+		}
+		LoadMap(world, tilemap, background, map, false);
+	}
 
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-	MapInfo& info = world.GetResourse<MapInfo>();
-	info.tilemap = tilemap;
-	info.background = background;
-	info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
-	AddPlayerReplay(world);
 
 }
 
-void LevelManager::MainMenu(World& world)
+void LevelManager::MainMenu(World& world, bool loadMap)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
@@ -188,272 +187,8 @@ void LevelManager::MainMenu(World& world)
 	LoadMap(world, tilemap, background, map);
 }
 
-void LevelManager::Level2(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
 
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	
-}
-
-void LevelManager::Level3(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-
-}
-
-void LevelManager::Level4(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-}
-
-void LevelManager::Level1(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-}
-
-void LevelManager::Level5(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-}
-
-void LevelManager::Level6(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-}
-
-void LevelManager::Level9(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-}
-
-void LevelManager::Level8(World& world)
-{
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	const int mapWidth = 15;
-	const int mapHeight = 15;
-	vector<vector<int>> map = {
-		{0,0,0,0,0,0,0,1,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,2,0,0,0,1},
-		{0,0,0,0,2,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-		{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-	};
-
-	Entity background = world.CreateEntity();
-	world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
-	Entity tilemap = world.CreateEntity();
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
-}
-
-void LevelManager::Level7(World& world)
+void LevelManager::Level1(World& world, bool loadMap)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100

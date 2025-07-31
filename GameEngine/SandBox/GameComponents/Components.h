@@ -8,9 +8,13 @@ struct Position
 	int targetX = 0, targetY = 0; // 目标位置
 	int dx = 0, dy = 0;
 };
+struct direction
+{
+	int dx = 0, dy = 0; // 方向向量
+};
 struct Player
 {
-	std::vector<std::pair<int, int>> positions;
+	std::vector<direction> directions; // 方向向量列表
 };
 struct CountDown
 {
@@ -23,8 +27,7 @@ struct Ghost
 struct PlayerReplay 
 {
 	int curInd = 0;
-	std::vector<Position> positions;
-	std::vector<bool> isGhost;
+	std::vector<direction> directions;
 };
 struct Button
 {
@@ -60,3 +63,20 @@ struct Wall
 struct Spike
 {
 };
+
+// 函数声明（实现移到 Components.cpp）
+template<typename T>
+Entity mCreate(World& world, int x, int y, const std::string& spritename)
+{
+	Entity entity = world.CreateEntity();
+	world.Add<T>(entity, T());
+	world.Add<Transform>(entity, Transform(glm::vec3(x * world.GetResourse<SceneData>().gridWidth, y * world.GetResourse<SceneData>().gridHeight, -0.2)));
+	world.Add<Sprite>(entity, Sprite::Create(spritename, world.GetResourse<TextureManager>()));
+	world.Add<Position>(entity, Position(x, y, x, y, 0, 0));
+	world.GetResourse<MapInfo>().map[x][y].push_back(entity);
+	return entity;
+}
+
+void MoveEntity(World& world, Entity e, int x, int y, int nx, int ny);
+
+void RemoveEntity(World& world, Entity e);
