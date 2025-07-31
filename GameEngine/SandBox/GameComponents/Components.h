@@ -11,10 +11,15 @@ struct Position
 struct direction
 {
 	int dx = 0, dy = 0; // 方向向量
+	bool operator==(const direction& other) const
+	{
+		return dx == other.dx && dy == other.dy;
+	}
 };
 struct Player
 {
 	std::vector<direction> directions; // 方向向量列表
+	
 };
 struct CountDown
 {

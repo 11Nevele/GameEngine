@@ -105,6 +105,7 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 	world.View<Player>().ForEach([&world](Entity entity, Player& player)
 		{
 			Entity e = mCreate<PlayerReplay>(world, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY, "PlayerDown"); // 创建回放实体
+			world.Add<CountDown>(e, CountDown(8)); // 添加倒计时组件
 			world.Get<PlayerReplay>(e).directions = player.directions; // 复制玩家的方向向量
 			RemoveEntity(world, entity); // 删除玩家实体
 		});
@@ -116,12 +117,12 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 		{
 			world.Delete<Ghost>(entity); // 删除鬼魂实体
 		});
-	world.View<PlayerReplay>().ForEach([&world](Entity entity, PlayerReplay& position)
+	world.View<PlayerReplay, CountDown, Position>().ForEach([&world](Entity entity, PlayerReplay& replay, CountDown& cd, Position& pos)
 		{
-			position.curInd = 0; // 重置回放位置
-			Position& pos = world.Get<Position>(entity);
+			replay.curInd = 0; // 重置回放位置
 			MoveEntity(world, entity, pos.x, pos.y, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY);
 			world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
+			cd.remain = 8; // 重置倒计时
 		});
 	LevelManager::LoadLevel(world, (Levels)world.GetResourse<SceneData>().currentLevel, false);
 }
@@ -264,6 +265,7 @@ void PlayerControlSystem::NextStep(World& world)
             
             if (canMove == 1)
             {
+
             }
             else
             {
@@ -320,6 +322,21 @@ void PlayerControlSystem::AnimationSystem(World& world)
 				transform.position.x = position.x * world.GetResourse<SceneData>().gridWidth;
 				transform.position.y = position.y * world.GetResourse<SceneData>().gridHeight;
 			});
+		world.View<CountDown>().ForEach([&world](Entity entity, CountDown& countDown)
+		{
+				if (world.Has<Player>(entity) && world.Get<Player>(entity).directions.back() != direction{0,0})
+				{
+					countDown.remain--;
+				}
+				else if (world.Has<PlayerReplay>(entity) )
+				{
+					PlayerReplay& playerReplay = world.Get<PlayerReplay>(entity);
+					if(playerReplay.directions[playerReplay.curInd -1] != direction{ 0,0 })
+					{
+						countDown.remain--;
+					}
+				}
+		});
 	}
 
 

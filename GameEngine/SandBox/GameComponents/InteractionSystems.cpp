@@ -101,5 +101,37 @@ void InteractionSystems::CheckDoor(World& world)
 
 void InteractionSystems::CountDownSystem(World& world)
 {
+	OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+	world.View<CountDown, Position, Transform>().ForEach([&world, &renderer](Entity entity, CountDown& countDown, Position& pos, Transform& transform)
+		{
+			if (countDown.remain > 0)
+			{
+				Transform t = transform;
+				t.position += glm::vec3(world.GetResourse<SceneData>().gridWidth / 2.0f, pos.y * world.GetResourse<SceneData>().gridHeight, -0.5f);
+				renderer.SubmitText(to_string(countDown.remain),
+					t, { 1,1,1 }, { 0.5,0.5 });
+			}
+			else
+			{
+				world.Delete<CountDown>(entity); // 删除倒计时组件
+				world.Add<Ghost>(entity, Ghost()); // 添加鬼魂组件
+				world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("GhostDown");
+				mCreate<Coorpse>(world, pos.x, pos.y, "Coorpse1"); // 创建尸体实体
+			}
+		});
+}
+
+void InteractionSystems::RenderText(World& world)
+{
+	OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+	world.View<CountDown, Position, Transform>().ForEach([&world, &renderer](Entity entity, CountDown& countDown, Position& pos, Transform& transform)
+		{
+				Transform t = transform;
+				t.scale = glm::vec3(0.7f, 0.7f, 1.0f); // Adjust scale for text rendering
+				t.position += glm::vec3(world.GetResourse<SceneData>().gridWidth / 2.0f, world.GetResourse<SceneData>().gridHeight, -0.5f);
+				renderer.SubmitText(to_string(countDown.remain),
+					t, { 1,1,1 }, { 0.5,0.5 });
+
+		});
 }
 

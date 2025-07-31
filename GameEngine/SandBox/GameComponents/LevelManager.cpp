@@ -55,7 +55,8 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 		break;
 	}
 	SceneData& data = world.GetResourse<SceneData>();
-	mCreate<Player>(world, data.startX, data.startY, "PlayerDown");
+	Entity player = mCreate<Player>(world, data.startX, data.startY, "PlayerDown");
+	world.Add<CountDown>(player, CountDown(8));
 }
 
 void AddDoorAndButton(World& world, int x, int y, const std::vector<std::pair<int, int>>& buttonPositions)

@@ -71,6 +71,8 @@ void InitGame()
 	world.AddUpdateSystem(InteractionSystems::CheckButton, 0);
 	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 0);
 
+	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
+
 	//register pictures
 	string path = CURPATH + "/Assets/Image/";
 	world.GetResourse<TextureManager>()

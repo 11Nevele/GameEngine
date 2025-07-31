@@ -8,6 +8,7 @@ public:
 	static void CheckButton(World& world);
 	static void CheckDoor(World& world);
 	static void CountDownSystem(World& world);
+	static void RenderText(World& world);
 	
 };
 
