@@ -219,6 +219,12 @@
     <ClInclude Include="SandBox\GameComponents\LevelManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\GameComponents\PlayerControlSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SandBox\GameComponents\UpdateSprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -354,6 +360,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SandBox\GameComponents\LevelManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\GameComponents\PlayerControlSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SandBox\GameComponents\UpdateSprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>  
 #include <filesystem>
 #include "Util/util.h"
+#include "Global.h"
 namespace ac  
 {
 	OpenGLRenderer::OpenGLRenderer(): s_SceneData()
@@ -135,8 +136,8 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 		100.0f                // Far clipping plane  
 	);  
 	projection = glm::orthoRH_NO(  
-		0.0f, 1280.0f,        // Left, Right  
-		0.0f, 720.0f          // Bottom, Top  
+        0.0f, (float)WINDOW_WIDTH,        // Left, Right  
+        0.0f, (float)WINDOW_HEIGHT          // Bottom, Top  
         ,1.0f, -1.0f
 	);  
 
@@ -189,8 +190,8 @@ void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& tran
 void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, const glm::vec3& color, const glm::vec2& pivot)
 {
     glm::mat4 projection = glm::orthoRH_NO(
-        0.0f, (float)1280,        // Left, Right  
-        0.0f, (float)720          // Bottom, Top  
+        0.0f, (float)WINDOW_WIDTH,        // Left, Right  
+        0.0f, (float)WINDOW_HEIGHT          // Bottom, Top  
 		, 1.0f, -1.0f
     );
 
@@ -283,8 +284,8 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, 
 void OpenGLRenderer::SubmitCircle(VertexArray* vertexArray, float radius, Transform transform)
 {
 	glm::mat4 projection = glm::ortho(
-		0.0f, 1280.0f,        // Left, Right  
-		0.0f, 720.0f          // Bottom, Top  
+		0.0f, (float)WINDOW_WIDTH,        // Left, Right  
+		0.0f, (float)WINDOW_HEIGHT          // Bottom, Top  
 	);
 
 	radius *= transform.scale.x;

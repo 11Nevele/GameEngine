@@ -4,6 +4,7 @@
 #include "Math/Transform.h"
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Tilemap.h"
+#include "EngineComponents/TextComponent.h"
 namespace ac
 {
 	bool OnSpriteAdded(const OnAdded<Sprite>& event)
@@ -31,7 +32,7 @@ namespace ac
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 		TextureManager& textureManager = world.GetResourse<TextureManager>();
 		ModelManager& modelManager = world.GetResourse<ModelManager>();
-		world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, Sprite& sprite, Transform& trans)
+		/*world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, Sprite& sprite, Transform& trans)
 			{
 				textureManager.GetTexture(sprite.textureID).Bind();
 				OpenGLVertexArray& vao = modelManager.GetModel(0);
@@ -40,6 +41,78 @@ namespace ac
 				t.scale.y *= sprite.height;
 				renderer.Submit(&(vao), t.asMat4(), sprite.color);
 			});
+			*/
+		struct renderable
+		{
+			Entity e;
+			float zIndex;
+			int type = 0;//0 sprite, 1 tiled sprite, 2 text
+		};
+		std::vector<renderable> renderables;
+		world.View<Sprite, Transform>().ForEach([&renderables](Entity e, Sprite& sprite, Transform& t)
+			{
+				renderables.emplace_back(renderable{ e, t.position.z, 0 });
+			});
+		world.View<Sprite, TilemapElement>().ForEach([&renderables, &world](Entity e, Sprite&s, TilemapElement& te)
+			{
+				
+				renderables.emplace_back(renderable{ e, world.Get<Transform>(te.tilemap).position.z, 1 });
+			});
+		world.View<Text, Transform>().ForEach([&renderables](Entity e, Text& text, Transform& t)
+			{
+				renderables.emplace_back(renderable{ e, t.position.z, 2 });
+			});
+		std::sort(renderables.begin(), renderables.end(), [](const renderable& a, const renderable& b)
+			{
+				return a.zIndex > b.zIndex;
+			});
+		for (const auto& r : renderables)
+		{
+			switch (r.type)
+			{
+			case 0:
+			{
+				Sprite& sprite = world.Get<Sprite>(r.e);
+				Transform t = world.Get<Transform>(r.e);
+				textureManager.GetTexture(sprite.textureID).Bind();
+				OpenGLVertexArray& vao = modelManager.GetModel(0);
+				t.scale.x *= sprite.width;
+				t.scale.y *= sprite.height;
+				renderer.Submit(&(vao), t.asMat4(), sprite.color);
+			}
+				
+
+				break;
+			case 1:
+			{
+				Sprite& tiledSprite = world.Get<Sprite>(r.e);
+				TilemapElement& tilemapElement = world.Get<TilemapElement>(r.e);
+				textureManager.GetTexture(tiledSprite.textureID).Bind();
+				OpenGLVertexArray& vao = modelManager.GetModel(0);
+				Tilemap& tilemap = world.Get<Tilemap>(tilemapElement.tilemap);
+				Transform t2;
+				if (world.Has<Transform>(tilemapElement.tilemap))
+					t2 = world.Get<Transform>(tilemapElement.tilemap);
+				t2.position += glm::vec3(tilemap.gridWidth, tilemap.gridHeight, 0) * t2.scale * glm::vec3(tilemapElement.x, tilemapElement.y, 0);
+				t2.scale.x *= tilemap.gridHeight;
+				t2.scale.y *= tilemap.gridHeight;
+				renderer.Submit(&(vao), t2.asMat4(), tiledSprite.color);
+			}
+				
+				break;
+			case 2:
+			{
+				Text& text = world.Get<Text>(r.e);
+				Transform t3 = world.Get<Transform>(r.e);
+				float scaleFactor = text.fontSize / 48.0f; // 假设基础字体大小为48
+				t3.scale *= scaleFactor;
+				renderer.SubmitText(text.text, t3, text.color, text.pivot);
+			}
+				
+				break;
+			}
+		}
+
 	}
 	void RenderCircle(World& world)
 	{

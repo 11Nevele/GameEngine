@@ -22,6 +22,15 @@ void LevelManager::ResetLevel(World& world)
 
 }
 
+void AddPlayerReplay(World& world)
+{
+	Entity playerReplay = world.CreateEntity("PlayerReplay");
+	world.Add<PlayerReplay>(playerReplay, PlayerReplay());
+	world.Add<Transform>(playerReplay, Transform(glm::vec3(0, 0, -0.2f)));
+	world.Add<Sprite>(playerReplay, Sprite::Create("PlayerDown", world.GetResourse<TextureManager>()));
+	world.Add<Position>(playerReplay, Position(2, 2, 0, 0, 0, 0));
+	world.GetResourse<MapInfo>().map[2][2].push_back(playerReplay);
+}
 
 void LevelManager::LoadLevel(World& world, Levels level)
 {
@@ -62,7 +71,13 @@ void LevelManager::LoadLevel(World& world, Levels level)
 		Level9(world);
 		break;
 	}
-	
+	SceneData& data = world.GetResourse<SceneData>();
+	Entity player = world.CreateEntity("Player");
+	world.Add<Player>(player, Player());
+	world.Add<Transform>(player, Transform(glm::vec3(data.startX * data.gridWidth, data.startY * data.gridHeight, -0.2)));
+	world.Add<Sprite>(player, Sprite::Create("Wall", world.GetResourse<TextureManager>()));
+	world.Add<Position>(player, Position(data.startX, data.startY, data.startX, data.startY, 0, 0));
+	world.GetResourse<MapInfo>().map[data.startX][data.startY].push_back(player);
 }
 void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map)
 {
@@ -103,6 +118,8 @@ void LevelManager::TestLevel(World& world)
 {
 	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
 	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().startX = 1; // Set the global number to 100
+	world.GetResourse<SceneData>().startY = 2; // Set the global number to 100
 	const int mapWidth = 15;
 	const int mapHeight = 15;
 	vector<vector<int>> map = {
@@ -130,6 +147,11 @@ void LevelManager::TestLevel(World& world)
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
 	world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
 	LoadMap(world, tilemap, background, map);
+	MapInfo& info = world.GetResourse<MapInfo>();
+	info.tilemap = tilemap;
+	info.background = background;
+	info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+	AddPlayerReplay(world);
 
 }
 
@@ -162,7 +184,7 @@ void LevelManager::MainMenu(World& world)
 	world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
 	Entity tilemap = world.CreateEntity();
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
-	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
+	world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
 	LoadMap(world, tilemap, background, map);
 }
 
@@ -196,7 +218,7 @@ void LevelManager::Level2(World& world)
 	Entity tilemap = world.CreateEntity();
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
 	world.Add<Transform>(background, Transform(glm::vec3(0, 0, -0.1)));
-	LoadMap(world, tilemap, background, map);
+	
 }
 
 void LevelManager::Level3(World& world)

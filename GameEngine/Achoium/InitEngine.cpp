@@ -50,7 +50,7 @@ namespace ac
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
-		world.AddResource<WinWindow>(new WinWindow({ "AC", 1280, 720 }, world.GetResourse<EventManager>()));
+		world.AddResource<WinWindow>(new WinWindow({ "AC", WINDOW_WIDTH, WINDOW_HEIGHT }, world.GetResourse<EventManager>()));
 		world.AddResource<OpenGLRenderer>(new OpenGLRenderer());
 		world.AddResource<WindowsInput>(new WindowsInput(&world.GetResourse<WinWindow>()));
 		world.AddResource<TextureManager>(new TextureManager());
@@ -85,16 +85,14 @@ namespace ac
 		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
 		world.AddPostUpdateSystem(PhysicsSystem::Collision2DSystem, 2); // Run collision detection after physics update
 		world.AddPostUpdateSystem(RenderSprite, 9);
-		world.AddPostUpdateSystem(RenderTilemap, 9);
-		world.AddPostUpdateSystem(RenderTextSystem, 9);
+		//world.AddPostUpdateSystem(RenderTilemap, 9);
+		//world.AddPostUpdateSystem(RenderTextSystem, 9);
 		
 
 		
 		//add event listener
 		EventManager& eventManager = world.GetResourse<EventManager>();
 		eventManager.AddListener<OnAdded<TilemapElement>>(OnTilemapElementAdded);
-
-		glEnable(GL_DEPTH_TEST);
 		
 
 

@@ -49,6 +49,7 @@
     <ClInclude Include="Achoium\InitEngine.h" />
     <ClInclude Include="Achoium\EngineComponents\TextComponent.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h" />
+    <ClInclude Include="SandBox\GameComponents\PlayerControlSystem.h" />
     <ClInclude Include="SandBox\GameComponents\LevelManager.h" />
     <ClInclude Include="SandBox\GameComponents\Components.h" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
@@ -79,6 +80,7 @@
     <ClInclude Include="Achoium\EngineComponents\Time.h" />
     <ClInclude Include="SandBox\UnitTests\TimeTest.h" />
     <ClInclude Include="SandBox\UnitTests\WorldTest.h" />
+    <ClInclude Include="SandBox\GameComponents\UpdateSprite.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Achoium\acpch.cpp">
@@ -116,6 +118,7 @@
     </ClCompile>
     <ClCompile Include="Achoium\InitEngine.cpp" />
     <ClCompile Include="Achoium\EngineSystems\RenderTextSystems.cpp" />
+    <ClCompile Include="SandBox\GameComponents\PlayerControlSystem.cpp" />
     <ClCompile Include="SandBox\GameComponents\LevelManager.cpp" />
     <ClCompile Include="SandBox\UnitTests\EventManagerTest.cpp" />
     <ClCompile Include="SandBox\UnitTests\TestPhysics.cpp" />
@@ -135,6 +138,7 @@
     <ClCompile Include="Achoium\EngineComponents\Sprite.cpp" />
     <ClCompile Include="Achoium\EngineComponents\Time.cpp" />
     <ClCompile Include="SandBox\UnitTests\WorldTest.cpp" />
+    <ClCompile Include="SandBox\GameComponents\UpdateSprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\2DFragmentShader.txt" />
