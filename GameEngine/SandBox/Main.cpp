@@ -69,7 +69,6 @@ void InitGame()
 	world.AddUpdateSystem(PlayerControlSystem::NewTurnSystem, 3);
 	world.AddUpdateSystem(InteractionSystems::CheckSpike, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckButton, 0);
-	world.AddUpdateSystem(InteractionSystems::CheckDoor, 0);
 	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 0);
 
 	//register pictures
@@ -86,7 +85,11 @@ void InitGame()
 		.AddTexture("GhostDown", path + "Player/ghostdown.png")
 		.AddTexture("GhostLeft", path + "Player/ghostleft.png")
 		.AddTexture("GhostRight", path + "Player/ghostright.png")
-		.AddTexture("Coorpse1", path + "Player/player_dead.png");
+		.AddTexture("Coorpse1", path + "Player/player_dead.png")
+		.AddTexture("DoorOpenned", path + "DoorOpenned.png")
+		.AddTexture("DoorClosed", path + "DoorClosed.png")
+		.AddTexture("ButtonPressed", path + "ButtonPressed.png")
+		.AddTexture("ButtonUnpressed", path + "ButtonUnpressed.png");
 
 
 

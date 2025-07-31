@@ -203,6 +203,14 @@ int RecursivePush(World& world, Entity& e, Position& p)
 	{
 		return 0; // 返回0表示没有空间可移动
 	}
+	//check if there is a closed gate
+	for(Entity entity : map[tx][ty])
+	{
+		if (world.Has<Door>(entity) && !world.Get<Door>(entity).isOpen)
+		{
+			return 0; // 返回0表示没有空间可移动
+		}
+	}
 
 	bool hasSpace = true;
 	if (!world.Has<Ghost>(e))

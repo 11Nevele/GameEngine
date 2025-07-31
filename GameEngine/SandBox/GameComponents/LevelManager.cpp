@@ -57,6 +57,19 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 	SceneData& data = world.GetResourse<SceneData>();
 	mCreate<Player>(world, data.startX, data.startY, "PlayerDown");
 }
+
+void AddDoorAndButton(World& world, int x, int y, const std::vector<std::pair<int, int>>& buttonPositions)
+{
+	std::vector<Entity> buttons;
+	for(auto p : buttonPositions)
+	{
+		Entity button = mCreate<Button>(world, p.first, p.second, "ButtonUnpressed");
+		world.Get<Button>(button).isPressed = false; // Initialize button state
+		buttons.push_back(button);
+	}
+	Entity door = mCreate<Door>(world, x, y, "DoorClosed");
+	world.Get<Door>(door).keyIDs = buttons;
+}
 void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map, bool loadTile = true)
 {
 	//flip the map vertically to match the tilemap coordinate system
@@ -138,6 +151,7 @@ void LevelManager::TestLevel(World& world, bool loadMap)
 		info.tilemap = tilemap;
 		info.background = background;
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+		AddDoorAndButton(world, 5, 5, { {0,0},{5,8},{6,1} });
 	}
 	else
 	{

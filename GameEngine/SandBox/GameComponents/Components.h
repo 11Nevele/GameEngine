@@ -35,7 +35,7 @@ struct Button
 };
 struct Door
 {
-	std::vector<uint32_t> keyIDs; // 按钮ID
+	std::vector<Entity> keyIDs; // 按钮ID
 	bool isOpen = false; // 门是否打开
 };
 struct Coorpse

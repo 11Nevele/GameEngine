@@ -68,10 +68,35 @@ void InteractionSystems::CheckSpike(World& world)
 
 void InteractionSystems::CheckButton(World& world)
 {
+	auto& map = world.GetResourse<MapInfo>().map;
+	world.View<Button, Position>().ForEach([&world, &map](Entity entity, Button& button, Position& pos)
+		{
+			bool open = false;
+			for(Entity e : map[pos.x][pos.y])
+			{
+				if((world.Has<Player>(e) && !world.Has<Ghost>(e)) || (world.Has<PlayerReplay>(e) && !world.Has<Ghost>(e)) || world.Has<Coorpse>(e))
+					{
+					button.isPressed = true;
+					open = true;
+					break;
+				}
+			}
+			button.isPressed = open;
+		});
+	world.View<Door, Position>().ForEach([&world](Entity entity, Door& door, Position& pos)
+		{
+			bool open = true;
+			for (uint32_t keyID : door.keyIDs)
+			{
+				open &= world.Has<Button>(keyID) && world.Get<Button>(keyID).isPressed;
+			}
+			door.isOpen = open;
+		});
 }
 
 void InteractionSystems::CheckDoor(World& world)
 {
+	
 }
 
 void InteractionSystems::CountDownSystem(World& world)

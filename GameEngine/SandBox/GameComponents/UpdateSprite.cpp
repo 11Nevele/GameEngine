@@ -10,11 +10,11 @@ void UpdateSprite::Update(World& world)
 			{
 				if(world.Get<Button>(entity).isPressed)
 				{
-					//sprite.textureID = textureManager.GetTextureID("ButtonPressed");
+					sprite.textureID = textureManager.GetTextureID("ButtonPressed");
 				}
 				else
 				{
-					//sprite.textureID = textureManager.GetTextureID("ButtonNormal");
+					sprite.textureID = textureManager.GetTextureID("ButtonUnpressed");
 				}
 			}
 			else if(world.Has<Door>(entity))
@@ -22,11 +22,11 @@ void UpdateSprite::Update(World& world)
 				Door& door = world.Get<Door>(entity);
 				if (door.isOpen)
 				{
-
+					sprite.textureID = textureManager.GetTextureID("DoorOpenned");
 				}
 				else
 				{
-
+					sprite.textureID = textureManager.GetTextureID("DoorClosed");
 				}
 			}
 
