@@ -8,6 +8,7 @@ void UpdateSprite::Update(World& world)
 		{
 			if(world.Has<Button>(entity))
 			{
+				transform.position.z = -0.15;
 				if(world.Get<Button>(entity).isPressed)
 				{
 					sprite.textureID = textureManager.GetTextureID("ButtonPressed");
@@ -20,6 +21,7 @@ void UpdateSprite::Update(World& world)
 			else if(world.Has<Door>(entity))
 			{
 				Door& door = world.Get<Door>(entity);
+				transform.position.z = -0.15;
 				if (door.isOpen)
 				{
 					sprite.textureID = textureManager.GetTextureID("DoorOpenned");
@@ -32,6 +34,7 @@ void UpdateSprite::Update(World& world)
 
 			else if(world.Has<Coorpse>(entity))
 			{
+				transform.position.z = -0.17;
 				Coorpse& coorpse = world.Get<Coorpse>(entity);
 				if(coorpse.type == 0)
 					sprite.textureID = textureManager.GetTextureID("Coorpse1");
@@ -42,8 +45,23 @@ void UpdateSprite::Update(World& world)
 			}
 			else if (world.Has<HealthKit>(entity))
 			{
+				transform.position.z = -0.16;
 				sprite.textureID = textureManager.GetTextureID("HealthKit");
 			}
+			else if (world.Has<FinishPoint>(entity))
+			{
+				transform.position.z = -0.16;
+				sprite.textureID = textureManager.GetTextureID("FinishPoint");
+			}
+			else if (world.Has<PlayerReplay>(entity))
+			{
+				transform.position.z = -0.2;
+			}
+			else if (world.Has<Player>(entity))
+			{
+				transform.position.z = -0.2;
+			}
+			
 		}
 	);
 }
