@@ -134,6 +134,8 @@ void InteractionSystems::RenderText(World& world)
 					t, { 1,1,1 }, { 0.5,0.5 });
 
 		});
+	renderer.SubmitText("Round: " + to_string(world.GetResourse<SceneData>().currentRound + 1),
+		Transform(glm::vec3(0, 0, -0.5f)), { 1,1,1 }, { 0,0 });
 }
 
 void InteractionSystems::CheckHealthKit(World& world)

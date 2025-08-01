@@ -251,7 +251,7 @@ void PlayerControlSystem::ResetSystem(World& world)
 
 void PlayerControlSystem::NewTurnSystem(World& world)
 {
-	if(isInAnimation)
+	if(isInAnimation || world.GetResourse<SceneData>().currentRound >=7 || world.GetResourse<SceneData>().currentLevel == MAIN_MENU)
 		return;
 	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_E))
 		return;
