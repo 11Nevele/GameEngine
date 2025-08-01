@@ -45,7 +45,16 @@ bool HandleWindowResize(const WindowResizeEvent& event)
 
 	return true; // 返回 true 表示事件已被处理
 }
-
+void Debug(World& world)
+{
+	if(world.GetResourse<InputManager>().IsKeyDown(AC_KEY_T))
+	{
+		world.View<Position, LevelEntry>().ForEach([](Entity entity, Position& pos, LevelEntry& entry)
+		{
+			ACMSG("Level Entry at (" << pos.x << ", " << pos.y << ") for level: " << static_cast<int>(entry.level));
+			});
+	}
+}
 void InitGame()
 {
 	//register all components
@@ -81,6 +90,7 @@ void InitGame()
 	world.AddUpdateSystem(InteractionSystems::CheckFinishPoint, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckLevelEntry, 0);
 	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
+	world.AddUpdateSystem(Debug, 0);
 
 	//register pictures
 	string path = CURPATH + "/Assets/Image/";
@@ -97,12 +107,19 @@ void InitGame()
 		.AddTexture("GhostLeft", path + "Player/ghostleft.png")
 		.AddTexture("GhostRight", path + "Player/ghostright.png")
 		.AddTexture("Coorpse1", path + "Player/player_dead.png")
-		.AddTexture("DoorOpenned", path + "DoorOpenned.png")
-		.AddTexture("DoorClosed", path + "DoorClosed.png")
 		.AddTexture("ButtonPressed", path + "ButtonPressed.png")
-		.AddTexture("ButtonUnpressed", path + "ButtonUnpressed.png")
 		.AddTexture("HealthKit", path + "Healthkit.png")
-		.AddTexture("FinishPoint", path + "Ground/ground_02.png");
+		.AddTexture("FinishPoint", path + "Ground/ground_02.png")
+
+		.AddTexture("ButtonUnpressedR", path + "ButtonUnpressedRed.png")
+		.AddTexture("ButtonUnpressedB", path + "ButtonUnpressedBlue.png")
+		.AddTexture("ButtonUnpressedY", path + "ButtonUnpressedYellow.png")
+		.AddTexture("DoorOpennedR", path + "DoorOpennedRed.png")
+		.AddTexture("DoorOpennedB", path + "DoorOpennedBlue.png")
+		.AddTexture("DoorOpennedY", path + "DoorOpennedYellow.png")
+		.AddTexture("DoorClosedR", path + "DoorClosedRed.png")
+		.AddTexture("DoorClosedB", path + "DoorClosedBlue.png")
+		.AddTexture("DoorClosedY", path + "DoorClosedYellow.png");
 
 
 

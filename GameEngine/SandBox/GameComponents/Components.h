@@ -53,11 +53,13 @@ struct PlayerReplay
 struct Button
 {
 	bool isPressed = false;
+	char color = ' '; // 按钮颜色
 };
 struct Door
 {
 	std::vector<Entity> keyIDs; // 按钮ID
 	bool isOpen = false; // 门是否打开
+	char color = ' '; // 门颜色
 };
 struct Coorpse
 {

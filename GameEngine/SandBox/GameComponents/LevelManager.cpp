@@ -73,16 +73,19 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 	
 }
 
-void AddDoorAndButton(World& world, int x, int y, const std::vector<std::pair<int, int>>& buttonPositions)
+void AddDoorAndButton(World& world, int x, int y, const std::vector<std::pair<int, int>>& buttonPositions, char doorColor, char buttonColor)
 {
 	std::vector<Entity> buttons;
 	for(auto p : buttonPositions)
 	{
-		Entity button = mCreate<Button>(world, p.first, p.second, "ButtonUnpressed");
+		string buttonColorStr(1, buttonColor);  // ½«char×ª»»Îªstring
+		Entity button = mCreate<Button>(world, p.first, p.second, "ButtonUnpressed" + buttonColorStr);
 		world.Get<Button>(button).isPressed = false; // Initialize button state
+		world.Get<Button>(button).color = buttonColor; // Set button color
 		buttons.push_back(button);
 	}
-	Entity door = mCreate<Door>(world, x, y, "DoorClosed");
+	Entity door = mCreate<Door>(world, x, y, "DoorClosed" + string(1,doorColor));
+	world.Get<Door>(door).color = doorColor; // Set door color
 	world.Get<Door>(door).keyIDs = buttons;
 }
 void AddLevelEntry(World& world, Levels level, int x, int y)
@@ -205,7 +208,7 @@ void LevelManager::TestLevel(World& world, bool loadMap)
 		info.background = background;
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
-		AddDoorAndButton(world, 5, 5, { {0,0},{5,8},{6,1} });
+		AddDoorAndButton(world, 5, 5, { {0,0},{5,8},{6,1} }, 'R', 'R');
 	}
 	else
 	{
@@ -260,7 +263,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
 		
-		AddLevelEntry(world, TEST_LEVEL, 6, 6); // Add entry to test level
+		//AddLevelEntry(world, TEST_LEVEL, 6, 6); // Add entry to test level
 		AddLevelEntry(world, LEVEL_1, 1, 1); // Add entry to test level
 		AddLevelEntry(world, LEVEL_2, 1, 2); // Add entry to test level
 		AddLevelEntry(world, LEVEL_6, 1, 6); // Add entry to test level
@@ -318,7 +321,7 @@ void LevelManager::Level1(World& world, bool loadMap)
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
 
-		AddDoorAndButton(world, 7,11, { {1,1}, });
+		AddDoorAndButton(world, 7,11, { {1,1}, }, 'R', 'R');
 	}
 	else
 	{
@@ -424,7 +427,7 @@ void LevelManager::Level6(World& world, bool loadMap)
 		info.background = background;
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
-		AddDoorAndButton(world,12, 7, { {1,13},{1,12},{02,12}, });
+		AddDoorAndButton(world,12, 7, { {1,13},{1,12},{02,12}, }, 'R', 'R');
 	}
 	else
 	{

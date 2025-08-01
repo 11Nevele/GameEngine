@@ -222,7 +222,7 @@ void InteractionSystems::CheckLevelEntry(World& world)
 			{
 				if ((world.Has<Player>(e) && !world.Has<Ghost>(e)))
 				{
-					auto t  = world.View<Sprite>().GetPacked();
+					Levels l = fp.level;
 					world.View<Sprite>().ForEach([&world, e](Entity ee, Sprite& sprite)
 						{
 							world.DeleteEntity(ee);
@@ -237,7 +237,7 @@ void InteractionSystems::CheckLevelEntry(World& world)
 						world.DeleteEntity(entity);
 						});
 					// Player or player replay is present, remove finish point
-					LevelManager::LoadLevel(world, fp.level);
+					LevelManager::LoadLevel(world, l);
 					break; // Exit the loop after finding a player
 				}
 			}

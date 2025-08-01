@@ -9,26 +9,28 @@ void UpdateSprite::Update(World& world)
 			if(world.Has<Button>(entity))
 			{
 				transform.position.z = -0.15;
+				char c = world.Get<Button>(entity).color;
 				if(world.Get<Button>(entity).isPressed)
 				{
 					sprite.textureID = textureManager.GetTextureID("ButtonPressed");
 				}
 				else
 				{
-					sprite.textureID = textureManager.GetTextureID("ButtonUnpressed");
+					sprite.textureID = textureManager.GetTextureID("ButtonUnpressed" + string(1,c));
 				}
 			}
 			else if(world.Has<Door>(entity))
 			{
 				Door& door = world.Get<Door>(entity);
 				transform.position.z = -0.15;
+				char c = door.color;
 				if (door.isOpen)
 				{
-					sprite.textureID = textureManager.GetTextureID("DoorOpenned");
+					sprite.textureID = textureManager.GetTextureID("DoorOpenned" + string(1, c));
 				}
 				else
 				{
-					sprite.textureID = textureManager.GetTextureID("DoorClosed");
+					sprite.textureID = textureManager.GetTextureID("DoorClosed" + string(1, c));
 				}
 			}
 
