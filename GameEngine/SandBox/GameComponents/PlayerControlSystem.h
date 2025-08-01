@@ -40,6 +40,10 @@ private:
 	
 	
 public:
+	static void ClearHistory()
+	{
+		history.clear();
+	}
 	static void SaveState(World& world);
 	static void UndoSystem(World& world);
 	static void PlayerControl(World& world);

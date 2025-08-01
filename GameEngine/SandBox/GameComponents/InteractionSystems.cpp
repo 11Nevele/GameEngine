@@ -3,6 +3,7 @@
 #include "Achoium.h"
 #include "Components.h"
 #include "LevelManager.h"
+#include "PlayerControlSystem.h"
 void InteractionSystems::CheckSpike(World& world)
 {
 	
@@ -207,6 +208,7 @@ void InteractionSystems::CheckFinishPoint(World& world)
 							// Remove all tilemap elements
 							world.DeleteEntity(entity);
 						});
+					PlayerControlSystem::ClearHistory(); // Clear player control history
 					// Player or player replay is present, remove finish point
 					LevelManager::LoadLevel(world, MAIN_MENU);
 					break; // Exit the loop after finding a player
@@ -240,6 +242,7 @@ void InteractionSystems::CheckLevelEntry(World& world)
 						world.DeleteEntity(entity);
 						});
 					// Player or player replay is present, remove finish point
+					PlayerControlSystem::ClearHistory(); // Clear player control history
 					LevelManager::LoadLevel(world, l);
 					break; // Exit the loop after finding a player
 				}
