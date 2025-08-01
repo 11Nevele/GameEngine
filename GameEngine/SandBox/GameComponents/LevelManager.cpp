@@ -2,7 +2,7 @@
 #include "LevelManager.h"
 #include "Achoium.h"
 #include "Components.h"
-
+#include "PlayerControlSystem.h"
 //0 none
 //1 wall
 //2 spike
@@ -60,6 +60,7 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 	case LEVEL_9:
 		break;
 	}
+	PlayerControlSystem::SaveState(world);
 	
 }
 

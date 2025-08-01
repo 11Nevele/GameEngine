@@ -10,78 +10,209 @@ void PlayerControlSystem::UndoSystem(World& world)
 {
 	if (isInAnimation)
 		return;
+	if(history.size() <= 1)
+	{
+		return;
+	}
+	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_Z))
+		return;
+	history.pop_back(); // 删除当前步骤
+	step currentStep = history.back(); // 获取上一个步骤
+	world.GetResourse<SceneData>().currentRound = currentStep.currentRound;
+	world.View<Coorpse>().ForEach([&world](Entity entity, Coorpse& coorpse)
+	{
+		RemoveEntity(world, entity);
+		});
+	for(auto& pos : currentStep.coorpses)
+	{
+		Entity corpseEntity = mCreate<Coorpse>(world, pos.x, pos.y, "Coorpse1");
+	}
+	world.View<Player>().ForEach([&world](Entity entity, Player& player)
+	{
+			RemoveEntity(world, entity);
+		});
+	world.View<PlayerReplay>().ForEach([&world](Entity entity, PlayerReplay& playerReplay)
+		{
+		RemoveEntity(world, entity);
+		});
+	for(auto& state: currentStep.entityStates)
+	{
+		if(state.hasPlayer)
+		{
+			Entity playerEntity = mCreate<Player>(world, state.position.x, state.position.y, "PlayerDown");
+			world.Get<Player>(playerEntity) = state.player;
+			world.Get<Sprite>(playerEntity).textureID = state.spriteTextureID;
+			if(state.hasGhost)
+			{
+				world.Add<Ghost>(playerEntity, Ghost());
+			}
+			if(state.hasCountDown)
+			{
+				world.Add<CountDown>(playerEntity, CountDown{ state.countdown });
+			}
+		}
+		else if(state.hasPlayerReplay)
+		{
+			Entity playerReplayEntity = mCreate<PlayerReplay>(world, state.position.x, state.position.y, "PlayerDown");
+			world.Get<PlayerReplay>(playerReplayEntity) = state.playerReplay;
+			world.Get<Sprite>(playerReplayEntity).textureID = state.spriteTextureID;
+			if(state.hasGhost)
+			{
+				world.Add<Ghost>(playerReplayEntity, Ghost());
+			}
+			if (state.hasCountDown)
+			{
+				world.Add<CountDown>(playerReplayEntity, CountDown{ state.countdown });
+			}
+		}
+	}
+	world.View<HealthKit>().ForEach([&world](Entity entity, HealthKit& healthKit)
+	{
+		RemoveEntity(world, entity);
+		});
+	for(auto& pos : currentStep.healthKits)
+	{
+		mCreate<HealthKit>(world, pos.x, pos.y, "HealthKit");
+	}
+
 }
 
+// 保存当前世界状态到历史记录
+void PlayerControlSystem::SaveState(World& world)
+{
+	step currentStep;
+
+	// 保存场景数据
+	SceneData& sceneData = world.GetResourse<SceneData>();
+	currentStep.currentRound = sceneData.currentRound;
+
+	// 保存所有实体状态
+	world.View<Position, Sprite>().ForEach([&world, &currentStep](Entity entity, Position& position, Sprite& sprite)
+		{
+			step::EntityState entityState;
+			entityState.position = position;
+			entityState.spriteTextureID = sprite.textureID;
+
+			// 保存Player组件（如果存在）
+			entityState.hasPlayer = world.Has<Player>(entity);
+			if (entityState.hasPlayer)
+			{
+				entityState.player = world.Get<Player>(entity);
+			}
+
+			// 保存PlayerReplay组件（如果存在）
+			entityState.hasPlayerReplay = world.Has<PlayerReplay>(entity);
+			if (entityState.hasPlayerReplay)
+			{
+				entityState.playerReplay = world.Get<PlayerReplay>(entity);
+			}
+
+			// 保存Ghost组件状态
+			entityState.hasGhost = world.Has<Ghost>(entity);
+
+			// 保存CountDown组件状态
+			entityState.hasCountDown = world.Has<CountDown>(entity);
+			if (entityState.hasCountDown)
+			{
+				entityState.countdown = world.Get<CountDown>(entity);
+			}
+
+			currentStep.entityStates.push_back(entityState);
+		});
+
+
+	// 保存尸体实体
+	world.View<Coorpse, Position>().ForEach([&currentStep](Entity entity, Coorpse& coorpse, Position& pos)
+		{
+			currentStep.coorpses.push_back(pos);
+		});
+
+	// 保存健康包实体
+	world.View<HealthKit, Position>().ForEach([&currentStep](Entity entity, HealthKit& healthKit, Position& pos)
+		{
+			currentStep.healthKits.push_back(pos);
+		});
+
+	// 将当前步骤添加到历史记录中
+	history.push_back(currentStep);
+}
 
 void PlayerControlSystem::PlayerControl(World& world)
 {
-	if (isInAnimation)
-		return;
-	bool actionPerformed = MovementSystem(world) || SuicideSystem(world)|| HealSystem(world);
-	if (!actionPerformed)
-		return;
-	world.View<PlayerReplay, Position>().ForEach([&world](Entity entity, PlayerReplay& playerReplay, Position& position)
-	{
-		if (playerReplay.curInd < playerReplay.directions.size())
-		{
-			position.dx = playerReplay.directions[playerReplay.curInd].dx;
-			position.dy = playerReplay.directions[playerReplay.curInd].dy;
-			
-		}
-		playerReplay.curInd++;
-		});
-	//update sprite
-	TextureManager& textureManager = world.GetResourse<TextureManager>();
-	world.View<Sprite, Position, Player>().ForEach([&world, &textureManager](Entity entity, Sprite& sprite, Position& pos, Player& player)
-	{
-				string textureType = "Player";
-				if (world.Has<Ghost>(entity))
-				{
-					textureType = "Ghost";
-				}
-				if (pos.dx == 1 && pos.dy == 0)
-				{
-					sprite.textureID = textureManager.GetTextureID(textureType + "Right");
-				}
-				else if (pos.dx == -1 && pos.dy == 0)
-				{
-					sprite.textureID = textureManager.GetTextureID(textureType + "Left");
-				}
-				else if (pos.dx == 0 && pos.dy == 1)
-				{
-					sprite.textureID = textureManager.GetTextureID(textureType + "Up");
-				}
-				else if (pos.dx == 0 && pos.dy == -1)
-				{
-					sprite.textureID = textureManager.GetTextureID(textureType + "Down");
-				}
-	});
-	world.View<Sprite, Position, PlayerReplay>().ForEach([&world, &textureManager](Entity entity, Sprite& sprite, Position& pos, PlayerReplay& player)
-		{
-			string textureType = "Player";
-			if (world.Has<Ghost>(entity))
-			{
-				textureType = "Ghost";
-			}
-			if (pos.dx == 1 && pos.dy == 0)
-			{
-				sprite.textureID = textureManager.GetTextureID(textureType + "Right");
-			}
-			else if (pos.dx == -1 && pos.dy == 0)
-			{
-				sprite.textureID = textureManager.GetTextureID(textureType + "Left");
-			}
-			else if (pos.dx == 0 && pos.dy == 1)
-			{
-				sprite.textureID = textureManager.GetTextureID(textureType + "Up");
-			}
-			else if (pos.dx == 0 && pos.dy == -1)
-			{
-				sprite.textureID = textureManager.GetTextureID(textureType + "Down");
-			}
-		});
-	NextStep(world);
-	isInAnimation = true; // 开始动画
+    if (isInAnimation)
+        return;
+    
+    // 在进行任何操作前保存当前状态
+    
+    
+    bool actionPerformed = MovementSystem(world) || SuicideSystem(world)|| HealSystem(world);
+    if (!actionPerformed)
+    {
+        return;
+    }
+    
+    world.View<PlayerReplay, Position>().ForEach([&world](Entity entity, PlayerReplay& playerReplay, Position& position)
+    {
+        if (playerReplay.curInd < playerReplay.directions.size())
+        {
+            position.dx = playerReplay.directions[playerReplay.curInd].dx;
+            position.dy = playerReplay.directions[playerReplay.curInd].dy;
+            
+        }
+        playerReplay.curInd++;
+        });
+    //update sprite
+    TextureManager& textureManager = world.GetResourse<TextureManager>();
+    world.View<Sprite, Position, Player>().ForEach([&world, &textureManager](Entity entity, Sprite& sprite, Position& pos, Player& player)
+    {
+                string textureType = "Player";
+                if (world.Has<Ghost>(entity))
+                {
+                    textureType = "Ghost";
+                }
+                if (pos.dx == 1 && pos.dy == 0)
+                {
+                    sprite.textureID = textureManager.GetTextureID(textureType + "Right");
+                }
+                else if (pos.dx == -1 && pos.dy == 0)
+                {
+                    sprite.textureID = textureManager.GetTextureID(textureType + "Left");
+                }
+                else if (pos.dx == 0 && pos.dy == 1)
+                {
+                    sprite.textureID = textureManager.GetTextureID(textureType + "Up");
+                }
+                else if (pos.dx == 0 && pos.dy == -1)
+                {
+                    sprite.textureID = textureManager.GetTextureID(textureType + "Down");
+                }
+    });
+    world.View<Sprite, Position, PlayerReplay>().ForEach([&world, &textureManager](Entity entity, Sprite& sprite, Position& pos, PlayerReplay& player)
+        {
+            string textureType = "Player";
+            if (world.Has<Ghost>(entity))
+            {
+                textureType = "Ghost";
+            }
+            if (pos.dx == 1 && pos.dy == 0)
+            {
+                sprite.textureID = textureManager.GetTextureID(textureType + "Right");
+            }
+            else if (pos.dx == -1 && pos.dy == 0)
+            {
+                sprite.textureID = textureManager.GetTextureID(textureType + "Left");
+            }
+            else if (pos.dx == 0 && pos.dy == 1)
+            {
+                sprite.textureID = textureManager.GetTextureID(textureType + "Up");
+            }
+            else if (pos.dx == 0 && pos.dy == -1)
+            {
+                sprite.textureID = textureManager.GetTextureID(textureType + "Down");
+            }
+        });
+    NextStep(world);
+    isInAnimation = true; // 开始动画
 }
 void ClearAll(World& world)
 {
@@ -93,7 +224,29 @@ void ClearAll(World& world)
 }
 void PlayerControlSystem::ResetSystem(World& world)
 {
-
+    if (isInAnimation)
+        return;
+    if(!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_R))
+		return;
+    // 重置玩家位置和状态
+    world.View< Position>().ForEach([&world](Entity entity, Position& pos)
+    {
+			RemoveEntity(world, entity); // 删除实体
+    });
+    
+    world.View<TilemapElement>().ForEach([&world](Entity entity, TilemapElement& tile)
+	{
+		// 删除所有地图元素
+			world.DeleteEntity(entity);
+		});
+	world.View<Sprite>().ForEach([&world](Entity entity, Sprite& tile)
+		{
+			// 删除所有地图元素
+			world.DeleteEntity(entity);
+		});
+    
+    // 重新加载当前关卡（但不重新创建地图）
+    LevelManager::LoadLevel(world, (Levels)world.GetResourse<SceneData>().currentLevel, true);
 }
 
 void PlayerControlSystem::NewTurnSystem(World& world)
@@ -310,6 +463,7 @@ void PlayerControlSystem::AnimationSystem(World& world)
 		return;
 	if (animationTime - 0.2f >= 0)
 	{
+		SaveState(world); // 0表示移动操作
 		animationTime = 0.0f; // 重置动画时间
 		isInAnimation = false; // 动画结束
 	}
@@ -325,8 +479,6 @@ void PlayerControlSystem::AnimationSystem(World& world)
 	animationTime += time.Delta();
 	if (animationTime - 0.2f >= 0)
 	{
-		animationTime = 0.0f; // 重置动画时间
-		isInAnimation = false; // 动画结束
 		auto& mapInfo = world.GetResourse<MapInfo>().map;
 		world.View<Position, Transform>().ForEach([&world, &mapInfo](Entity entity, Position& position, Transform& transform)
 			{
