@@ -74,8 +74,8 @@ void InitGame()
 	world.AddUpdateSystem(PlayerControlSystem::NewTurnSystem, 3);
 	world.AddUpdateSystem(InteractionSystems::CheckSpike, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckButton, 0);
-	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 0);
-	world.AddUpdateSystem(InteractionSystems::CheckHealthKit, 0);
+	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 1);
+	world.AddUpdateSystem(InteractionSystems::CheckHealthKit, 2);
 	world.AddUpdateSystem(PlayerControlSystem::ResetSystem, 5);
 	world.AddUpdateSystem(PlayerControlSystem::UndoSystem, 5);
 	world.AddUpdateSystem(InteractionSystems::CheckFinishPoint, 0);
