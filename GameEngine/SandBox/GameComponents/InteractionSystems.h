@@ -10,6 +10,8 @@ public:
 	static void CountDownSystem(World& world);
 	static void RenderText(World& world);
 	static void CheckHealthKit(World& world);
+	static void CheckFinishPoint(World& world);
+	static void CheckLevelEntry(World& world);
 	
 };
 

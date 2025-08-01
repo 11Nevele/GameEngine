@@ -2,6 +2,7 @@
 #include "InteractionSystems.h"
 #include "Achoium.h"
 #include "Components.h"
+#include "LevelManager.h"
 void InteractionSystems::CheckSpike(World& world)
 {
 	world.View<Position, Player>().ForEach([&world](Entity entity, Position& pos, Player& player)
@@ -174,6 +175,69 @@ void InteractionSystems::CheckHealthKit(World& world)
 							}
 								
 						});
+					break; // Exit the loop after finding a player
+				}
+			}
+		});
+}
+
+void InteractionSystems::CheckFinishPoint(World& world)
+{
+	auto& map = world.GetResourse<MapInfo>().map;
+	world.View<Position, FinishPoint>().ForEach([&world, &map](Entity entity, Position& pos, FinishPoint& fp)
+		{
+			//get all entities at the position and check if any player or player replay is present
+			for (Entity e : map[pos.x][pos.y])
+			{
+				if ((world.Has<Player>(e) && !world.Has<Ghost>(e)) || (world.Has<PlayerReplay>(e) && !world.Has<Ghost>(e)))
+				{
+					world.View<Sprite>().ForEach([&world, e](Entity ee, Sprite& sprite)
+						{
+							world.DeleteEntity(ee);
+						});
+					world.View<Tilemap>().ForEach([&world](Entity entity, Tilemap& tilemap)
+						{
+							world.DeleteEntity(entity); // Remove the tilemap entity
+						});
+					world.View<TilemapElement>().ForEach([&world](Entity entity, TilemapElement& tile)
+						{
+							// Remove all tilemap elements
+							world.DeleteEntity(entity);
+						});
+					// Player or player replay is present, remove finish point
+					LevelManager::LoadLevel(world, MAIN_MENU);
+					break; // Exit the loop after finding a player
+				}
+			}
+		});
+}
+
+void InteractionSystems::CheckLevelEntry(World& world)
+{
+	auto& map = world.GetResourse<MapInfo>().map;
+	world.View<Position, LevelEntry>().ForEach([&world, &map](Entity entity, Position& pos, LevelEntry& fp)
+		{
+			//get all entities at the position and check if any player or player replay is present
+			for (Entity e : map[pos.x][pos.y])
+			{
+				if ((world.Has<Player>(e) && !world.Has<Ghost>(e)))
+				{
+					auto t  = world.View<Sprite>().GetPacked();
+					world.View<Sprite>().ForEach([&world, e](Entity ee, Sprite& sprite)
+						{
+							world.DeleteEntity(ee);
+						});
+					world.View<Tilemap>().ForEach([&world](Entity entity, Tilemap& tilemap)
+					{
+							world.DeleteEntity(entity); // Remove the tilemap entity
+						});
+					world.View<TilemapElement>().ForEach([&world](Entity entity, TilemapElement& tile)
+					{
+						// Remove all tilemap elements
+						world.DeleteEntity(entity);
+						});
+					// Player or player replay is present, remove finish point
+					LevelManager::LoadLevel(world, fp.level);
 					break; // Exit the loop after finding a player
 				}
 			}

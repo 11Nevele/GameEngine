@@ -2,6 +2,20 @@
 #include "acpch.h"
 #include "Achoium.h"
 using namespace ac;
+enum Levels
+{
+	MAIN_MENU,
+	TEST_LEVEL,
+	LEVEL_1,
+	LEVEL_2,
+	LEVEL_3,
+	LEVEL_4,
+	LEVEL_5,
+	LEVEL_6,
+	LEVEL_7,
+	LEVEL_8,
+	LEVEL_9
+};
 struct Position
 {
 	int x = 0, y = 0;
@@ -65,6 +79,7 @@ struct MapInfo
 	std::vector<std::vector<std::vector<Entity>>> map; // 3D vector to store entities at each tile position
 };
 struct FinishPoint {  };
+struct LevelEntry { Levels level; };
 
 //scene components
 struct Wall

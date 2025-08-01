@@ -60,23 +60,26 @@ void InitGame()
 	world.RegisterType<Wall>();
 	world.RegisterType<Spike>();
 	world.RegisterType<HealthKit>();
+	world.RegisterType<FinishPoint>();
+	world.RegisterType<LevelEntry>();
 
 	//register all resources
 	world.AddResource<SceneData>(new SceneData);
 	world.AddResource<MapInfo>(new MapInfo);
 
 	//register all all systems
-	world.AddUpdateSystem(PlayerControlSystem::PlayerControl, 0);
-	world.AddUpdateSystem(UpdateSprite::Update, 2);
-	world.AddUpdateSystem(PlayerControlSystem::AnimationSystem, 1);
+	world.AddUpdateSystem(PlayerControlSystem::PlayerControl, 3);
+	world.AddUpdateSystem(UpdateSprite::Update, 3);
+	world.AddUpdateSystem(PlayerControlSystem::AnimationSystem, 4);
 	world.AddUpdateSystem(PlayerControlSystem::NewTurnSystem, 3);
 	world.AddUpdateSystem(InteractionSystems::CheckSpike, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckButton, 0);
 	world.AddUpdateSystem(InteractionSystems::CountDownSystem, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckHealthKit, 0);
-	world.AddUpdateSystem(PlayerControlSystem::ResetSystem, 9);
-	world.AddUpdateSystem(PlayerControlSystem::UndoSystem, 8);
-
+	world.AddUpdateSystem(PlayerControlSystem::ResetSystem, 5);
+	world.AddUpdateSystem(PlayerControlSystem::UndoSystem, 5);
+	world.AddUpdateSystem(InteractionSystems::CheckFinishPoint, 0);
+	world.AddUpdateSystem(InteractionSystems::CheckLevelEntry, 0);
 	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
 
 	//register pictures
@@ -130,7 +133,7 @@ int main()
 	
 	InitGame();
 
-	LevelManager::LoadLevel(world, TEST_LEVEL);
+	LevelManager::LoadLevel(world, MAIN_MENU);
 
 	while (true)
 	{
