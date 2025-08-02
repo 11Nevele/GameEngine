@@ -8,13 +8,13 @@ float PlayerControlSystem::animationTime = 0.0f;
 
 void PlayerControlSystem::UndoSystem(World& world)
 {
-	if (isInAnimation)
+	if (isInAnimation || world.GetResourse<SceneData>().currentLevel == BEGINNING_LEVEL)
 		return;
 	if(history.size() <= 1)
 	{
 		return;
 	}
-	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_Z))
+	if (!world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_Z))
 		return;
 	history.pop_back(); // 删除当前步骤
 	step currentStep = history.back(); // 获取上一个步骤
@@ -145,7 +145,7 @@ void PlayerControlSystem::PlayerControl(World& world)
     // 在进行任何操作前保存当前状态
     
     
-    bool actionPerformed = MovementSystem(world) || SuicideSystem(world)|| HealSystem(world);
+    bool actionPerformed = MovementSystem(world);
     if (!actionPerformed)
     {
         return;
@@ -214,19 +214,12 @@ void PlayerControlSystem::PlayerControl(World& world)
     NextStep(world);
     isInAnimation = true; // 开始动画
 }
-void ClearAll(World& world)
-{
-	world.View<Position>().ForEach([&world](Entity entity, Position& position)
-	{
-			world.DeleteEntity(entity);
-		});
 
-}
 void PlayerControlSystem::ResetSystem(World& world)
 {
-    if (isInAnimation)
+    if (isInAnimation || world.GetResourse<SceneData>().currentLevel == BEGINNING_LEVEL)
         return;
-    if(!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_R))
+    if(!world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_R))
 		return;
     // 重置玩家位置和状态
     world.View< Position>().ForEach([&world](Entity entity, Position& pos)
@@ -251,9 +244,10 @@ void PlayerControlSystem::ResetSystem(World& world)
 
 void PlayerControlSystem::NewTurnSystem(World& world)
 {
-	if(isInAnimation || world.GetResourse<SceneData>().currentRound >=7 || world.GetResourse<SceneData>().currentLevel == MAIN_MENU)
+	if(isInAnimation || world.GetResourse<SceneData>().currentRound >=7 || world.GetResourse<SceneData>().currentLevel == MAIN_MENU
+		|| world.GetResourse<SceneData>().currentLevel == BEGINNING_LEVEL)
 		return;
-	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_E))
+	if (!world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_E))
 		return;
 	world.View<Player>().ForEach([&world](Entity entity, Player& player)
 		{
@@ -311,30 +305,31 @@ bool PlayerControlSystem::MovementSystem(World& world)
 {
 	InputManager& inputManager = world.GetResourse<InputManager>();
 	bool hasMovement = false;
-	world.View<Player, Position>().ForEach([&inputManager, &hasMovement](Entity entity, Player& playerControl, Position& position)
+	Levels currentLevel = (Levels)world.GetResourse<SceneData>().currentLevel;
+	world.View<Player, Position>().ForEach([&inputManager, &hasMovement, currentLevel](Entity entity, Player& playerControl, Position& position)
 	{
-		if (inputManager.IsKeyPressed(AC_KEY_A))
+		if (inputManager.IsKeyPressed(AC_KEY_A) && currentLevel != BEGINNING_LEVEL)
 		{
 			position.dx = -1;
 			position.dy = 0;
 			playerControl.directions.push_back({ -1, 0 });
 			hasMovement = true;
 		}
-		else if (inputManager.IsKeyPressed(AC_KEY_D))
+		else if (inputManager.IsKeyPressed(AC_KEY_D) && currentLevel != BEGINNING_LEVEL)
 		{
 			position.dx = 1;
 			position.dy = 0;
 			playerControl.directions.push_back({ 1, 0 });
 			hasMovement = true;
 		}
-		else if (inputManager.IsKeyPressed(AC_KEY_S))
+		else if (inputManager.IsKeyPressed(AC_KEY_S) && currentLevel != BEGINNING_LEVEL)
 		{
 			position.dx = 0;
 			position.dy = -1;
 			playerControl.directions.push_back({ 0, -1 });
 			hasMovement = true;
 		}
-		else if (inputManager.IsKeyPressed(AC_KEY_W))
+		else if (inputManager.IsKeyPressed(AC_KEY_W) && currentLevel != BEGINNING_LEVEL)
 		{
 			position.dx = 0;
 			position.dy = 1;
@@ -353,17 +348,6 @@ bool PlayerControlSystem::MovementSystem(World& world)
 	return hasMovement;
 }
 
-bool PlayerControlSystem::SuicideSystem(World& world)
-{
-	//implement later
-	return false;
-}
-
-bool PlayerControlSystem::HealSystem(World& world)
-{
-	//implement later
-	return false;
-}
 
 //1 has space, 0 no space
 int RecursivePush(World& world, Entity& e, Position& p)

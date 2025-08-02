@@ -39,7 +39,7 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 		MainMenu(world, loadMap);
 		break;
 	case BEGINNING_LEVEL:
-		TestLevel(world, loadMap);
+		BeginningLevel(world, loadMap);
 		break;
 	case ENDING_LEVEL:
 		EndingLevel(world, loadMap);
@@ -293,6 +293,70 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 
 void LevelManager::BeginningLevel(World& world, bool loadMap)
 {
+	world.GetResourse<SceneData>().gridHeight = 64;
+	world.GetResourse<SceneData>().gridWidth = 64;
+	const int mapWidth = 15;
+	const int mapHeight = 15;
+	vector<vector<int>> map = {
+		{1,1,1,1,1,1,1,4,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,0,1,1,1,1,1,1,1},
+	};
+	if (loadMap)
+	{
+		world.GetResourse<SceneData>().currentRound = 0; // Reset the current round
+		Entity background = world.CreateEntity();
+		world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
+		Entity tilemap = world.CreateEntity();
+		world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
+		MapInfo& info = world.GetResourse<MapInfo>();
+		info.tilemap = tilemap;
+		info.background = background;
+		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+		LoadMap(world, tilemap, background, map);
+		Entity p = mCreate<Player>(world, 7, 2, "PlayerUp");
+		world.Add<CountDown>(p, CountDown(8)); // Add a countdown to the target player
+
+		Entity t1 = mCreate<PlayerReplay>(world, 7, 0, "PlayerUp");
+		world.Add<CountDown>(t1, CountDown(8)); // Add a countdown to the target player
+		world.Get<PlayerReplay>(t1).directions = { {0,1},{1,0},{0,1},{0,1}, {-1,0},{0,1},{0,1},{0,1} };
+
+		Entity t2 = mCreate<PlayerReplay>(world, 7, 0, "PlayerUp");
+		world.Add<CountDown>(t2, CountDown(8)); // Add a countdown to the target player
+		world.Get<PlayerReplay>(t2).directions = { {0,1},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+		,{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1} };
+
+		Entity t3 = mCreate<PlayerReplay>(world, 7, 0, "PlayerUp");
+		world.Add<CountDown>(t3, CountDown(8)); // Add a countdown to the target player
+		world.Get<PlayerReplay>(t3).directions = { {0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+		,{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1} };
+	}
+	else
+	{
+		Entity background = world.GetResourse<MapInfo>().background;
+		Entity tilemap = world.GetResourse<MapInfo>().tilemap;
+		if (background == NULL_ENTITY || tilemap == NULL_ENTITY)
+		{
+			cout << "Map not loaded, cannot load test level." << endl;
+			return;
+		}
+		LoadMap(world, tilemap, background, map, false);
+
+	}
 }
 
 void LevelManager::EndingLevel(World& world, bool loadMap)

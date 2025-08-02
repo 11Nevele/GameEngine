@@ -45,16 +45,7 @@ bool HandleWindowResize(const WindowResizeEvent& event)
 
 	return true; // 返回 true 表示事件已被处理
 }
-void Debug(World& world)
-{
-	if(world.GetResourse<InputManager>().IsKeyDown(AC_KEY_T))
-	{
-		world.View<Position, LevelEntry>().ForEach([](Entity entity, Position& pos, LevelEntry& entry)
-		{
-			ACMSG("Level Entry at (" << pos.x << ", " << pos.y << ") for level: " << static_cast<int>(entry.level));
-			});
-	}
-}
+
 void InitGame()
 {
 	//register all components
@@ -90,7 +81,6 @@ void InitGame()
 	world.AddUpdateSystem(InteractionSystems::CheckFinishPoint, 0);
 	world.AddUpdateSystem(InteractionSystems::CheckLevelEntry, 0);
 	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
-	world.AddUpdateSystem(Debug, 0);
 
 	//register pictures
 	string path = CURPATH + "/Assets/Image/";
@@ -150,7 +140,7 @@ int main()
 	
 	InitGame();
 
-	LevelManager::LoadLevel(world, MAIN_MENU);
+	LevelManager::LoadLevel(world, BEGINNING_LEVEL);
 
 	while (true)
 	{

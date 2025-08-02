@@ -34,8 +34,6 @@ private:
 	static bool isInAnimation;
 	static float animationTime;
 	static bool MovementSystem(World& world);//return if any action was performed
-	static bool SuicideSystem(World& world);
-	static bool HealSystem(World& world);
 	static void NextStep(World& world);
 	
 	

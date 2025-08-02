@@ -26,6 +26,7 @@ struct Position
 struct direction
 {
 	int dx = 0, dy = 0; // 方向向量
+	direction(int dx = 0, int dy = 0) : dx(dx), dy(dy) {}
 	bool operator==(const direction& other) const
 	{
 		return dx == other.dx && dy == other.dy;
