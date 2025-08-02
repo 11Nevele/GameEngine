@@ -2,7 +2,7 @@
 #include "LevelManager.h"
 #include "StorySystem.h"
 
-bool StorySystem::storyPlayed = false;
+bool StorySystem::storyPlayed = true;
 int StorySystem::stepIndex = 1;
 Entity StorySystem::spriteEntity = NULL_ENTITY;
 Entity StorySystem::textEntity = NULL_ENTITY;

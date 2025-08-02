@@ -14,7 +14,7 @@ void PlayerControlSystem::UndoSystem(World& world)
 	{
 		return;
 	}
-	if (!world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_Z))
+	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_Z))
 		return;
 	history.pop_back(); // 删除当前步骤
 	step currentStep = history.back(); // 获取上一个步骤
