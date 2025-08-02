@@ -203,6 +203,7 @@ void InteractionSystems::CheckFinishPoint(World& world)
 						if (!world.Has<PlayerReplay>(e) || world.Has<Ghost>(e) || world.Get<PlayerReplay>(e).round != -1)
 							continue;
 					}
+					world.GetResourse<LevelCompleted>().completed[world.GetResourse<SceneData>().currentLevel] = true; // Mark level as completed
 					world.View<Sprite>().ForEach([&world, e](Entity ee, Sprite& sprite)
 						{
 							world.DeleteEntity(ee);

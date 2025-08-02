@@ -92,6 +92,10 @@ struct Wall
 struct Spike
 {
 };
+struct LevelCompleted
+{
+	bool completed[12]= {false, false, false, false, false, false, false, false, false}; // 9 levels
+};
 struct HealthKit {};
 
 // 函数声明（实现移到 Components.cpp）

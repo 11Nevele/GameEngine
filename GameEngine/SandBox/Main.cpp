@@ -67,6 +67,7 @@ void InitGame()
 	//register all resources
 	world.AddResource<SceneData>(new SceneData);
 	world.AddResource<MapInfo>(new MapInfo);
+	world.AddResource<LevelCompleted>(new LevelCompleted);
 
 	//register all all systems
 	world.AddUpdateSystem(PlayerControlSystem::PlayerControl, 3);

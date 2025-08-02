@@ -268,15 +268,25 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
 		
+		auto completed = world.GetResourse<LevelCompleted>().completed;
+
 		//AddLevelEntry(world, TEST_LEVEL, 6, 6); // Add entry to test level
-		AddLevelEntry(world, LEVEL_1, 1, 1); // Add entry to test level
-		AddLevelEntry(world, LEVEL_2, 1, 2); // Add entry to test level
-		AddLevelEntry(world, LEVEL_3, 1, 3); // Add entry to test level
-		AddLevelEntry(world, LEVEL_4, 1, 4); // Add entry to test level
-		AddLevelEntry(world, LEVEL_5, 1, 5); // Add entry to test level
-		AddLevelEntry(world, LEVEL_6, 1, 6); // Add entry to test level
-		AddLevelEntry(world, LEVEL_7, 1, 7); // Add entry to test level
-		AddLevelEntry(world, LEVEL_8, 1, 8); // Add entry to test level
+		if(!completed[LEVEL_1])
+			AddLevelEntry(world, LEVEL_1, 6, 6); // Add entry to test level
+		if(!completed[LEVEL_2])
+			AddLevelEntry(world, LEVEL_2, 7, 6); // Add entry to test level
+		if (!completed[LEVEL_3])
+			AddLevelEntry(world, LEVEL_3, 8, 6); // Add entry to test level
+		if (!completed[LEVEL_4])
+			AddLevelEntry(world, LEVEL_4, 9, 6); // Add entry to test level
+		if (!completed[LEVEL_5])
+			AddLevelEntry(world, LEVEL_5, 10, 6); // Add entry to test level
+		if (!completed[LEVEL_6])
+			AddLevelEntry(world, LEVEL_6, 11, 6); // Add entry to test level
+		if (!completed[LEVEL_7])
+			AddLevelEntry(world, LEVEL_7, 12, 6); // Add entry to test level
+		if (!completed[LEVEL_8])
+			AddLevelEntry(world, LEVEL_8, 13, 6); // Add entry to test level
 
 		AddLevelEntry(world, ENDING_LEVEL, 1, 13); // Add entry to test level
 	}
