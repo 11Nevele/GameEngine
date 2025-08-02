@@ -167,7 +167,6 @@ void InteractionSystems::CheckHealthKit(World& world)
 							}
 							
 					});
-					break; // Exit the loop after finding a player
 				}
 				if ((world.Has<PlayerReplay>(e) && !world.Has<Ghost>(e)))
 				{
@@ -184,7 +183,6 @@ void InteractionSystems::CheckHealthKit(World& world)
 							}
 								
 						});
-					break; // Exit the loop after finding a player
 				}
 			}
 		});
