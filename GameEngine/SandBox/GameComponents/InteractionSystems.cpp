@@ -140,6 +140,8 @@ void InteractionSystems::RenderText(World& world)
 		});
 	renderer.SubmitText("Timeline: " + to_string(world.GetResourse<SceneData>().currentRound + 1),
 		Transform(glm::vec3(0, 0, -0.5f)), { 1,1,1 }, { 0,0 });
+	renderer.SubmitText("Step: " + to_string(world.GetResourse<SceneData>().currentStep),
+		Transform(glm::vec3(0, world.GetResourse<SceneData>().gridHeight, -0.5f)), { 1,1,1 }, { 0,0 });
 }
 
 void InteractionSystems::CheckHealthKit(World& world)

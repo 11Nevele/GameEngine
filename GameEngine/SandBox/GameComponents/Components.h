@@ -75,6 +75,7 @@ struct SceneData
 	int startX = 0; // Start position X
 	int startY = 0; // Start position Y
 	int currentRound = 0;
+	int currentStep = 0;
 };
 struct MapInfo
 {

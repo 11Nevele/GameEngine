@@ -19,6 +19,7 @@ void PlayerControlSystem::UndoSystem(World& world)
 	history.pop_back(); // 删除当前步骤
 	step currentStep = history.back(); // 获取上一个步骤
 	world.GetResourse<SceneData>().currentRound = currentStep.currentRound;
+	world.GetResourse<SceneData>().currentStep = currentStep.currentStep;
 	world.View<Coorpse>().ForEach([&world](Entity entity, Coorpse& coorpse)
 	{
 		RemoveEntity(world, entity);
@@ -85,6 +86,7 @@ void PlayerControlSystem::SaveState(World& world)
 	// 保存场景数据
 	SceneData& sceneData = world.GetResourse<SceneData>();
 	currentStep.currentRound = sceneData.currentRound;
+	currentStep.currentStep = sceneData.currentStep;
 
 	// 保存所有实体状态
 	world.View<Position, Sprite>().ForEach([&world, &currentStep](Entity entity, Position& position, Sprite& sprite)
@@ -150,7 +152,7 @@ void PlayerControlSystem::PlayerControl(World& world)
     {
         return;
     }
-    
+	world.GetResourse<SceneData>().currentStep++;
     world.View<PlayerReplay, Position>().ForEach([&world](Entity entity, PlayerReplay& playerReplay, Position& position)
     {
         if (playerReplay.curInd < playerReplay.directions.size())
@@ -298,6 +300,7 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 			}
 		});
 	world.GetResourse<SceneData>().currentRound++;
+	world.GetResourse<SceneData>().currentStep = 0; // 重置当前步骤
 	LevelManager::LoadLevel(world, (Levels)world.GetResourse<SceneData>().currentLevel, false);
 }
 

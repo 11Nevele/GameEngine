@@ -72,6 +72,7 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 		//Level9(world, loadMap);
 		break;
 	}
+	world.GetResourse<SceneData>().currentStep = 0; // 重置当前步骤
 	PlayerControlSystem::SaveState(world);
 	
 }

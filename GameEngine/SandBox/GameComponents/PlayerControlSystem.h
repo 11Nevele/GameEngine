@@ -27,6 +27,7 @@ private:
 		std::vector<Position> healthKits; // ´æ´¢½¡¿µ°üÊµÌåID
 		
 		int currentRound;
+		int currentStep;
 
 	};
 	//previous steps use for undo
