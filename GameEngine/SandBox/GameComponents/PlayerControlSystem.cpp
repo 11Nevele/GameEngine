@@ -513,3 +513,27 @@ void PlayerControlSystem::AnimationSystem(World& world)
 
 	
 }
+
+void PlayerControlSystem::ReturnToMainMenu(World& world)
+{
+	if (isInAnimation || world.GetResourse<SceneData>().currentLevel == BEGINNING_LEVEL || world.GetResourse<SceneData>().currentLevel == MAIN_MENU)
+		return;
+	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_ESCAPE))
+		return;
+	world.View<Sprite>().ForEach([&world](Entity ee, Sprite& sprite)
+		{
+			world.DeleteEntity(ee);
+		});
+	world.View<Tilemap>().ForEach([&world](Entity entity, Tilemap& tilemap)
+		{
+			world.DeleteEntity(entity); // Remove the tilemap entity
+		});
+	world.View<TilemapElement>().ForEach([&world](Entity entity, TilemapElement& tile)
+		{
+			// Remove all tilemap elements
+			world.DeleteEntity(entity);
+		});
+	PlayerControlSystem::ClearHistory(); // Clear player control history
+	LevelManager::LoadLevel(world, MAIN_MENU); // Load the main menu level
+
+}

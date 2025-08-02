@@ -49,5 +49,6 @@ public:
 	static void ResetSystem(World& world);
 	static void NewTurnSystem(World& world);
 	static void AnimationSystem(World& world);
+	static void ReturnToMainMenu(World& world);
 };
 

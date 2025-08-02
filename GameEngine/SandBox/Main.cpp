@@ -83,6 +83,7 @@ void InitGame()
 	world.AddUpdateSystem(InteractionSystems::CheckLevelEntry, 0);
 	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
 	world.AddUpdateSystem(StorySystem::StoryUpdateSystem, 0);
+	world.AddUpdateSystem(PlayerControlSystem::ReturnToMainMenu, 5);
 
 
 	//register pictures
