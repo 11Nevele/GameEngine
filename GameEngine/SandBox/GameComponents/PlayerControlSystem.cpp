@@ -247,7 +247,7 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 	if(isInAnimation || world.GetResourse<SceneData>().currentRound >=7 || world.GetResourse<SceneData>().currentLevel == MAIN_MENU
 		|| world.GetResourse<SceneData>().currentLevel == BEGINNING_LEVEL)
 		return;
-	if (!world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_E))
+	if (!world.GetResourse<InputManager>().IsKeyDown(AC_KEY_E))
 		return;
 	world.View<Player>().ForEach([&world](Entity entity, Player& player)
 		{

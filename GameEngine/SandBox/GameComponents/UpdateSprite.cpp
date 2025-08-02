@@ -22,7 +22,7 @@ void UpdateSprite::Update(World& world)
 			else if(world.Has<Door>(entity))
 			{
 				Door& door = world.Get<Door>(entity);
-				transform.position.z = -0.15;
+				transform.position.z = -0.155;
 				char c = door.color;
 				if (door.isOpen)
 				{

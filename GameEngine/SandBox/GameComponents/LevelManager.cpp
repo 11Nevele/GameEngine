@@ -312,7 +312,7 @@ void LevelManager::BeginningLevel(World& world, bool loadMap)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,0,1,1,1,1,1,1,1},
+		{1,1,1,1,0,1,1,0,1,1,1,1,1,1,1},
 	};
 	if (loadMap)
 	{
@@ -333,17 +333,18 @@ void LevelManager::BeginningLevel(World& world, bool loadMap)
 
 		Entity t1 = mCreate<PlayerReplay>(world, 7, 0, "PlayerUp");
 		world.Add<CountDown>(t1, CountDown(8)); // Add a countdown to the target player
-		world.Get<PlayerReplay>(t1).directions = { {0,1},{1,0},{0,1},{0,1}, {-1,0},{0,1},{0,1},{0,1} };
+		world.Get<PlayerReplay>(t1).directions = { {0,0},{0,1},{1,0},{0,1},{0,1}, {-1,0},{0,1},{0,1},{0,1} };
 
 		Entity t2 = mCreate<PlayerReplay>(world, 7, 0, "PlayerUp");
 		world.Add<CountDown>(t2, CountDown(8)); // Add a countdown to the target player
-		world.Get<PlayerReplay>(t2).directions = { {0,1},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+		world.Get<PlayerReplay>(t2).directions = { {0,0},{0,1},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 		,{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1} };
 
 		Entity t3 = mCreate<PlayerReplay>(world, 7, 0, "PlayerUp");
 		world.Add<CountDown>(t3, CountDown(8)); // Add a countdown to the target player
-		world.Get<PlayerReplay>(t3).directions = { {0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
+		world.Get<PlayerReplay>(t3).directions = { {0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 		,{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1} };
+		AddDoorAndButton(world, { {4,0} }, { {4,0} }, 'R', 'R');
 	}
 	else
 	{
@@ -380,7 +381,7 @@ void LevelManager::EndingLevel(World& world, bool loadMap)
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
 		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,1,1,1,1,1,1,3,1,1,1,1,1,1,1},
+		{1,1,1,1,0,1,1,3,1,1,1,1,1,1,1},
 	};
 	if (loadMap)
 	{
@@ -399,6 +400,7 @@ void LevelManager::EndingLevel(World& world, bool loadMap)
 		Entity target = mCreate<PlayerReplay>(world, 7, 2, "PlayerUp");
 		world.Get<PlayerReplay>(target).round = -1;
 		world.Add<CountDown>(target, CountDown(8)); // Add a countdown to the target player
+		AddDoorAndButton(world, { {4,0} }, { {4,0} }, 'R', 'R');
 	}
 	else
 	{

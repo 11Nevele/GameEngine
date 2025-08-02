@@ -4,6 +4,7 @@
 #include "Components.h"
 #include "LevelManager.h"
 #include "PlayerControlSystem.h"
+#include "StorySystem.h"
 void InteractionSystems::CheckSpike(World& world)
 {
 	
@@ -125,6 +126,8 @@ void InteractionSystems::CountDownSystem(World& world)
 
 void InteractionSystems::RenderText(World& world)
 {
+	if (StorySystem::storyPlayed == false)
+		return;
 	OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 	world.View<CountDown, Position, Transform>().ForEach([&world, &renderer](Entity entity, CountDown& countDown, Position& pos, Transform& transform)
 		{
@@ -135,7 +138,7 @@ void InteractionSystems::RenderText(World& world)
 					t, { 1,1,1 }, { 0.5,0.5 });
 
 		});
-	renderer.SubmitText("Round: " + to_string(world.GetResourse<SceneData>().currentRound + 1),
+	renderer.SubmitText("Timeline: " + to_string(world.GetResourse<SceneData>().currentRound + 1),
 		Transform(glm::vec3(0, 0, -0.5f)), { 1,1,1 }, { 0,0 });
 }
 
