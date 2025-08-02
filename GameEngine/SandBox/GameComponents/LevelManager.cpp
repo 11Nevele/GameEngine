@@ -57,13 +57,13 @@ void LevelManager::LoadLevel(World& world, Levels level, bool loadMap)
 		Level4(world, loadMap);
 		break;
 	case LEVEL_5:
-		//Level5(world, loadMap);
+		Level5(world, loadMap);
 		break;
 	case LEVEL_6:
 		Level6(world, loadMap);
 		break;
 	case LEVEL_7:
-		//Level7(world, loadMap);
+		Level7(world, loadMap);
 		break;
 	case LEVEL_8:
 		//Level8(world, loadMap);
@@ -274,7 +274,9 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 		AddLevelEntry(world, LEVEL_2, 1, 2); // Add entry to test level
 		AddLevelEntry(world, LEVEL_3, 1, 3); // Add entry to test level
 		AddLevelEntry(world, LEVEL_4, 1, 4); // Add entry to test level
+		AddLevelEntry(world, LEVEL_5, 1, 5); // Add entry to test level
 		AddLevelEntry(world, LEVEL_6, 1, 6); // Add entry to test level
+		AddLevelEntry(world, LEVEL_7, 1, 7); // Add entry to test level
 
 		AddLevelEntry(world, ENDING_LEVEL, 1, 13); // Add entry to test level
 	}
@@ -578,6 +580,111 @@ void LevelManager::Level3(World& world, bool loadMap)
 		LoadMap(world, tilemap, background, map, false);
 	}
 }
+
+
+void LevelManager::Level4(World& world, bool loadMap)
+{
+	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
+	world.GetResourse<SceneData>().startX = 1; // Set the global number to 100
+	world.GetResourse<SceneData>().startY = 2; // Set the global number to 100
+	const int mapWidth = 15;
+	const int mapHeight = 15;
+	vector<vector<int>> map = {
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
+		{1,0,0,1,1,0,1,0,0,0,0,0,0,0,1},
+		{1,1,0,0,1,1,1,0,0,0,0,0,0,0,1},
+		{1,0,1,0,0,1,1,0,0,0,0,0,0,0,1},
+		{1,0,0,1,0,0,1,0,0,0,0,0,0,0,1},
+		{1,0,0,0,1,0,0,3,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	};
+	if (loadMap)
+	{
+		world.GetResourse<SceneData>().currentRound = 0; // Reset the current round
+		Entity background = world.CreateEntity();
+		world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
+		Entity tilemap = world.CreateEntity();
+		world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
+		MapInfo& info = world.GetResourse<MapInfo>();
+		info.tilemap = tilemap;
+		info.background = background;
+		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+		LoadMap(world, tilemap, background, map);
+	}
+	else
+	{
+		Entity background = world.GetResourse<MapInfo>().background;
+		Entity tilemap = world.GetResourse<MapInfo>().tilemap;
+		if (background == NULL_ENTITY || tilemap == NULL_ENTITY)
+		{
+			cout << "Map not loaded, cannot load test level." << endl;
+			return;
+		}
+		LoadMap(world, tilemap, background, map, false);
+	}
+}
+void LevelManager::Level5(World& world, bool loadMap)
+{
+	world.GetResourse<SceneData>().gridHeight = 64;
+	world.GetResourse<SceneData>().gridWidth = 64;
+	const int mapWidth = 15;
+	const int mapHeight = 15;
+	vector<vector<int>> map = {
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+		{1,2,2,2,2,2,2,0,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,2,2,2,2,2,2,2,2,2,2,2,2,2,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,0,0,0,0,3,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,0,0,0,0,0,0,0,0,1},
+		{1,4,0,0,0,5,0,0,0,0,0,0,0,0,1},
+		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	};
+	if (loadMap)
+	{
+		world.GetResourse<SceneData>().currentRound = 0; // Reset the current round
+		Entity background = world.CreateEntity();
+		world.Add<ac::Tilemap>(background, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(background, Transform(glm::vec3(0, 0, 0)));
+		Entity tilemap = world.CreateEntity();
+		world.Add<ac::Tilemap>(tilemap, ac::Tilemap(mapWidth, mapHeight, 64, 64));
+		world.Add<Transform>(tilemap, Transform(glm::vec3(0, 0, -0.1)));
+		MapInfo& info = world.GetResourse<MapInfo>();
+		info.tilemap = tilemap;
+		info.background = background;
+		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
+		LoadMap(world, tilemap, background, map);
+		AddDoorAndButton(world, { {3, 1} }, { {7, 13} }, 'R', 'R');
+	}
+	else
+	{
+		Entity background = world.GetResourse<MapInfo>().background;
+		Entity tilemap = world.GetResourse<MapInfo>().tilemap;
+		if (background == NULL_ENTITY || tilemap == NULL_ENTITY)
+		{
+			cout << "Map not loaded, cannot load test level." << endl;
+			return;
+		}
+		LoadMap(world, tilemap, background, map, false);
+	}
+}
 void LevelManager::Level6(World& world, bool loadMap)
 {
 	world.GetResourse<SceneData>().gridHeight = 64;
@@ -632,29 +739,28 @@ void LevelManager::Level6(World& world, bool loadMap)
 
 }
 
-void LevelManager::Level4(World& world, bool loadMap)
+
+void LevelManager::Level7(World& world, bool loadMap)
 {
-	world.GetResourse<SceneData>().gridHeight = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().gridWidth = 64; // Set the global number to 100
-	world.GetResourse<SceneData>().startX = 1; // Set the global number to 100
-	world.GetResourse<SceneData>().startY = 2; // Set the global number to 100
+	world.GetResourse<SceneData>().gridHeight = 64;
+	world.GetResourse<SceneData>().gridWidth = 64;
 	const int mapWidth = 15;
 	const int mapHeight = 15;
 	vector<vector<int>> map = {
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
-		{1,0,0,0,0,0,1,0,0,0,0,0,0,0,1},
-		{1,0,0,1,1,0,1,0,0,0,0,0,0,0,1},
-		{1,1,0,0,1,1,1,0,0,0,0,0,0,0,1},
-		{1,0,1,0,0,1,1,0,0,0,0,0,0,0,1},
-		{1,0,0,1,0,0,1,0,0,0,0,0,0,0,1},
-		{1,0,0,0,1,0,0,3,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
-		{1,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,0,1,0,0,1},
+		{1,0,0,1,0,1,0,1,5,1,0,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,2,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,0,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,0,1,0,0,1},
+		{1,0,0,1,0,1,5,1,0,1,2,1,0,0,1},
+		{1,0,0,1,2,0,0,3,0,0,0,1,0,0,1},
+		{1,0,0,1,0,1,5,1,0,1,0,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,0,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,5,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,0,1,0,0,1},
+		{1,0,0,1,0,1,0,1,0,1,5,1,0,0,1},
+		{1,0,0,1,0,1,0,1,4,1,0,1,0,0,1},
 		{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
 	};
 	if (loadMap)
@@ -671,6 +777,9 @@ void LevelManager::Level4(World& world, bool loadMap)
 		info.background = background;
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
+		AddDoorAndButton(world, { {8, 2} }, { {4, 1}, {6, 1}, {10,1},{4,13},{6,13},{8,13},{10,13}, }, 'R', 'R');
+		AddDoorAndButton(world, { {6, 07} }, {  {10, 10} }, 'B', 'B');
+		AddDoorAndButton(world, { {8, 9},{8, 5} }, { {4, 9},{4, 5} }, 'Y', 'Y');
 	}
 	else
 	{
