@@ -195,6 +195,11 @@ void InteractionSystems::CheckFinishPoint(World& world)
 			{
 				if ((world.Has<Player>(e) && !world.Has<Ghost>(e)) || (world.Has<PlayerReplay>(e) && !world.Has<Ghost>(e)))
 				{
+					if (world.GetResourse<SceneData>().currentLevel == ENDING_LEVEL)
+					{
+						if (!world.Has<PlayerReplay>(e) || world.Has<Ghost>(e) || world.Get<PlayerReplay>(e).round != -1)
+							continue;
+					}
 					world.View<Sprite>().ForEach([&world, e](Entity ee, Sprite& sprite)
 						{
 							world.DeleteEntity(ee);

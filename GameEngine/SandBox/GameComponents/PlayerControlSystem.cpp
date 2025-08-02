@@ -281,9 +281,19 @@ void PlayerControlSystem::NewTurnSystem(World& world)
 		});
 	world.View<PlayerReplay, Position>().ForEach([&world](Entity entity, PlayerReplay& replay, Position& pos)
 		{
+			
 			replay.curInd = 0; // 重置回放位置
-			MoveEntity(world, entity, pos.x, pos.y, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY);
-			world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
+			if (replay.round == -1)
+			{
+				MoveEntity(world, entity, pos.x, pos.y, 7, 2);
+				world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerUp");
+			}
+			else
+			{
+				MoveEntity(world, entity, pos.x, pos.y, world.GetResourse<SceneData>().startX, world.GetResourse<SceneData>().startY);
+				world.Get<Sprite>(entity).textureID = world.GetResourse<TextureManager>().GetTextureID("PlayerDown");
+			}
+			
 			if(world.Has<CountDown>(entity))
 				{
 				world.Get<CountDown>(entity).remain = 8; // 重置倒计时

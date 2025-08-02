@@ -12,6 +12,8 @@ public:
 	static void LoadLevel(World& world, Levels level, bool loadMap = true);
 	static void TestLevel(World& world, bool loadMap = true);
 	static void MainMenu(World& world, bool loadMap = true);
+	static void BeginningLevel(World& world, bool loadMap = true);
+	static void EndingLevel(World& world, bool loadMap = true);
 	static void Level1(World& world, bool loadMap = true);
 	static void Level2(World& world, bool loadMap = true);
 	static void Level3(World& world, bool loadMap = true);

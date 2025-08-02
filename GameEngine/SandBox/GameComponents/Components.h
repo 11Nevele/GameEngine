@@ -4,8 +4,9 @@
 using namespace ac;
 enum Levels
 {
+	BEGINNING_LEVEL,
+	ENDING_LEVEL,
 	MAIN_MENU,
-	TEST_LEVEL,
 	LEVEL_1,
 	LEVEL_2,
 	LEVEL_3,
