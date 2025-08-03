@@ -133,7 +133,7 @@ void InitGame()
 		.AddTexture("Story7", path + "Story7.png")
 		.AddTexture("Story8", path + "Story8.png")
 
-		.AddTexture("Hint1", path + "hint1.png")
+		.AddTexture("infinity", path + "infinity.png")
 		;
 
 

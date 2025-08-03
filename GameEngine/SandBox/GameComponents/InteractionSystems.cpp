@@ -138,7 +138,15 @@ void InteractionSystems::RenderText(World& world)
 					t, { 1,1,1 }, { 0.5,0.5 });
 
 		});
-	renderer.SubmitText("Timeline: " + to_string(world.GetResourse<SceneData>().currentRound + 1),
+	world.View<LevelEntry, Transform>().ForEach([&world, &renderer](Entity entity, LevelEntry& entry, Transform& transform)
+		{
+			Transform t = transform;
+			t.scale = glm::vec3(0.7f, 0.7f, 1.0f); // Adjust scale for text rendering
+			t.position += glm::vec3(world.GetResourse<SceneData>().gridWidth / 2.0f, world.GetResourse<SceneData>().gridHeight / 2, -0.5f);
+			renderer.SubmitText(entry.name,
+				t, { 1,1,1 }, { 0.5,0.5 });
+		});
+	renderer.SubmitText("Loop: " + to_string(world.GetResourse<SceneData>().currentRound + 1),
 		Transform(glm::vec3(700, 20, -0.5f)), { 1,1,1 }, { 0,0 });
 	renderer.SubmitText("Step: " + to_string(world.GetResourse<SceneData>().currentStep),
 		Transform(glm::vec3(0, 20, -0.5f)), { 1,1,1 }, { 0,0 });

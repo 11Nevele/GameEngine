@@ -94,10 +94,11 @@ void AddDoorAndButton(World& world, std::vector<pair<int,int>> doorPositions, co
 		world.Get<Door>(door).keyIDs = buttons; // Link buttons to the door
 	}
 }
-void AddLevelEntry(World& world, Levels level, int x, int y)
+void AddLevelEntry(World& world, Levels level, int x, int y, const string& name)
 {
 	Entity e = mCreate<LevelEntry>(world, x, y, "FinishPoint");
 	world.Get<LevelEntry>(e).level = level; // Set the level for this entry
+	world.Get<LevelEntry>(e).name = name; // Set the name for this level entry
 }
 void LoadMap(World& world, Entity tilemap, Entity background, vector<vector<int>> map, bool loadTile = true)
 {
@@ -273,7 +274,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 
 		//AddLevelEntry(world, TEST_LEVEL, 6, 6); // Add entry to test level
 		if(!completed[LEVEL_1])
-			AddLevelEntry(world, LEVEL_1, 3, 4); // Add entry to test level
+			AddLevelEntry(world, LEVEL_1, 3, 4, "1"); // Add entry to test level
 		else
 		{
 			Entity e =  mCreate<PlayerReplay>(world, 3, 4, "PlayerUp"); // Add player replay entity
@@ -282,7 +283,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 
 		}
 		if(!completed[LEVEL_2])
-			AddLevelEntry(world, LEVEL_2, 6, 4); // Add entry to test level
+			AddLevelEntry(world, LEVEL_2, 6, 4, "2"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 6, 4, "PlayerUp"); // Add player replay entity
@@ -290,7 +291,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 		if (!completed[LEVEL_3])
-			AddLevelEntry(world, LEVEL_3, 9, 4); // Add entry to test level
+			AddLevelEntry(world, LEVEL_3, 9, 4, "3"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 9, 4, "PlayerUp"); // Add player replay entity
@@ -298,7 +299,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 		if (!completed[LEVEL_4])
-			AddLevelEntry(world, LEVEL_4, 12, 4); // Add entry to test level
+			AddLevelEntry(world, LEVEL_4, 12, 4, "4"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 12, 4, "PlayerUp"); // Add player replay entity
@@ -306,7 +307,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 		if (!completed[LEVEL_5])
-			AddLevelEntry(world, LEVEL_5, 3, 8); // Add entry to test level
+			AddLevelEntry(world, LEVEL_5, 3, 8, "5"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 3, 8, "PlayerUp"); // Add player replay entity
@@ -314,7 +315,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 		if (!completed[LEVEL_6])
-			AddLevelEntry(world, LEVEL_6, 6, 8); // Add entry to test level
+			AddLevelEntry(world, LEVEL_6, 6, 8, "6"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 6, 8, "PlayerUp"); // Add player replay entity
@@ -322,7 +323,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 		if (!completed[LEVEL_7])
-			AddLevelEntry(world, LEVEL_7, 9, 8); // Add entry to test level
+			AddLevelEntry(world, LEVEL_7, 9, 8, "7"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 9, 8, "PlayerUp"); // Add player replay entity
@@ -330,7 +331,7 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 		if (!completed[LEVEL_8])
-			AddLevelEntry(world, LEVEL_8, 12, 8); // Add entry to test level
+			AddLevelEntry(world, LEVEL_8, 12, 8, "8"); // Add entry to test level
 		else
 		{
 			Entity e = mCreate<PlayerReplay>(world, 12, 8, "PlayerUp"); // Add player replay entity
@@ -338,7 +339,10 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 				{0,1},{0,1},{0,1},{0,1},{0,1},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0},{-1,0} };
 		}
 
-		AddLevelEntry(world, ENDING_LEVEL, 1, 13); // Add entry to test level
+		AddLevelEntry(world, ENDING_LEVEL, 1, 13, ""); // Add entry to test level
+		Entity inf = world.CreateEntity();
+		world.Add<Sprite>(inf, Sprite::Create("infinity", world.GetResourse<TextureManager>()));
+		world.Add<Transform>(inf, Transform(glm::vec3(64, 832, -0.2), 0,0.08));
 
 		//hints
 		Entity hint1 = world.CreateEntity();
@@ -353,6 +357,8 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 		world.Add<TilemapElement>(hint3, TilemapElement());
 		world.Add<Transform>(hint3, Transform(glm::vec3(200, 600, -0.16), 0));
 		world.Add<Text>(hint3, Text("to move", 48, { 0.5,0.5 }));
+
+		
 	}
 	else
 	{
@@ -552,7 +558,7 @@ void LevelManager::Level1(World& world, bool loadMap)
 		info.map.resize(mapWidth, vector<vector<Entity>>(mapHeight));
 		LoadMap(world, tilemap, background, map);
 
-		AddDoorAndButton(world, { {7,11} }, { {1,1}, }, 'R', 'R');
+		AddDoorAndButton(world, { {7,11} }, { {7,1}, }, 'R', 'R');
 
 		Entity hint = world.CreateEntity();
 		world.Add<TilemapElement>(hint, TilemapElement());

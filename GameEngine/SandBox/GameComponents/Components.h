@@ -83,8 +83,13 @@ struct MapInfo
 	Entity background;
 	std::vector<std::vector<std::vector<Entity>>> map; // 3D vector to store entities at each tile position
 };
-struct FinishPoint {  };
-struct LevelEntry { Levels level; };
+struct FinishPoint { 
+	
+};
+struct LevelEntry { 
+	Levels level; 
+	string name; // Name of the level entry
+};
 
 //scene components
 struct Wall
