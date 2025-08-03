@@ -339,7 +339,7 @@ bool PlayerControlSystem::MovementSystem(World& world)
 			playerControl.directions.push_back({ 0, 1 });
 			hasMovement = true;
 		}
-		else if (inputManager.IsKeyDown(AC_KEY_SPACE))
+		else if (inputManager.IsKeyPressed(AC_KEY_SPACE))
 		{
 			// 如果按下空格键，清除移动意图
 			position.dx = 0;

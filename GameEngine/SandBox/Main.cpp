@@ -132,6 +132,8 @@ void InitGame()
 		.AddTexture("Story6", path + "Story6.png")
 		.AddTexture("Story7", path + "Story7.png")
 		.AddTexture("Story8", path + "Story8.png")
+
+		.AddTexture("Hint1", path + "hint1.png")
 		;
 
 
@@ -163,15 +165,15 @@ int main()
 	
 	InitGame();
 
-	/*Entity sprite = world.CreateEntity();
+	Entity sprite = world.CreateEntity();
 	world.Add<Sprite>(sprite, Sprite::Create("Story1", world.GetResourse<TextureManager>()));
 	world.Add<Transform>(sprite, Transform({0,0,-0.6}));
 	Entity text = world.CreateEntity();
 	world.Add<Text>(text, Text("Press Space to continue", 36, glm::vec2(0.5f, 0), glm::vec3(1, 1, 1)));
 	world.Add<Transform>(text, Transform(glm::vec3(480, 0, -0.7f)));
 	StorySystem::Init(sprite, text);
-	*/
-	LevelManager::LoadLevel(world, MAIN_MENU);
+	
+	//LevelManager::LoadLevel(world, MAIN_MENU);
 
 	while (true)
 	{

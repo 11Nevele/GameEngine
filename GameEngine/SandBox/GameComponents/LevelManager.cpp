@@ -339,6 +339,20 @@ void LevelManager::MainMenu(World& world, bool loadMap)
 		}
 
 		AddLevelEntry(world, ENDING_LEVEL, 1, 13); // Add entry to test level
+
+		//hints
+		Entity hint1 = world.CreateEntity();
+		world.Add<TilemapElement>(hint1, TilemapElement());
+		world.Add<Transform>(hint1, Transform(glm::vec3(200, 700, -0.16), 0));
+		world.Add<Text>(hint1, Text("use", 48, { 0.5,0.5 }));
+		Entity hint2 = world.CreateEntity();
+		world.Add<TilemapElement>(hint2, TilemapElement());
+		world.Add<Transform>(hint2, Transform(glm::vec3(200, 650, -0.16), 0));
+		world.Add<Text>(hint2, Text("WASD", 48, { 0.5,0.5 }));
+		Entity hint3 = world.CreateEntity();
+		world.Add<TilemapElement>(hint3, TilemapElement());
+		world.Add<Transform>(hint3, Transform(glm::vec3(200, 600, -0.16), 0));
+		world.Add<Text>(hint3, Text("to move", 48, { 0.5,0.5 }));
 	}
 	else
 	{
@@ -408,6 +422,19 @@ void LevelManager::BeginningLevel(World& world, bool loadMap)
 		world.Get<PlayerReplay>(t3).directions = { {0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0},{0,0}
 		,{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1},{0,1} };
 		AddDoorAndButton(world, { {4,0} }, { {4,0} }, 'R', 'R');
+
+		Entity hint = world.CreateEntity();
+		world.Add<TilemapElement>(hint, TilemapElement());
+		world.Add<Transform>(hint, Transform(glm::vec3(200, 720, -0.16), 0 ));
+		world.Add<Text>(hint, Text("press", 48, { 0.5,0.5 }));
+		Entity hint1 = world.CreateEntity();
+		world.Add<TilemapElement>(hint1, TilemapElement());
+		world.Add<Transform>(hint1, Transform(glm::vec3(200, 670, -0.16), 0));
+		world.Add<Text>(hint1, Text("SPACE", 48, { 0.5,0.5 }));
+		Entity hint2 = world.CreateEntity();
+		world.Add<TilemapElement>(hint2, TilemapElement());
+		world.Add<Transform>(hint2, Transform(glm::vec3(200, 620, -0.16), 0));
+		world.Add<Text>(hint2, Text("to wait", 48, { 0.5,0.5 }));
 
 		for(int i = 0; i < 12; ++i)
 			world.GetResourse<LevelCompleted>().completed[i] = false; // Reset all levels as not completed
@@ -526,6 +553,46 @@ void LevelManager::Level1(World& world, bool loadMap)
 		LoadMap(world, tilemap, background, map);
 
 		AddDoorAndButton(world, { {7,11} }, { {1,1}, }, 'R', 'R');
+
+		Entity hint = world.CreateEntity();
+		world.Add<TilemapElement>(hint, TilemapElement());
+		world.Add<Transform>(hint, Transform(glm::vec3(700, 300, -0.16), 0));
+		world.Add<Text>(hint, Text("press E", 48, { 0.5,0.5 }));
+		Entity hint1 = world.CreateEntity();
+		world.Add<TilemapElement>(hint1, TilemapElement());
+		world.Add<Transform>(hint1, Transform(glm::vec3(700, 250, -0.16), 0));
+		world.Add<Text>(hint1, Text("start new timeline", 48, { 0.5,0.5 }));
+		Entity hint2 = world.CreateEntity();
+		world.Add<TilemapElement>(hint2, TilemapElement());
+		world.Add<Transform>(hint2, Transform(glm::vec3(700, 200, -0.16), 0));
+		world.Add<Text>(hint2, Text("(Max 8)", 48, { 0.5,0.5 }));
+
+		hint = world.CreateEntity();
+		world.Add<TilemapElement>(hint, TilemapElement());
+		world.Add<Transform>(hint, Transform(glm::vec3(700, 600, -0.16), 0));
+		world.Add<Text>(hint, Text("press R", 48, { 0.5,0.5 }));
+		hint1 = world.CreateEntity();
+		world.Add<TilemapElement>(hint1, TilemapElement());
+		world.Add<Transform>(hint1, Transform(glm::vec3(700, 550, -0.16), 0));
+		world.Add<Text>(hint1, Text("to reset level", 48, { 0.5,0.5 }));
+
+		hint = world.CreateEntity();
+		world.Add<TilemapElement>(hint, TilemapElement());
+		world.Add<Transform>(hint, Transform(glm::vec3(300, 600, -0.16), 0));
+		world.Add<Text>(hint, Text("press Z", 48, { 0.5,0.5 }));
+		hint1 = world.CreateEntity();
+		world.Add<TilemapElement>(hint1, TilemapElement());
+		world.Add<Transform>(hint1, Transform(glm::vec3(300, 550, -0.16), 0));
+		world.Add<Text>(hint1, Text("to undo", 48, { 0.5,0.5 }));
+
+		hint = world.CreateEntity();
+		world.Add<TilemapElement>(hint, TilemapElement());
+		world.Add<Transform>(hint, Transform(glm::vec3(300, 300, -0.16), 0));
+		world.Add<Text>(hint, Text("press ECS", 48, { 0.5,0.5 }));
+		hint1 = world.CreateEntity();
+		world.Add<TilemapElement>(hint1, TilemapElement());
+		world.Add<Transform>(hint1, Transform(glm::vec3(300, 250, -0.16), 0));
+		world.Add<Text>(hint1, Text("return to menu", 48, { 0.5,0.5 }));
 	}
 	else
 	{
