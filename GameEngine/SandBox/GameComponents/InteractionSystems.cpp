@@ -202,6 +202,8 @@ void InteractionSystems::CheckFinishPoint(World& world)
 					{
 						if (!world.Has<PlayerReplay>(e) || world.Has<Ghost>(e) || world.Get<PlayerReplay>(e).round != -1)
 							continue;
+						for (int i = 0; i < 12; ++i)
+							world.GetResourse<LevelCompleted>().completed[i] = false; // Reset all levels as not completed
 					}
 					world.GetResourse<LevelCompleted>().completed[world.GetResourse<SceneData>().currentLevel] = true; // Mark level as completed
 					world.View<Sprite>().ForEach([&world, e](Entity ee, Sprite& sprite)

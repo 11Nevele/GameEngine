@@ -46,6 +46,13 @@ bool HandleWindowResize(const WindowResizeEvent& event)
 
 	return true; // 返回 true 表示事件已被处理
 }
+void CheatSystem(World& world)
+{
+	if(world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_B)&& world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_N)&& world.GetResourse<InputManager>().IsKeyPressed(AC_KEY_M))
+	{
+		world.GetResourse<LevelCompleted>().completed[world.GetResourse<SceneData>().currentLevel] = true;
+	}
+}
 
 void InitGame()
 {
@@ -85,6 +92,7 @@ void InitGame()
 	world.AddPostUpdateSystem(InteractionSystems::RenderText, 9);
 	world.AddUpdateSystem(StorySystem::StoryUpdateSystem, 0);
 	world.AddUpdateSystem(PlayerControlSystem::ReturnToMainMenu, 5);
+	world.AddUpdateSystem(CheatSystem, 5);
 
 
 	//register pictures
