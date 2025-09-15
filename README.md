@@ -399,17 +399,17 @@ Common key codes defined in the engine:
 
 ```
 GameEngine/
-©À©¤©¤ Achoium/              # Core engine code
-©¦   ©À©¤©¤ Core/             # ECS implementation
-©¦   ©À©¤©¤ Event/            # Event system
-©¦   ©À©¤©¤ Render/           # Rendering systems
-©¦   ©À©¤©¤ Input/            # Input management
-©¦   ©À©¤©¤ AssetManagement/  # Asset managers
-©¦   ©¸©¤©¤ EngineSystems/    # Built-in systems
-©À©¤©¤ SandBox/              # Example application
-©¦   ©À©¤©¤ Assets/           # Game assets
-©¦   ©¸©¤©¤ GameComponents/   # Custom components
-©¸©¤©¤ Dependency/           # Third-party libraries
+|-- Achoium/              # Core engine code
+|   |-- Core/             # ECS implementation
+|   |-- Event/            # Event system
+|   |-- Render/           # Rendering systems
+|   |-- Input/            # Input management
+|   |-- AssetManagement/  # Asset managers
+|   +-- EngineSystems/    # Built-in systems
+|-- SandBox/              # Example application
+|   |-- Assets/           # Game assets
+|   +-- GameComponents/   # Custom components
++-- Dependency/           # Third-party libraries
 ```
 
 ## Contributing
