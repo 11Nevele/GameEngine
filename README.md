@@ -13,6 +13,8 @@ A modern C++20 game engine built with Entity-Component-System (ECS) architecture
 - [Asset Management](#asset-management)
 - [Examples](#examples)
 - [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Features
 
@@ -418,10 +420,24 @@ When contributing to the Achoium Engine:
 2. Add appropriate documentation for new features
 3. Test thoroughly before submitting changes
 4. Update this README if adding new major features
+5. Ensure your code follows C++20 standards
+6. All contributions should be made under the terms of the MIT License
 
 ## License
 
-[Add your license information here]
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### Third-Party Libraries
+
+The Achoium Engine uses several third-party libraries, each with their own licenses:
+
+- **OpenGL**: Industry standard graphics API
+- **SoLoud**: Audio engine (zlib/libpng license)
+- **GLM**: OpenGL Mathematics library (MIT License)
+- **FreeType**: Font rendering library (FreeType License)
+- **stb_image**: Image loading library (Public Domain)
+
+Please refer to the respective library documentation and licenses for more information.
 
 ---
 
