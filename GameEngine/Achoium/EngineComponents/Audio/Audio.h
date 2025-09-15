@@ -5,6 +5,43 @@
 #include "Core/ECSEvents.h"
 #include "Core/World.hpp"
 
+
+
+//soloud
+#include <soloud.h>
+#include <soloud_audiosource.h>
+#include <soloud_ay.h>
+#include <soloud_bassboostfilter.h>
+#include <soloud_biquadresonantfilter.h>
+#include <soloud_bus.h>
+#include <soloud_c.h>
+#include <soloud_dcremovalfilter.h>
+#include <soloud_duckfilter.h>
+#include <soloud_echofilter.h>
+#include <soloud_error.h>
+#include <soloud_fader.h>
+#include <soloud_fft.h>
+#include <soloud_fftfilter.h>
+#include <soloud_file.h>
+#include <soloud_filter.h>
+#include <soloud_flangerfilter.h>
+#include <soloud_freeverbfilter.h>
+#include <soloud_lofifilter.h>
+#include <soloud_monotone.h>
+#include <soloud_noise.h>
+#include <soloud_openmpt.h>
+#include <soloud_queue.h>
+#include <soloud_robotizefilter.h>
+#include <soloud_sfxr.h>
+#include <soloud_speech.h>
+#include <soloud_tedsid.h>
+#include <soloud_thread.h>
+#include <soloud_vic.h>
+#include <soloud_vizsn.h>
+#include <soloud_wav.h>
+#include <soloud_waveshaperfilter.h>
+#include <soloud_wavstream.h>
+
 namespace ac
 {
     // Ç°ÏòÉùÃ÷

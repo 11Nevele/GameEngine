@@ -1,9 +1,5 @@
 #include "acpch.h"
-#include <gl/GL.h>
-#include <gl/GLU.h>
-#include <glfw3.h>
 #include "Achoium.h"
-#include <fstream>
 
 #include "UnitTests/TestUnit.h"
 using namespace ac;
@@ -87,9 +83,19 @@ void LoadAssets(World& world)
 void TestAudioSystem(World& world)
 {
 	InputManager& input = world.GetResourse<InputManager>();
+	AudioManager& audioManager = world.GetResourse<AudioManager>();
+	
+	// 当按下E键时播放测试音频
+	if (input.IsKeyDown(AC_KEY_E))
+	{
+		ACMSG("Playing test audio...");
+		audioManager.PlayByName("Test", false, 1.0f); // 播放名为"Test"的音频，不循环，音量1.0
+	}
+	
+	// 可以添加更多按键用于测试不同功能
 	if (input.IsKeyDown(AC_KEY_SPACE))
 	{
-		
+		// 空格键的其他功能可以在这里实现
 	}
 }
 
@@ -110,6 +116,7 @@ int main()
 	world.Add<movement>(camera, movement{ AC_KEY_W, AC_KEY_S, AC_KEY_A, AC_KEY_D, {200.0f, 200.0f, 0.0f} });
 
 	world.AddUpdateSystem(Movement, 0);
+	world.AddUpdateSystem(TestAudioSystem, 1); // 添加音频测试系统
 	EventManager& eventManager = world.GetResourse<EventManager>();
 	eventManager.AddListener<WindowCloseEvent>(HandelGameExit);
 	eventManager.AddListener<WindowResizeEvent>(HandleWindowResize);
