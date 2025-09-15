@@ -39,13 +39,13 @@ bool HandleWindowResize(const WindowResizeEvent& event)
 {
 	ACMSG("Window resized: " << event.width << " x " << event.height);
 
-	// 通知渲染器调整视口大小
+	// Notify renderer to adjust viewport size
 	mRenderer& renderer = world.GetResourse<mRenderer>();
 	renderer.OnWindowResize(event.width, event.height);
 
-	// 如果您的游戏逻辑需要知道窗口大小，可以在这里更新
+	// If your game logic needs to know the window size, you can update it here
 
-	return true; // 返回 true 表示事件已被处理
+	return true; // Return true to indicate the event has been handled
 }
 
 void Movement(ac::World& world)
@@ -79,23 +79,26 @@ void LoadAssets(World& world)
 	std::string curPath = filesystem::current_path().string();
 	world.GetResourse<TextureManager>().AddTexture("White", curPath + "/Assets/Image/White.png");
 }
-
+SoLoud::Soloud soloud; // Create SoLoud instance
+SoLoud::Wav testSound; // Create Wav object
 void TestAudioSystem(World& world)
 {
 	InputManager& input = world.GetResourse<InputManager>();
 	AudioManager& audioManager = world.GetResourse<AudioManager>();
 	
-	// 当按下E键时播放测试音频
+	// Play test audio when E key is pressed
 	if (input.IsKeyDown(AC_KEY_E))
 	{
 		ACMSG("Playing test audio...");
-		audioManager.PlayByName("Test", false, 1.0f); // 播放名为"Test"的音频，不循环，音量1.0
+		
+		soloud.play(testSound); // Play audio
+		
 	}
 	
-	// 可以添加更多按键用于测试不同功能
+	// Can add more keys to test different functions
 	if (input.IsKeyDown(AC_KEY_SPACE))
 	{
-		// 空格键的其他功能可以在这里实现
+		// Other functions for spacebar can be implemented here
 	}
 }
 
@@ -116,7 +119,7 @@ int main()
 	world.Add<movement>(camera, movement{ AC_KEY_W, AC_KEY_S, AC_KEY_A, AC_KEY_D, {200.0f, 200.0f, 0.0f} });
 
 	world.AddUpdateSystem(Movement, 0);
-	world.AddUpdateSystem(TestAudioSystem, 1); // 添加音频测试系统
+	world.AddUpdateSystem(TestAudioSystem, 1); // Add audio test system
 	EventManager& eventManager = world.GetResourse<EventManager>();
 	eventManager.AddListener<WindowCloseEvent>(HandelGameExit);
 	eventManager.AddListener<WindowResizeEvent>(HandleWindowResize);
@@ -146,6 +149,10 @@ int main()
 	Entity e3 = world.CreateEntity();
 	world.Add<Text>(e3, Text("Hello world", 48, { 0.5,0.5 }, {1,0,0}));
 	world.Add<Transform>(e3, Transform({ 500,500,-0.1 }));
+
+	soloud.init(); // Initialize SoLoud
+
+	testSound.load((CURPATH + "/Assets/Audio/test.wav").c_str()); // Load audio file
 
 
 	while (true)
