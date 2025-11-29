@@ -50,6 +50,7 @@
     <ClInclude Include="Achoium\EngineComponents\TextComponent.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h" />
     <ClInclude Include="SandBox\Scenes\TestScene.hpp" />
+    <ClInclude Include="SandBox\Scenes\TestScene3D.hpp" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />

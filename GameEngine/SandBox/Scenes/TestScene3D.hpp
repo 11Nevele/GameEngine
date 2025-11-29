@@ -62,6 +62,8 @@ void TestScene3D()
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0 };
 
+	
+
 	LoadAssets(world);
 
 	Entity tilemap = world.CreateEntity();

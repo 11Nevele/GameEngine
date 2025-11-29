@@ -216,6 +216,9 @@
     <ClInclude Include="SandBox\Scenes\TestScene.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\Scenes\TestScene3D.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
