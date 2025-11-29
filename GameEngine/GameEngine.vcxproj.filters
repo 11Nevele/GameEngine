@@ -213,6 +213,9 @@
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SandBox\Scenes\TestScene.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
