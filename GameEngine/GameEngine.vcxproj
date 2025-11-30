@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -36,6 +36,9 @@
     <ClInclude Include="Achoium\Event\AllowToken.h" />
     <ClInclude Include="Achoium\Global.h" />
     <ClInclude Include="Achoium\Input\InputManager.h" />
+    <ClInclude Include="Achoium\Render\Vertex.h" />
+    <ClInclude Include="Achoium\Render\Mesh.h" />
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLMesh.h" />
     <ClInclude Include="Achoium\stb_image.h" />
     <ClInclude Include="Achoium\Math\Transform.h" />
     <ClInclude Include="Achoium\Event\KeyEvent.h" />
@@ -108,6 +111,7 @@
     </ClCompile>
     <ClCompile Include="Achoium\Global.cpp" />
     <ClCompile Include="Achoium\Input\InputManager.cpp" />
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLMesh.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLTexture2D.cpp" />
     <ClCompile Include="Achoium\AssetManagement\AssetManager.cpp" />
     <ClCompile Include="Achoium\stb_image.c">

@@ -102,10 +102,10 @@ namespace ac
 		Shader* textShader;
 
 		struct Character {
-			GLuint     TextureID;  // ×ÖÐÎÎÆÀíID
-			glm::ivec2 Size;       // ×ÖÐÎ´ó´óÐ¡
-			glm::ivec2 Bearing;    // ×ÖÐÎ»ùÓÚ»ùÏßºÍÆðµãµÄÎ»ÖÃ
-			GLuint     Advance;    // Æðµãµ½ÏÂÒ»¸ö×ÖÐÎÆðµãµÄ¾àÀë
+			GLuint     TextureID;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
+			glm::ivec2 Size;       // ï¿½ï¿½ï¿½Î´ï¿½ï¿½Ð¡
+			glm::ivec2 Bearing;    // ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ú»ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+			GLuint     Advance;    // ï¿½ï¿½ãµ½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½
 		};
 
 		std::map<GLchar, Character> Characters;

@@ -32,25 +32,6 @@ namespace ac
 		 */
 		virtual void Unbind() const override;
 		
-		/**
-		 * @brief Checks if the vertex array has been uploaded to GPU.
-		 * 
-		 * @return true If the vertex array is uploaded
-		 * @return false If the vertex array is not uploaded
-		 */
-		virtual bool IsUploaded() const override;
-		
-		/**
-		 * @brief Uploads the vertex array to the GPU.
-		 * 
-		 * Creates the VAO on the GPU if it hasn't been created yet.
-		 */
-		virtual void Upload() override;
-		
-		/**
-		 * @brief Deletes the vertex array from GPU memory.
-		 */
-		virtual void Delete() override;
 		
 		/**
 		 * @brief Adds a vertex buffer to this vertex array.
@@ -90,7 +71,6 @@ namespace ac
 		 */
 		void SetAttrib(const BufferLayout& layout);
 		
-		bool isUploaded = false;                  ///< Flag indicating if the VAO has been uploaded to GPU
 		uint32_t m_RendererID;                    ///< OpenGL handle to the VAO
 		uint32_t m_VertexBufferIndex = 0;         ///< Index for the next vertex buffer to be added
 		std::vector<std::shared_ptr<VertexBuffer>> vertexBuffers; ///< Collection of vertex buffers

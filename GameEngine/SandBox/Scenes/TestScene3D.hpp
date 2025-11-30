@@ -61,17 +61,10 @@ void TestScene3D()
 
 
 	world.Add<Camera>(camera, Camera{ });
-	world.Add<AudioListener>(camera, AudioListener());
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0 };
 
-
-
 	LoadAssets(world);
-
-	Entity tilemap = world.CreateEntity();
-	const int width = 10, height = 10;
-	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(width, height, 40, 40));
 
 
 	while (true)

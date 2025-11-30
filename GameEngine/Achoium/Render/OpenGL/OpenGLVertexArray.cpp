@@ -29,45 +29,13 @@ namespace ac
        glBindVertexArray(0);  
    }  
 
-   /// Checks if the vertex array object is uploaded to the GPU.  
-   /// @return True if uploaded, false otherwise.  
-   bool OpenGLVertexArray::IsUploaded() const  
-   {  
-       return isUploaded;  
-   }  
-
-   /// Uploads the vertex array object and its associated buffers to the GPU.  
-   void OpenGLVertexArray::Upload()  
-   {  
-       if (isUploaded)
-       {
-		   ACMSG("VertexArray: " << m_RendererID << "already uploaded, skipping upload.");
-           return;
-       }
-       Bind();  
-       indexBuffers->Upload();  
-       for (shared_ptr<VertexBuffer> i : vertexBuffers)  
-       {  
-           i->Upload();  
-           SetAttrib(i->GetLayout());  
-       }  
-       isUploaded = true;  
-   }  
-
-   /// Deletes the vertex array object and its associated buffers from the GPU.  
-   void OpenGLVertexArray::Delete()  
-   {  
-       indexBuffers->Delete();  
-       for (auto i : vertexBuffers)  
-           i->Delete();  
-       isUploaded = false;  
-   }  
-
    /// Adds a vertex buffer to the vertex array object.  
    /// @param vertexBuffer The vertex buffer to add.  
    void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)  
    {  
        vertexBuffers.push_back(vertexBuffer);  
+       vertexBuffer->Bind();
+       SetAttrib(vertexBuffer->GetLayout());
    }  
 
    /// Sets the index buffer for the vertex array object.  

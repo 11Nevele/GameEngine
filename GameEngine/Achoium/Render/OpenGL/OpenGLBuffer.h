@@ -31,12 +31,12 @@ namespace ac
          * @param size Size of the vertex data in bytes
          * @param layout Buffer layout describing the vertex attributes
          */
-        OpenGLVertexBuffer(unique_ptr<float[]> vertices, uint32_t size, const BufferLayout& layout);
+        OpenGLVertexBuffer(float* vertices, uint32_t size, const BufferLayout& layout);
         
         /**
-         * @brief Copy constructor (deleted).
+         * @brief Copy constructor
          */
-        OpenGLVertexBuffer(const OpenGLVertexBuffer& other) = delete;
+        OpenGLVertexBuffer(const OpenGLVertexBuffer& other);
         
         /**
          * @brief Move constructor.
@@ -61,30 +61,12 @@ namespace ac
         virtual void Unbind() const override;
 
         /**
-         * @brief Uploads vertex data to the GPU.
-         */
-        virtual void Upload() override;
-        
-        /**
-         * @brief Deletes the vertex buffer from GPU memory.
-         */
-        virtual void Delete() override;
-        
-        /**
-         * @brief Checks if the buffer has been uploaded to GPU.
-         * 
-         * @return true If the buffer is uploaded
-         * @return false If the buffer is not uploaded
-         */
-        virtual bool IsUploaded() const override;
-
-        /**
          * @brief Sets the buffer data.
          * 
          * @param data Array of vertex data to set
          * @param size Size of the vertex data in bytes
          */
-        virtual void SetData(unique_ptr<float[]> data, uint32_t size) override;
+        virtual void SetData(float* data, uint32_t size) override;
 
         /**
          * @brief Sets the buffer layout.
@@ -100,7 +82,6 @@ namespace ac
          */
         virtual const BufferLayout& GetLayout() const override { return m_Layout; }
     private:
-        unique_ptr<float[]> vertices;  ///< Vertex data stored on CPU
         uint32_t m_RendererID = 0;     ///< OpenGL handle to the buffer
         uint32_t size = 0;             ///< Size of the buffer in bytes
         BufferLayout m_Layout;         ///< Layout of the vertex attributes
@@ -116,22 +97,17 @@ namespace ac
     {
     public:
         /**
-         * @brief Default constructor.
-         */
-        OpenGLIndexBuffer() = default;
-        
-        /**
          * @brief Constructs an index buffer with data.
          * 
          * @param indices Array of index data
          * @param count Number of indices
          */
-        OpenGLIndexBuffer(unique_ptr<uint32_t[]> indices, uint32_t count);
+        OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
         
         /**
          * @brief Copy constructor (deleted).
          */
-        OpenGLIndexBuffer(const OpenGLIndexBuffer& other) = delete;
+        OpenGLIndexBuffer(const OpenGLIndexBuffer& other);
         
         /**
          * @brief Move constructor.
@@ -155,23 +131,6 @@ namespace ac
          */
         virtual void Unbind() const override;
 
-        /**
-         * @brief Uploads index data to the GPU.
-         */
-        virtual void Upload() override;
-        
-        /**
-         * @brief Deletes the index buffer from GPU memory.
-         */
-        virtual void Delete() override;
-        
-        /**
-         * @brief Checks if the buffer has been uploaded to GPU.
-         * 
-         * @return true If the buffer is uploaded
-         * @return false If the buffer is not uploaded
-         */
-        virtual bool IsUploaded() const override;
 
         /**
          * @brief Gets the number of indices in the buffer.
@@ -180,7 +139,6 @@ namespace ac
          */
         virtual uint32_t GetCount() const override { return m_Count; }
     private:
-        unique_ptr<uint32_t[]> indicies; ///< Index data stored on CPU
         uint32_t m_RendererID = 0;       ///< OpenGL handle to the buffer
         uint32_t m_Count = 0;            ///< Number of indices in the buffer
     };
