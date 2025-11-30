@@ -4,5 +4,5 @@
 
 int main()
 {
-	TestScene();
+	TestScene3D();
 }

@@ -1,6 +1,9 @@
 #pragma once
 #include "acpch.h"
 #include "Achoium.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 using namespace std;
 using namespace ac;
@@ -62,7 +65,7 @@ void TestScene3D()
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0 };
 
-	
+
 
 	LoadAssets(world);
 
@@ -70,7 +73,7 @@ void TestScene3D()
 	const int width = 10, height = 10;
 	world.Add<ac::Tilemap>(tilemap, ac::Tilemap(width, height, 40, 40));
 
-	
+
 	while (true)
 	{
 		mWindow& win = world.GetResourse<mWindow>();
@@ -85,4 +88,4 @@ void TestScene3D()
 		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-
+}
