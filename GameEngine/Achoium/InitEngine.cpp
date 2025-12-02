@@ -48,6 +48,8 @@ namespace ac
 		world.RegisterType<AudioListener>();
 		world.RegisterType<Text>();
 
+		world.RegisterType<OpenGLModel>();
+
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
 		world.AddResource<WinWindow>(new WinWindow({ "AC", 1280, 720 }, world.GetResourse<EventManager>()));
@@ -87,6 +89,7 @@ namespace ac
 		world.AddPostUpdateSystem(RenderSprite, 9);
 		world.AddPostUpdateSystem(RenderTilemap, 9);
 		world.AddPostUpdateSystem(RenderTextSystem, 9);
+		world.AddPostUpdateSystem(RenderModel, 9);
 		
 
 		

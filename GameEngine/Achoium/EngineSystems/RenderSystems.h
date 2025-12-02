@@ -12,5 +12,6 @@ namespace ac
 	void RenderCollider(World& world);
 	void RenderTilemap(World& world);
 	void SyncCamera(World& world);
+	void RenderModel(World& world);
 
 }

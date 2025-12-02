@@ -36,6 +36,8 @@
     <ClInclude Include="Achoium\Event\AllowToken.h" />
     <ClInclude Include="Achoium\Global.h" />
     <ClInclude Include="Achoium\Input\InputManager.h" />
+    <ClInclude Include="Achoium\Render\Model.h" />
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLModel.h" />
     <ClInclude Include="Achoium\Render\Vertex.h" />
     <ClInclude Include="Achoium\Render\Mesh.h" />
     <ClInclude Include="Achoium\Render\OpenGL\OpenGLMesh.h" />
@@ -112,6 +114,7 @@
     <ClCompile Include="Achoium\Global.cpp" />
     <ClCompile Include="Achoium\Input\InputManager.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLMesh.cpp" />
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLModel.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLTexture2D.cpp" />
     <ClCompile Include="Achoium\AssetManagement\AssetManager.cpp" />
     <ClCompile Include="Achoium\stb_image.c">

@@ -8,13 +8,29 @@ namespace ac
    OpenGLVertexArray::OpenGLVertexArray()  
    {  
        glCreateVertexArrays(1, &m_RendererID);  
-   }  
+   }
+
+   OpenGLVertexArray::OpenGLVertexArray(OpenGLVertexArray&& other) noexcept:
+       m_RendererID(other.m_RendererID),
+	   m_VertexBufferIndex(other.m_VertexBufferIndex),
+	   vertexBuffers(std::move(other.vertexBuffers)),
+	   indexBuffers(std::move(other.indexBuffers))
+   {
+	   other.m_RendererID = 0;
+	   other.m_VertexBufferIndex = 0;
+	   other.vertexBuffers.clear();
+	   other.indexBuffers = nullptr;
+   }
 
    /// Destructor for OpenGLVertexArray.  
    /// Deletes the OpenGL vertex array object.  
    OpenGLVertexArray::~OpenGLVertexArray()  
    {  
-       glDeleteVertexArrays(1, &m_RendererID);  
+       if (m_RendererID != 0)
+       {
+           ACMSG("VAO: " << m_RendererID << " Deleted");
+           glDeleteVertexArrays(1, &m_RendererID);
+       }
    }  
 
    /// Binds the vertex array object for rendering.  
@@ -33,6 +49,7 @@ namespace ac
    /// @param vertexBuffer The vertex buffer to add.  
    void OpenGLVertexArray::AddVertexBuffer(const std::shared_ptr<VertexBuffer>& vertexBuffer)  
    {  
+       Bind(); // Bind VAO first
        vertexBuffers.push_back(vertexBuffer);  
        vertexBuffer->Bind();
        SetAttrib(vertexBuffer->GetLayout());
@@ -42,7 +59,9 @@ namespace ac
    /// @param indexBuffert The index buffer to set.  
    void OpenGLVertexArray::SetIndexBuffer(const std::shared_ptr<IndexBuffer>& indexBuffert)  
    {  
+       Bind(); // Bind VAO first
        this->indexBuffers = indexBuffert;  
+       indexBuffert->Bind(); // Bind the index buffer
    }  
 
    /// Retrieves the vertex buffers associated with the vertex array object.  

@@ -3,8 +3,12 @@
 #include "Debug.h"  
 
 namespace ac  
-{  
-   /// Constructor for OpenGLVertexBuffer.  
+{
+    OpenGLVertexBuffer::OpenGLVertexBuffer()
+    {
+        glCreateBuffers(1, &m_RendererID);
+    }
+    /// Constructor for OpenGLVertexBuffer.  
    /// Initializes the vertex buffer with a specified size.  
    /// @param size The size of the buffer in bytes.  
    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size) : size(size), m_RendererID(0), m_Layout()  
@@ -27,11 +31,6 @@ namespace ac
        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
    }
 
-   OpenGLVertexBuffer::OpenGLVertexBuffer(const OpenGLVertexBuffer& other):
-       size(other.size), m_RendererID(other.m_RendererID),
-       m_Layout(other.m_Layout)
-   {
-   }
 
    /// Move constructor for OpenGLVertexBuffer.  
    /// Transfers ownership of the vertex buffer data and properties.  
@@ -40,15 +39,18 @@ namespace ac
        size(other.size), m_RendererID(other.m_RendererID),  
        m_Layout(other.m_Layout)  
    {  
-       other.m_RendererID = 0;  
+       other.m_RendererID = 0;
    }  
 
    /// Destructor for OpenGLVertexBuffer.  
    /// Deletes the vertex buffer and releases its resources.  
    OpenGLVertexBuffer::~OpenGLVertexBuffer()  
    {  
-       ACMSG("VBO: " << m_RendererID << " Deleted");  
-       glDeleteBuffers(1, &m_RendererID);  
+       if (m_RendererID != 0)
+       {
+           ACMSG("VBO: " << m_RendererID << " Deleted");  
+           glDeleteBuffers(1, &m_RendererID);  
+       }
    }  
 
    /// Binds the vertex buffer for rendering.  
@@ -68,6 +70,7 @@ namespace ac
    /// @param size The size of the new data in bytes.  
    void OpenGLVertexBuffer::SetData(float* data, uint32_t size)  
    {  
+       this->size = size;
        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
        glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
    }  
@@ -91,10 +94,6 @@ namespace ac
        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
    }
 
-   OpenGLIndexBuffer::OpenGLIndexBuffer(const OpenGLIndexBuffer& other):
-       m_Count(other.m_Count), m_RendererID(other.m_RendererID)
-   {
-   }
 
    /// Binds the index buffer for rendering.  
    void OpenGLIndexBuffer::Bind() const  
@@ -123,6 +122,10 @@ namespace ac
    /// Deletes the index buffer and releases its resources.  
    OpenGLIndexBuffer::~OpenGLIndexBuffer()  
    {  
-       glDeleteBuffers(1, &m_RendererID);  
+       if (m_RendererID != 0)
+       {
+           ACMSG("EBO: " << m_RendererID << " Deleted");
+           glDeleteBuffers(1, &m_RendererID);  
+       }
    }  
 }

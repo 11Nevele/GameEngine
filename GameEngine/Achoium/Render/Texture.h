@@ -1,7 +1,13 @@
 #pragma once
 #include <string>
+
+
 namespace ac
 {
+	enum TextureType
+	{
+		diffuse, specular
+	};
 	struct TextureInfo
 	{
 		uint32_t width;

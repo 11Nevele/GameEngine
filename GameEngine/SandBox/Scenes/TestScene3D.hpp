@@ -58,14 +58,28 @@ void TestScene3D()
 	InitEngine(world);
 
 	Entity camera = world.CreateEntity();
-
-
 	world.Add<Camera>(camera, Camera{ });
 	world.Add<Transform>(camera, Transform());
-	world.Get<Transform>(camera).position = { 0, 0, 0 };
+	world.Get<Transform>(camera).position = { 0, 0, 0};
 
-	LoadAssets(world);
+	Entity object = world.CreateEntity();
+	world.Add<Transform>(object, Transform(glm::vec3(0,0,-1000),0,10));
 
+	// After creating the OpenGLModel, add validation
+	OpenGLModel model(CURPATH + "/Assets/plane/Seahawk.obj");
+	if (model.GetMeshes().empty()) {
+	    std::cout << "Failed to load model: " << CURPATH + "/Assets/Box/Box.obj" << std::endl;
+	} else {
+	    std::cout << "Model loaded successfully with " << model.GetMeshes().size() << " meshes" << std::endl;
+	}
+	world.Add<OpenGLModel>(object, std::move(model));
+
+	Entity e2 = world.CreateEntity("");
+	world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
+	world.Add<Transform>(e2, Transform({ 0,0,-1000 }));
+
+
+	
 
 	while (true)
 	{
@@ -73,6 +87,7 @@ void TestScene3D()
 
 		mRenderer& renderer = world.GetResourse<mRenderer>();
 
+		world.Get<Transform>(e2).RotateY(1);
 		world.Update();
 		if (exitgame)
 			break;
@@ -80,5 +95,8 @@ void TestScene3D()
 		win.OnUpdate();
 		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Add this in your render loop for debugging
+		
 	}
 }

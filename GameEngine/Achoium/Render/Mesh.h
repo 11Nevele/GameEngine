@@ -8,6 +8,7 @@ namespace ac
 	class Mesh
 	{
 	public:
-		virtual VertexArray* GetVirtexArray() = 0;
+		virtual VertexArray* GetVertexArray() = 0;
+		virtual void BindTextures() = 0;
 	};
 }

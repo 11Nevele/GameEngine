@@ -15,7 +15,7 @@ namespace ac
         /**
          * @brief Default constructor.
          */
-        OpenGLVertexBuffer() = default;
+        OpenGLVertexBuffer();
         
         /**
          * @brief Constructs a vertex buffer with a specified size.
@@ -36,7 +36,7 @@ namespace ac
         /**
          * @brief Copy constructor
          */
-        OpenGLVertexBuffer(const OpenGLVertexBuffer& other);
+        OpenGLVertexBuffer(const OpenGLVertexBuffer& other) = delete;
         
         /**
          * @brief Move constructor.
@@ -45,6 +45,11 @@ namespace ac
          */
         OpenGLVertexBuffer(OpenGLVertexBuffer&& other) noexcept;
         
+        /**
+         * @brief Copy assignment operator (deleted).
+         */
+        OpenGLVertexBuffer& operator=(const OpenGLVertexBuffer&) = delete;
+
         /**
          * @brief Destructor. Cleans up OpenGL resources.
          */
@@ -107,7 +112,7 @@ namespace ac
         /**
          * @brief Copy constructor (deleted).
          */
-        OpenGLIndexBuffer(const OpenGLIndexBuffer& other);
+        OpenGLIndexBuffer(const OpenGLIndexBuffer& other) = delete;
         
         /**
          * @brief Move constructor.
@@ -116,6 +121,11 @@ namespace ac
          */
         OpenGLIndexBuffer(OpenGLIndexBuffer&& other) noexcept;
         
+        /**
+         * @brief Copy assignment operator (deleted).
+         */
+        OpenGLIndexBuffer& operator=(const OpenGLIndexBuffer&) = delete;
+
         /**
          * @brief Destructor. Cleans up OpenGL resources.
          */

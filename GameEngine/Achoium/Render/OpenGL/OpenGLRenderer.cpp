@@ -87,6 +87,7 @@ namespace ac
 void OpenGLRenderer::Init()  
 {  
 	glEnable(GL_DEPTH_TEST);  
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }  
 
 /// Shuts down the OpenGL renderer.  
@@ -132,13 +133,13 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 		glm::radians(45.0f),  // Field of View (FOV) angle  
 		16.0f / 9.0f,         // Aspect ratio (width/height)  
 		0.1f,                 // Near clipping plane  
-		100.0f                // Far clipping plane  
+		10000.0f                // Far clipping plane  
 	);  
-	projection = glm::orthoRH_NO(  
-		0.0f, 1280.0f,        // Left, Right  
-		0.0f, 720.0f          // Bottom, Top  
-        ,1.0f, -1.0f
-	);  
+	//projection = glm::orthoRH_NO(  
+	//	0.0f, 1280.0f,        // Left, Right  
+	//	0.0f, 720.0f          // Bottom, Top  
+ //       ,1.0f, -1.0f
+	//);  
 
 	// Bind the shader program  
 	shader2D->Bind();  

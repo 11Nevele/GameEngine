@@ -16,6 +16,10 @@ namespace ac
 		 * @brief Constructs a new OpenGL vertex array.
 		 */
 		OpenGLVertexArray();
+
+		OpenGLVertexArray(const OpenGLVertexArray&) = delete;
+
+		OpenGLVertexArray(OpenGLVertexArray&&) noexcept;
 		
 		/**
 		 * @brief Destructor. Cleans up OpenGL resources.

@@ -52,6 +52,9 @@ namespace ac
 		t.RotateZ(0.1);
 		renderer.SubmitCircle(&modelManager.GetModel(0), radius, t);
 	}
+
+
+
 	void RenderCollider(World& world)
 	{
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
@@ -100,6 +103,19 @@ namespace ac
 		world.View<Camera, Transform>().ForEach([&renderer](Entity e, Camera& camera, Transform& transform)
 			{
 				renderer.UpdateCamera(transform.asMat4(true));
+			});
+	}
+	void RenderModel(World& world)
+	{
+		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+		world.View<OpenGLModel, Transform>().ForEach([&renderer](Entity e, OpenGLModel& model, Transform& transform)
+			{
+				for (auto& m : model.GetMeshes())
+				{
+					m->BindTextures();
+					Transform t = transform;
+					renderer.Submit(m->GetVertexArray(), t.asMat4());
+				}
 			});
 	}
 }

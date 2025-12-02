@@ -1,8 +1,8 @@
 #include <acpch.h>
 #include <Achoium.h>
-#include "Scenes/TestScene.hpp"
+#include "Scenes/TestScene3D.hpp"
 
 int main()
 {
-	TestScene();
+	TestScene3D();
 }
