@@ -150,9 +150,8 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	shader2D->SetMat4("projection", projection);
 	shader2D->SetFloat4("uColor", color);
 
-    glm::vec4 t = transform* glm::vec4{ 1,1,0,1 };
-    t = s_SceneData.ViewProjectionMatrix * t;
-    t = projection * t;
+    glm::vec4 t = glm::vec4{ 1,1,0,1 };
+    t = projection * s_SceneData.ViewProjectionMatrix * transform * t;
 
 	// Bind the vertex array  
 	vertexArray->Bind();  

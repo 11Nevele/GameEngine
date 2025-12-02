@@ -72,7 +72,14 @@ namespace ac
    {  
        this->size = size;
        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-       glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
+       glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+
+    //   float* test = new float[size / sizeof(float)];
+	   //glGetBufferSubData(GL_ARRAY_BUFFER, 0, size, test);
+    //   for (uint32_t i = 0; i < size / sizeof(float); i++)
+    //   {
+    //       ACMSG("Data[" << i << "]: " << test[i]);
+	   //}
    }  
 
    
