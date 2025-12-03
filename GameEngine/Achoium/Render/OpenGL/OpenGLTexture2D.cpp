@@ -6,16 +6,17 @@
 namespace ac
 {
 	OpenGLTexture2D::OpenGLTexture2D(OpenGLTexture2D&& other) noexcept:
-		m_RenderID(other.m_RenderID), textureInfo(other.textureInfo), data(other.data)
+		m_RenderID(other.m_RenderID), textureInfo(other.textureInfo)
 	{
-		other.data = nullptr;
 		other.m_RenderID = 0;
 	}
 
 	ac::OpenGLTexture2D::OpenGLTexture2D(const std::string& path):m_RenderID(0)
 	{
+
 		int width, height, channel;
-		data = stbi_load(path.c_str(), &width, &height, &channel, 0);
+		stbi_set_flip_vertically_on_load(1);
+		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channel, 0);
 
 		GLenum internalFormat = 0, dataFormat = 0;
 		if (channel == 4)
@@ -34,17 +35,50 @@ namespace ac
 		this->textureInfo.width = width;
 		textureInfo.internalFormat = internalFormat;
 		textureInfo.dataFormat = dataFormat;
-	
+
+		glGenTextures(1, &m_RenderID);
+		glBindTexture(GL_TEXTURE_2D, m_RenderID);
+		glTextureStorage2D(m_RenderID, 1, textureInfo.internalFormat, textureInfo.width, textureInfo.height);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTextureSubImage2D(m_RenderID, 0, 0, 0,
+			textureInfo.width, textureInfo.height,
+			textureInfo.dataFormat, GL_UNSIGNED_BYTE, data);
+
+		glGenerateMipmap(GL_TEXTURE_2D);  // <-- ADD THIS LINE
+
+		glBindTexture(GL_TEXTURE_2D, 0);
+		
+		stbi_image_free(data);
 	}
 	OpenGLTexture2D::OpenGLTexture2D(stbi_uc* data, TextureInfo info):
-		data(data), textureInfo(info), m_RenderID(0)
+		textureInfo(info), m_RenderID(0)
 	{
+		glGenTextures(1, &m_RenderID);
+		glBindTexture(GL_TEXTURE_2D, m_RenderID);
+		glTextureStorage2D(m_RenderID, 1, textureInfo.internalFormat, textureInfo.width, textureInfo.height);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glTextureSubImage2D(m_RenderID, 0, 0, 0,
+			textureInfo.width, textureInfo.height,
+			textureInfo.dataFormat, GL_UNSIGNED_BYTE, data);
+
+		glGenerateMipmap(GL_TEXTURE_2D);  // <-- ADD THIS LINE
+
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	void OpenGLTexture2D::SetData(stbi_uc* data, TextureInfo info)
 	{
 		stbi_image_free(data);
 		this->textureInfo = info;
-		this->data = data;
 		
 		if (m_RenderID != 0)//refresh data in 
 		{
@@ -66,37 +100,7 @@ namespace ac
 	{
 
 		ACMSG("OpenGLTexture2D Delete with id: " << m_RenderID);
-		stbi_image_free(data);
 		glDeleteTextures(1, &m_RenderID);
-	}
-
-	void OpenGLTexture2D::Upload()
-	{
-		if (m_RenderID != 0)
-		{
-			ACMSG("Texture: " << m_RenderID << " is already uploaded");
-			return;
-		}
-		glGenTextures(1, & m_RenderID);
-		glBindTexture(GL_TEXTURE_2D, m_RenderID);
-		glTextureStorage2D(m_RenderID, 1, textureInfo.internalFormat, textureInfo.width, textureInfo.height);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glTextureSubImage2D(m_RenderID, 0, 0, 0,
-			textureInfo.width, textureInfo.height,
-			textureInfo.dataFormat, GL_UNSIGNED_BYTE, data);
-	}
-
-	void OpenGLTexture2D::Delete()
-	{
-		glDeleteTextures(1, &m_RenderID);
-	}
-
-	bool OpenGLTexture2D::IsUploaded() const
-	{
-		return m_RenderID != 0;
 	}
 
 	uint32_t ac::OpenGLTexture2D::GetWidth() const
@@ -118,7 +122,8 @@ namespace ac
 	{
 		if(m_RenderID == 0)
 			ACMSG("Trying to bind a texture that is not uploaded!!!");
-		glBindTextureUnit(slot, m_RenderID);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_RenderID);
 	}
 }
 

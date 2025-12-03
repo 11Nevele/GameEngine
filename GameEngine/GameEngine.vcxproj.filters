@@ -228,6 +228,12 @@
     <ClInclude Include="Achoium\Render\Vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Achoium\Render\Model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">
@@ -365,6 +371,9 @@
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLMesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="SandBox\Shader\ShaderTest.txt" />
@@ -397,5 +406,7 @@
     <None Include="SandBox\Audio\test.ogg" />
     <None Include="SandBox\Shader\TextFragmentShader.glsl" />
     <None Include="SandBox\Shader\TextVertexShader.glsl" />
+    <None Include="SandBox\Shader\3DFragmentShader.glsl" />
+    <None Include="SandBox\Shader\3DVertexShader.glsl" />
   </ItemGroup>
 </Project>

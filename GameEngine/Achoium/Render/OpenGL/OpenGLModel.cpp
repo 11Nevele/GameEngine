@@ -16,7 +16,7 @@ namespace ac
 	{
 		std::unordered_map<string, bool> loadedTextures;
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -109,7 +109,6 @@ namespace ac
 			textureLoaded[texturePath] = true;
 			
 			textures.emplace_back(texturePath);
-			textures.back().Upload();
 		}
 		return textures;
 	}

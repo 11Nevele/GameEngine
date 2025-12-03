@@ -14,10 +14,6 @@ const OpenGLTexture2D& ac::TextureManager::GetTexture(const std::string& name)
 	uint32_t id = GetTextureID(name);  
 	ACASSERT(id < textureList.size(), "ID out of bound at texture"  
 		<< name << " id: " << id);  
-	if (!textureList[id].IsUploaded())  
-	{  
-		textureList[id].Upload();  
-	}  
 	return textureList[id];  
 }  
 
@@ -38,10 +34,6 @@ uint32_t ac::TextureManager::GetTextureID(const std::string& name)
 const OpenGLTexture2D& ac::TextureManager::GetTexture(uint32_t id)  
 {  
 	ACASSERT(id < textureList.size(), "ID out of bound at id: " << id);  
-	if (!textureList[id].IsUploaded())  
-	{  
-		textureList[id].Upload();  
-	}  
 	return textureList[id];  
 }  
 
@@ -49,10 +41,6 @@ void TextureManager::AddReference(uint32_t id)
 {
 	ACASSERT(id < textureList.size(), "ID out of bound at texture"
 		 << " id: " << id);
-	if (referenceCount[id] == 0)
-	{
-		textureList[id].Upload();
-	}
 	referenceCount[id]++;
 	return;
 }
@@ -62,10 +50,6 @@ void TextureManager::AddReference(const std::string& name)
 	uint32_t id = GetTextureID(name);
 	ACASSERT(id < textureList.size(), "ID out of bound at texture"
 		<< name << " id: " << id);
-	if (referenceCount[id] == 0)
-	{
-		textureList[id].Upload();
-	}
 	referenceCount[id]++;
 	return;
 }
@@ -75,10 +59,6 @@ void TextureManager::DeleteReference(uint32_t id)
 	ACASSERT(id < textureList.size(), "ID out of bound at texture"
 		<< " id: " << id);
 	referenceCount[id]--;
-	if (referenceCount[id] == 0)
-	{
-		//textureList[id].Delete();
-	}
 	return;
 }
 
@@ -88,10 +68,6 @@ void TextureManager::DeleteReference(const std::string& name)
 	ACASSERT(id < textureList.size(), "ID out of bound at texture"
 		<< name << " id: " << id);
 	referenceCount[id]--;
-	if (referenceCount[id] == 0)
-	{
-		//textureList[id].Delete();
-	}
 	return;
 }
 
@@ -104,26 +80,8 @@ TextureManager& ac::TextureManager::AddTexture(const std::string& name, const st
 {  
 	uint32_t id = textureList.size();  
 	textureNameToID[name] = id;  
-	TextureInfo info;  
-	int width, height, channel;  
-	stbi_set_flip_vertically_on_load(true);
-	stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channel, 0);  
-	info.height = height;  
-	info.width = width;  
-	if (channel == 4)  
-	{  
-		info.internalFormat = GL_RGBA8;  
-		info.dataFormat = GL_RGBA;  
-	}  
-	else if (channel == 3)  
-	{  
-		info.internalFormat = GL_RGB8;  
-		info.dataFormat = GL_RGB;  
-	}  
-	ACASSERT(data, "FAIL TO READ DATA FROM" << path);  
-	textureList.emplace_back(data, info); 
+	textureList.emplace_back(path); 
 	referenceCount.emplace_back(0);
-	textureList.back().Upload();
 	return *this;  
 }  
 

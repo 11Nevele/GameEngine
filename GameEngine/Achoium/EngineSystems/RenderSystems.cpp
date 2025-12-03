@@ -114,7 +114,7 @@ namespace ac
 				{
 					m->BindTextures();
 					Transform t = transform;
-					renderer.Submit(m->GetVertexArray(), t.asMat4());
+					renderer.Submit3D(m->GetVertexArray(), t.asMat4());
 				}
 			});
 	}

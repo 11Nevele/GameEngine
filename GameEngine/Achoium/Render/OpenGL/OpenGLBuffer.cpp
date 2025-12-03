@@ -99,6 +99,12 @@ namespace ac
        // Binding with GL_ARRAY_BUFFER allows the data to be loaded regardless of VAO state. 
        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
        glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+          /*float* test = new float[count];
+          glGetBufferSubData(GL_ARRAY_BUFFER, 0, count, test);
+          for (uint32_t i = 0; i < count / sizeof(float); i++)
+          {
+              ACMSG("Data[" << i << "]: " << test[i]);
+          }*/
    }
 
 

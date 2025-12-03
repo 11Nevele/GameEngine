@@ -25,10 +25,6 @@ namespace ac
 	{
 		if(m_DiffuseTextures.size() > 0)
 		{
-			if (!m_DiffuseTextures[0].IsUploaded())
-			{
-				m_DiffuseTextures[0].Upload();
-			}
 			m_DiffuseTextures[0].Bind(0);
 		}
 	}

@@ -63,14 +63,14 @@ void TestScene3D()
 	world.Get<Transform>(camera).position = { 0, 0, 0};
 
 	Entity object = world.CreateEntity();
-	world.Add<Transform>(object, Transform(glm::vec3(0,0,-50),0,1));
+	world.Add<Transform>(object, Transform(glm::vec3(0,-0,-200),0,1));
 
 	// After creating the OpenGLModel, add validation
-	OpenGLModel model(CURPATH + "/Assets/dino/trex.obj");
+	OpenGLModel model(CURPATH + "/Assets/plane/Seahawk.obj");
 	world.Add<OpenGLModel>(object, std::move(model));
 
 	Entity e2 = world.CreateEntity("");
-	//world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
+	world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 	world.Add<Transform>(e2, Transform({ 0,0,-1000 }));
 
 

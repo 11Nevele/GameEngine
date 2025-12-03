@@ -159,6 +159,8 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="SandBox\Audio\test.ogg" />
+    <None Include="SandBox\Shader\3DFragmentShader.glsl" />
+    <None Include="SandBox\Shader\3DVertexShader.glsl" />
     <None Include="SandBox\Shader\TextFragmentShader.glsl" />
     <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>

@@ -24,6 +24,9 @@ namespace ac
 		textShader = new OpenGLShader("textShader",
 			util::ReadFile(currentPath + "/SandBox/Shader/TextVertexShader.glsl"),
 			util::ReadFile(currentPath + "/SandBox/Shader/TextFragmentShader.glsl"));
+        shader3D = new OpenGLShader("3DShader",
+            util::ReadFile(currentPath + "/SandBox/Shader/3DVertexShader.glsl"),
+			util::ReadFile(currentPath + "/SandBox/Shader/3DFragmentShader.glsl"));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
         glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //����byte-alignment����
@@ -129,17 +132,11 @@ void OpenGLRenderer::EndScene()
 /// @param transform The transformation matrix for the object being rendered.  
 void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform, const glm::vec4& color)
 {  
-	glm::mat4 projection = glm::perspective(  
-		glm::radians(45.0f),  // Field of View (FOV) angle  
-		16.0f / 9.0f,         // Aspect ratio (width/height)  
-		0.1f,                 // Near clipping plane  
-		10000.0f                // Far clipping plane  
+	glm::mat4 projection = glm::orthoRH_NO(  
+		0.0f, 1280.0f,        // Left, Right  
+		0.0f, 720.0f          // Bottom, Top  
+        ,1.0f, -1.0f
 	);  
-	//projection = glm::orthoRH_NO(  
-	//	0.0f, 1280.0f,        // Left, Right  
-	//	0.0f, 720.0f          // Bottom, Top  
- //       ,1.0f, -1.0f
-	//);  
 
 	// Bind the shader program  
 	shader2D->Bind();  
@@ -159,7 +156,36 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	// Issue the draw call  
 	uint32_t cnt = vertexArray->GetIndexBuffer()->GetCount();  
 	glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);  
-}  
+}
+
+void OpenGLRenderer::Submit3D(VertexArray* vertexArray, const glm::mat4& transform, const glm::vec4& color)
+{
+    glm::mat4 projection = glm::perspective(
+        glm::radians(45.0f),  // Field of View (FOV) angle  
+        16.0f / 9.0f,         // Aspect ratio (width/height)  
+        0.1f,                 // Near clipping plane  
+        10000.0f                // Far clipping plane  
+    );
+
+    // Bind the shader program  
+    shader3D->Bind();
+
+    // Upload the transformation matrix and view-projection matrix to the shader  
+    shader3D->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+    shader3D->SetMat4("u_Transform", transform);
+    shader3D->SetMat4("projection", projection);
+    shader3D->SetFloat4("uColor", color);
+
+    glm::vec4 t = glm::vec4{ 1,1,0,1 };
+    t = projection * s_SceneData.ViewProjectionMatrix * transform * t;
+
+    // Bind the vertex array  
+    vertexArray->Bind();
+
+    // Issue the draw call  
+    uint32_t cnt = vertexArray->GetIndexBuffer()->GetCount();
+    glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);
+}
 
 void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform)
 {

@@ -64,6 +64,8 @@ namespace ac
 		 */
 		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
 
+		void Submit3D(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
+
 		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
 		/**
 		 * @brief Submits a text rendering command.
@@ -100,6 +102,8 @@ namespace ac
 		Shader* circleShader;
 
 		Shader* textShader;
+
+		Shader* shader3D;
 
 		struct Character {
 			GLuint     TextureID;  // ��������ID
