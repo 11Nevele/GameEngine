@@ -50,6 +50,8 @@ namespace ac
 
 		world.RegisterType<OpenGLModel>();
 
+		world.RegisterType<AmbientLight>();
+
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
 		world.AddResource<WinWindow>(new WinWindow({ "AC", 1280, 720 }, world.GetResourse<EventManager>()));

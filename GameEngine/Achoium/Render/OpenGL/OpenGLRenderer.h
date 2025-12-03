@@ -89,11 +89,9 @@ namespace ac
 		 * @param cameraTransform The camera's view-projection matrix
 		 */
 		void UpdateCamera(const glm::mat4& cameraTransform) override;
-
-	private:
 		/**
 		 * @brief Data structure for scene rendering information.
-		 * 
+		 *
 		 * Stores the current view-projection matrix for the scene.
 		 */
 		Shader* shader2D;
@@ -104,6 +102,8 @@ namespace ac
 		Shader* textShader;
 
 		Shader* shader3D;
+	private:
+		
 
 		struct Character {
 			GLuint     TextureID;  // ��������ID

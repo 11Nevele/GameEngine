@@ -17,6 +17,7 @@
     <ClInclude Include="Achoium\Core\World.hpp" />
     <ClInclude Include="Achoium\EngineComponents\Audio\Audio.h" />
     <ClInclude Include="Achoium\EngineComponents\Camera.h" />
+    <ClInclude Include="Achoium\EngineComponents\Lighting\Lights.hpp" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h" />

@@ -73,7 +73,8 @@ void TestScene3D()
 	world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
 	world.Add<Transform>(e2, Transform({ 0,0,-1000 }));
 
-
+	Entity light = world.CreateEntity();
+	world.Add<AmbientLight>(light, { glm::vec3(1,1,1) });
 	
 
 	while (true)

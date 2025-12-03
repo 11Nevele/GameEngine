@@ -234,6 +234,9 @@
     <ClInclude Include="Achoium\Render\OpenGL\OpenGLModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Achoium\EngineComponents\Lighting\Lights.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="SandBox\Main.cpp">

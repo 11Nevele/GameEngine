@@ -4,6 +4,7 @@
 #include "Math/Transform.h"
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Tilemap.h"
+#include "EngineComponents\Lighting\Lights.hpp"
 namespace ac
 {
 	bool OnSpriteAdded(const OnAdded<Sprite>& event)
@@ -31,6 +32,9 @@ namespace ac
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 		TextureManager& textureManager = world.GetResourse<TextureManager>();
 		ModelManager& modelManager = world.GetResourse<ModelManager>();
+
+		
+
 		world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, Sprite& sprite, Transform& trans)
 			{
 				textureManager.GetTexture(sprite.textureID).Bind();
@@ -107,7 +111,19 @@ namespace ac
 	}
 	void RenderModel(World& world)
 	{
+		glm::vec3 color(0, 0, 0);
+		world.View<AmbientLight>().ForEach([&color](Entity e, AmbientLight& light) {
+			color += light.color;
+			});
+		if (color.length() > 0)
+		{
+			//color /= color.length();
+		}
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+		renderer.shader3D->Bind();
+		renderer.shader3D->SetFloat3("uLightColor", color);
+		
+
 		world.View<OpenGLModel, Transform>().ForEach([&renderer](Entity e, OpenGLModel& model, Transform& transform)
 			{
 				for (auto& m : model.GetMeshes())
