@@ -74,7 +74,13 @@ void TestScene3D()
 	world.Add<Transform>(e2, Transform({ 0,0,-1000 }));
 
 	Entity light = world.CreateEntity();
-	world.Add<AmbientLight>(light, { glm::vec3(1,1,1) });
+	//world.Add<AmbientLight>(light, { glm::vec3(0.2,0.2,0.2) });
+
+	Entity pointLight = world.CreateEntity();
+	world.Add<PointLight>(pointLight, { glm::vec3(1,1,1)});
+	world.Add<Transform>(pointLight, Transform({ 0,0,0 }));
+
+
 	
 
 	while (true)

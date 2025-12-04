@@ -7,3 +7,8 @@ struct AmbientLight
 	float intensity;
 };
 
+struct PointLight
+{
+	glm::vec3 color;
+};
+

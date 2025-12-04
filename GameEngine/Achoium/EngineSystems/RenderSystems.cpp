@@ -119,9 +119,18 @@ namespace ac
 		{
 			//color /= color.length();
 		}
+
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 		renderer.shader3D->Bind();
-		renderer.shader3D->SetFloat3("uLightColor", color);
+		renderer.shader3D->SetFloat3("uAmbientLightColor", color);
+
+		world.View<PointLight, Transform>().ForEach([&renderer](Entity e, PointLight& light, Transform& transform)
+			{
+				renderer.shader3D->SetFloat3("uLightPos", transform.position);
+				renderer.shader3D->SetFloat3("uLightColor", light.color);
+			});
+
+		
 		
 
 		world.View<OpenGLModel, Transform>().ForEach([&renderer](Entity e, OpenGLModel& model, Transform& transform)
@@ -130,6 +139,7 @@ namespace ac
 				{
 					m->BindTextures();
 					Transform t = transform;
+					renderer.shader3D->SetMat4("rotation", transform.rotation.operator glm::mat<4, 4, float, glm::packed_highp>());
 					renderer.Submit3D(m->GetVertexArray(), t.asMat4());
 				}
 			});

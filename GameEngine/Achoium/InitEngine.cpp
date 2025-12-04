@@ -51,6 +51,7 @@ namespace ac
 		world.RegisterType<OpenGLModel>();
 
 		world.RegisterType<AmbientLight>();
+		world.RegisterType<PointLight>();
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
