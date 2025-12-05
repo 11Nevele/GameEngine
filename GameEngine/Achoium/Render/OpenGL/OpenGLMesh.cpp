@@ -27,6 +27,10 @@ namespace ac
 		{
 			m_DiffuseTextures[0].Bind(0);
 		}
+		if(m_SpecularTextures.size() > 0)
+		{
+			m_SpecularTextures[0].Bind(1);
+		}
 	}
 
 	void OpenGLMesh::setupMesh()

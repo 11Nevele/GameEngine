@@ -122,7 +122,7 @@ namespace ac
 	{
 		if(m_RenderID == 0)
 			ACMSG("Trying to bind a texture that is not uploaded!!!");
-		glActiveTexture(GL_TEXTURE0);
+		glActiveTexture(GL_TEXTURE0 + slot);
 		glBindTexture(GL_TEXTURE_2D, m_RenderID);
 	}
 }

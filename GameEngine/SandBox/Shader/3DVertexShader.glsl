@@ -14,10 +14,14 @@ uniform vec3 uLightPos;
 out vec2 textureCord;
 out vec3 relativeLightPos;
 out vec3 normal;
+out vec3 viewDir;
+out vec3 reflectDir;
 void main()
 {
     normal = normalize((rotation * vec4(aNormal,1.0)).xyz);
     relativeLightPos = normalize(uLightPos - (u_Transform * vec4(aPos, 1.0)).xyz);
     textureCord = atextureCord;
+    viewDir = normalize(- (u_ViewProjection * u_Transform * vec4(aPos, 1.0)).xyz);
+    reflectDir = reflect(-relativeLightPos, normal);
     gl_Position = projection * u_ViewProjection * u_Transform * vec4(aPos, 1.0);
 }

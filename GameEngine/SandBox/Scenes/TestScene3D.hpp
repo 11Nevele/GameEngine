@@ -63,10 +63,10 @@ void TestScene3D()
 	world.Get<Transform>(camera).position = { 0, 0, 0};
 
 	Entity object = world.CreateEntity();
-	world.Add<Transform>(object, Transform(glm::vec3(0,-0,-200),0,1));
+	world.Add<Transform>(object, Transform(glm::vec3(0,-0.3,-1),0,1));
 
 	// After creating the OpenGLModel, add validation
-	OpenGLModel model(CURPATH + "/Assets/plane/Seahawk.obj");
+	OpenGLModel model(CURPATH + "/Assets/teapot/Chaynik.obj");
 	world.Add<OpenGLModel>(object, std::move(model));
 
 	Entity e2 = world.CreateEntity("");
@@ -74,11 +74,11 @@ void TestScene3D()
 	world.Add<Transform>(e2, Transform({ 0,0,-1000 }));
 
 	Entity light = world.CreateEntity();
-	//world.Add<AmbientLight>(light, { glm::vec3(0.2,0.2,0.2) });
+	world.Add<AmbientLight>(light, { glm::vec3(0.2,0.2,0.2) });
 
 	Entity pointLight = world.CreateEntity();
-	world.Add<PointLight>(pointLight, { glm::vec3(1,1,1)});
-	world.Add<Transform>(pointLight, Transform({ 0,0,0 }));
+	world.Add<PointLight>(pointLight, { glm::vec3(0.9,0.9,0.9)});
+	world.Add<Transform>(pointLight, Transform({ 1,1,0 }));
 
 
 	
@@ -89,15 +89,23 @@ void TestScene3D()
 
 		mRenderer& renderer = world.GetResourse<mRenderer>();
 
-		world.Get<Transform>(e2).RotateY(1);
-		world.Get<Transform>(object).RotateY(1);
+		
+		//world.Get<Transform>(object).RotateY(1);
 		//world.Get<Transform>(object).RotateX(0.7);
+
+		//rotate light around object
+		float time = (float)glfwGetTime();
+		float radius = 5.0f;
+		float lightX = sin(time) * radius;
+		float lightZ = cos(time) * radius;
+		world.Get<Transform>(pointLight).position = glm::vec3(lightX, 1.0f, lightZ - 1);
+
 		world.Update();
 		if (exitgame)
 			break;
 
 		win.OnUpdate();
-		glClearColor(0.1, 0.1, 0.1, 1);
+		glClearColor(0.0, 0.0, 0.0, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Add this in your render loop for debugging

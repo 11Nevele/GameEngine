@@ -138,8 +138,13 @@ namespace ac
 				for (auto& m : model.GetMeshes())
 				{
 					m->BindTextures();
+					renderer.shader3D->SetInt("uMaterial.diffuse", 0);
+					renderer.shader3D->SetInt("uMaterial.specular", 1);
+					renderer.shader3D->SetFloat("uMaterial.shininess", 1.0f);
+
 					Transform t = transform;
 					renderer.shader3D->SetMat4("rotation", transform.rotation.operator glm::mat<4, 4, float, glm::packed_highp>());
+					
 					renderer.Submit3D(m->GetVertexArray(), t.asMat4());
 				}
 			});
