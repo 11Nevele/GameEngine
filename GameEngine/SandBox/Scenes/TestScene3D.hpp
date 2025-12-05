@@ -37,8 +37,52 @@ bool HandleWindowResize(const WindowResizeEvent& event)
 	return true; // Return true to indicate the event has been handled
 }
 
+struct movementComponent
+{
+	float speed = 2.0f; // units per second
+	float mouseSensitivity = 0.1f;
+	float rotationSpeed = 90.0f; // degrees per second
+};
+
 void Movement(ac::World& world)
 {
+	float deltaTime = world.GetResourse<Time>().Delta();
+	InputManager& input = world.GetResourse<InputManager>();
+	world.View<movementComponent, Transform>().ForEach([&](Entity entity, movementComponent& moveComp, Transform& transform)
+		{
+			// Handle keyboard input for movement
+			glm::vec3 direction(0.0f);
+			if (input.IsKeyPressed(AC_KEY_W))
+				direction += glm::vec3(0, 0, -1); // Forward
+			if (input.IsKeyPressed(AC_KEY_S))
+				direction += glm::vec3(0, 0, 1);  // Backward
+			if (input.IsKeyPressed(AC_KEY_A))
+				direction += glm::vec3(-1, 0, 0); // Left
+			if (input.IsKeyPressed(AC_KEY_D))
+				direction += glm::vec3(1, 0, 0);  // Right
+			if(input.IsKeyPressed(AC_KEY_Q))
+				transform.RotateRoll(moveComp.rotationSpeed * deltaTime); // Rotate Left
+			if (input.IsKeyPressed(AC_KEY_E))
+				transform.RotateRoll(-moveComp.rotationSpeed * deltaTime);  // Rotate Right
+			if(input.IsKeyPressed(AC_KEY_LEFT_SHIFT))
+				direction += glm::vec3(0, 1, 0);  // Up
+			if (input.IsKeyPressed(AC_KEY_LEFT_CONTROL))
+				direction += glm::vec3(0, -1, 0); // Down
+			if (glm::length(direction) > 0.0f)
+			{
+				//move in direction of current rotation
+				direction = transform.rotation.operator glm::mat<4, 4, float, glm::packed_highp>() * glm::vec4(direction, 0.0f);
+				direction = glm::normalize(direction);
+				transform.position += direction * moveComp.speed * deltaTime;
+			}
+			// Handle mouse input for rotation
+			glm::vec2 mouseDelta = input.GetMouseDelta();
+			//rotate relative to current axis
+			transform.RotateYaw(-mouseDelta.x * moveComp.mouseSensitivity);
+			transform.RotatePitch(-mouseDelta.y * moveComp.mouseSensitivity);
+
+
+		});
 
 	
 }
@@ -50,17 +94,23 @@ void LoadAssets(World& world)
 	world.GetResourse<TextureManager>().AddTexture("White", curPath + "/Assets/Image/White.png");
 }
 
+
+
 void TestScene3D()
 {
 
 
 	srand(time(0));
 	InitEngine(world);
+	world.RegisterType<movementComponent>();
+	world.AddUpdateSystem(Movement, 0);
+
 
 	Entity camera = world.CreateEntity();
 	world.Add<Camera>(camera, Camera{ });
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0};
+	world.Add<movementComponent>(camera, movementComponent{ 5.0f, 0.1f, 90.0f });
 
 	Entity object = world.CreateEntity();
 	world.Add<Transform>(object, Transform(glm::vec3(0,-0.3,-1),0,1));
@@ -105,7 +155,7 @@ void TestScene3D()
 			break;
 
 		win.OnUpdate();
-		glClearColor(0.0, 0.0, 0.0, 1);
+		glClearColor(0.1, 0.1, 0.1, 1);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		// Add this in your render loop for debugging

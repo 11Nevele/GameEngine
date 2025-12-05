@@ -80,7 +80,7 @@ namespace ac
    void Transform::RotateYaw(float angle)  
    {  
        glm::quat yawQuat = glm::angleAxis(glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));  
-       rotation = yawQuat * rotation;  
+       rotation = rotation * yawQuat;
    }  
 
    /// Rotates the transform around the X-axis (pitch) relative to the current rotation.  
@@ -88,7 +88,7 @@ namespace ac
    void Transform::RotatePitch(float angle)  
    {  
        glm::quat pitchQuat = glm::angleAxis(glm::radians(angle), glm::vec3(1.0f, 0.0f, 0.0f));  
-       rotation = pitchQuat * rotation;  
+       rotation = rotation * pitchQuat;
    }  
 
    /// Rotates the transform around the Z-axis (roll) relative to the current rotation.  
@@ -96,6 +96,6 @@ namespace ac
    void Transform::RotateRoll(float angle)  
    {  
        glm::quat rollQuat = glm::angleAxis(glm::radians(angle), glm::vec3(0.0f, 0.0f, 1.0f));  
-       rotation = rollQuat * rotation;  
+       rotation = rotation * rollQuat;
    }  
 }

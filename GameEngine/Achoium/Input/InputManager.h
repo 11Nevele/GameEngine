@@ -1,5 +1,7 @@
 #pragma once
 #include "Core/World.hpp"
+#include <glm/glm.hpp>
+#include <Event/MouseEvent.h>
 namespace ac
 {
 	class InputManagerSystem
@@ -17,6 +19,8 @@ namespace ac
 		bool mIsMouseButtonDown[8]{ false };
 		bool mIsKeyUp[512]{ false };
 		bool mIsMouseButtonUp[8]{ false };
+		glm::vec2 lastMousePos{ -1, -1 };
+		glm::vec2 mousePos{ -1, -1 };
 	public:
 		bool IsKeyPressed(int keycode) const
 		{
@@ -41,6 +45,16 @@ namespace ac
 		bool IsMouseButtonUp(int button) const
 		{
 			return mIsMouseButtonUp[button];
+		}
+
+		glm::vec2 GetMousePosition() const
+		{
+			return mousePos;
+		}
+
+		glm::vec2 GetMouseDelta() const
+		{
+			return mousePos - lastMousePos;
 		}
 
 	};
