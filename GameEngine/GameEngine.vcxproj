@@ -224,13 +224,13 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\Assimp\include\assimp;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\Assimp\include\assimp;$(SolutionDir)Dependency\Assimp\include;$(SolutionDir)Dependency\GLFW\include\GLFW</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\Assimp\lib;$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\Assimp\lib;$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\Assimp\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;assimp-vc145-mtd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -244,15 +244,15 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\Assimp\include\assimp;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\Assimp\include\assimp;$(SolutionDir)Dependency\Assimp\include;$(SolutionDir)Dependency\GLFW\include\GLFW</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\Assimp\lib;$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\Assimp\lib;$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\Assimp\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;assimp-vc145-mtd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

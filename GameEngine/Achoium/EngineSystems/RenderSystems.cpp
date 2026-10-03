@@ -124,11 +124,17 @@ namespace ac
 		renderer.shader3D->Bind();
 		renderer.shader3D->SetFloat3("uAmbientLightColor", color);
 
-		world.View<PointLight, Transform>().ForEach([&renderer](Entity e, PointLight& light, Transform& transform)
+		int pointLightCount = 0;
+		world.View<PointLight, Transform>().ForEach([&renderer, &pointLightCount](Entity e, PointLight& light, Transform& transform)
 			{
-				renderer.shader3D->SetFloat3("uLightPos", transform.position);
-				renderer.shader3D->SetFloat3("uLightColor", light.color);
+				if (pointLightCount >= 4)
+					return;
+
+				renderer.shader3D->SetFloat3("uLightPos[" + std::to_string(pointLightCount) + "]", transform.position);
+				renderer.shader3D->SetFloat3("uLightColor[" + std::to_string(pointLightCount) + "]", light.color);
+				pointLightCount++;
 			});
+		renderer.shader3D->SetInt("uLightCount", pointLightCount);
 
 		
 		

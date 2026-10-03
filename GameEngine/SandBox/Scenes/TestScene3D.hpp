@@ -39,9 +39,9 @@ bool HandleWindowResize(const WindowResizeEvent& event)
 
 struct movementComponent
 {
-	float speed = 2.0f; // units per second
+	float speed = 0.05f; // units per second
 	float mouseSensitivity = 0.1f;
-	float rotationSpeed = 90.0f; // degrees per second
+	float rotationSpeed = 10.0f; // degrees per second
 };
 
 void Movement(ac::World& world)
@@ -60,10 +60,10 @@ void Movement(ac::World& world)
 				direction += glm::vec3(-1, 0, 0); // Left
 			if (input.IsKeyPressed(AC_KEY_D))
 				direction += glm::vec3(1, 0, 0);  // Right
-			if(input.IsKeyPressed(AC_KEY_Q))
+			/*if (input.IsKeyPressed(AC_KEY_Q))
 				transform.RotateRoll(moveComp.rotationSpeed * deltaTime); // Rotate Left
 			if (input.IsKeyPressed(AC_KEY_E))
-				transform.RotateRoll(-moveComp.rotationSpeed * deltaTime);  // Rotate Right
+				transform.RotateRoll(-moveComp.rotationSpeed * deltaTime);  // Rotate Right*/
 			if(input.IsKeyPressed(AC_KEY_LEFT_SHIFT))
 				direction += glm::vec3(0, 1, 0);  // Up
 			if (input.IsKeyPressed(AC_KEY_LEFT_CONTROL))
@@ -77,9 +77,11 @@ void Movement(ac::World& world)
 			}
 			// Handle mouse input for rotation
 			glm::vec2 mouseDelta = input.GetMouseDelta();
-			//rotate relative to current axis
-			transform.RotateYaw(-mouseDelta.x * moveComp.mouseSensitivity);
-			transform.RotatePitch(-mouseDelta.y * moveComp.mouseSensitivity);
+			glm::vec3 rotation = glm::eulerAngles(transform.rotation);
+			rotation.y += glm::radians(-mouseDelta.x * moveComp.mouseSensitivity);
+			rotation.x += glm::radians(-mouseDelta.y * moveComp.mouseSensitivity);
+			rotation.z = 0.0f;
+			transform.rotation = glm::quat(rotation);
 
 
 		});
@@ -110,14 +112,37 @@ void TestScene3D()
 	world.Add<Camera>(camera, Camera{ });
 	world.Add<Transform>(camera, Transform());
 	world.Get<Transform>(camera).position = { 0, 0, 0};
-	world.Add<movementComponent>(camera, movementComponent{ 5.0f, 0.1f, 90.0f });
+	world.Add<movementComponent>(camera, movementComponent{ 1.0f, 0.1f, 5.0f });
 
-	Entity object = world.CreateEntity();
-	world.Add<Transform>(object, Transform(glm::vec3(0,-0.3,-1),0,1));
+	vector<string> modelPaths =
+	{
+		CURPATH + "/Assets/teapot/Chaynik.obj",
+		//CURPATH + "/Assets/grass/Grass_Block.obj",
+		//CURPATH + "/Assets/plane/Seahawk.obj",
+		//CURPATH + "/Assets/trex/trex.obj"
+	};
 
-	// After creating the OpenGLModel, add validation
-	OpenGLModel model(CURPATH + "/Assets/teapot/Chaynik.obj");
-	world.Add<OpenGLModel>(object, std::move(model));
+	
+	for (int i = 0; i < 10; i++)
+	{
+		Entity object = world.CreateEntity();
+
+		string modelPath = modelPaths[rand() % modelPaths.size()];
+		float angle = glm::two_pi<float>() * static_cast<float>(i) / 10.0f;
+		float radius = 2.0f;
+		float x = cos(angle) * radius;
+		float z = sin(angle) * radius - 10.0f;
+		float rotation = -glm::degrees(angle) + 90.0f;
+		float scale = 1.0f;
+
+		if (modelPath.find("Grass_Block.obj") != string::npos)
+			scale *= 0.2f;
+		OpenGLModel model(modelPaths[0]);
+		world.Add<Transform>(object, Transform(glm::vec3(x, -0.3f, z), rotation, scale));
+
+		
+		world.Add<OpenGLModel>(object, std::move(model));
+	}
 
 	Entity e2 = world.CreateEntity("");
 	world.Add<Sprite>(e2, Sprite::Create("Default", world.GetResourse<TextureManager>()));
@@ -126,9 +151,17 @@ void TestScene3D()
 	Entity light = world.CreateEntity();
 	world.Add<AmbientLight>(light, { glm::vec3(0.2,0.2,0.2) });
 
-	Entity pointLight = world.CreateEntity();
-	world.Add<PointLight>(pointLight, { glm::vec3(0.9,0.9,0.9)});
-	world.Add<Transform>(pointLight, Transform({ 1,1,0 }));
+	Entity pointLightWarm = world.CreateEntity();
+	world.Add<PointLight>(pointLightWarm, { glm::vec3(1.0f,0.85f,0.65f) });
+	world.Add<Transform>(pointLightWarm, Transform({ 5.0f,1.5f,-10.0f }));
+
+	Entity pointLightBlue = world.CreateEntity();
+	world.Add<PointLight>(pointLightBlue, { glm::vec3(0.35f,0.55f,1.0f) });
+	world.Add<Transform>(pointLightBlue, Transform({ -5.0f,2.0f,-10.0f }));
+
+	Entity pointLightMagenta = world.CreateEntity();
+	world.Add<PointLight>(pointLightMagenta, { glm::vec3(1.0f,0.3f,0.8f) });
+	world.Add<Transform>(pointLightMagenta, Transform({ 0.0f,3.0f,-4.0f }));
 
 
 	
@@ -143,12 +176,10 @@ void TestScene3D()
 		//world.Get<Transform>(object).RotateY(1);
 		//world.Get<Transform>(object).RotateX(0.7);
 
-		//rotate light around object
 		float time = (float)glfwGetTime();
-		float radius = 5.0f;
-		float lightX = sin(time) * radius;
-		float lightZ = cos(time) * radius;
-		world.Get<Transform>(pointLight).position = glm::vec3(lightX, 1.0f, lightZ - 1);
+		world.Get<Transform>(pointLightWarm).position = glm::vec3(sin(time) * 5.0f, 1.5f, cos(time) * 5.0f - 10.0f);
+		world.Get<Transform>(pointLightBlue).position = glm::vec3(cos(time * 0.7f) * 7.0f, 2.5f, sin(time * 0.7f) * 4.0f - 10.0f);
+		world.Get<Transform>(pointLightMagenta).position = glm::vec3(sin(time * 1.3f) * 3.0f, 3.5f + sin(time * 2.0f) * 0.5f, cos(time * 1.3f) * 3.0f - 10.0f);
 
 		world.Update();
 		if (exitgame)
