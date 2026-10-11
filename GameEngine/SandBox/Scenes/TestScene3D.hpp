@@ -137,6 +137,7 @@ void TestScene3D()
 
 		if (modelPath.find("Grass_Block.obj") != string::npos)
 			scale *= 0.2f;
+		
 		OpenGLModel model(modelPaths[0]);
 		world.Add<Transform>(object, Transform(glm::vec3(x, -0.3f, z), rotation, scale));
 
