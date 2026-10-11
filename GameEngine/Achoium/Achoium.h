@@ -31,4 +31,6 @@
 #include "EngineComponents/Audio/Audio.h"
 #include "EngineComponents/TextComponent.h"
 
+#include "EngineComponents/Lighting/Lights.hpp"
+
 #include "Global.h"

@@ -58,23 +58,6 @@ namespace ac
 		 */
 		virtual ~OpenGLTexture2D();
 		
-		/**
-		 * @brief Uploads the texture data to the GPU.
-		 */
-		virtual void Upload() override;
-		
-		/**
-		 * @brief Deletes the texture from GPU memory.
-		 */
-		virtual void Delete() override;
-		
-		/**
-		 * @brief Checks if the texture has been uploaded to GPU.
-		 * 
-		 * @return true If the texture is uploaded
-		 * @return false If the texture is not uploaded
-		 */
-		virtual bool IsUploaded() const override;
 		
 		/**
 		 * @brief Gets the width of the texture.
@@ -105,7 +88,6 @@ namespace ac
 		virtual void Bind(uint32_t slot = 0) const override;
 
 	private:
-		stbi_uc* data;        ///< Raw pixel data
 		uint32_t m_RenderID;  ///< OpenGL handle to the texture
 		TextureInfo textureInfo; ///< Information about texture dimensions and format
 	};

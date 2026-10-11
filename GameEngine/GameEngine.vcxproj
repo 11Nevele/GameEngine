@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -17,6 +17,7 @@
     <ClInclude Include="Achoium\Core\World.hpp" />
     <ClInclude Include="Achoium\EngineComponents\Audio\Audio.h" />
     <ClInclude Include="Achoium\EngineComponents\Camera.h" />
+    <ClInclude Include="Achoium\EngineComponents\Lighting\Lights.hpp" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\CircleCollider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\Collider2D.h" />
     <ClInclude Include="Achoium\EngineComponents\Physics\2D\PolygonCollider2D.h" />
@@ -36,6 +37,11 @@
     <ClInclude Include="Achoium\Event\AllowToken.h" />
     <ClInclude Include="Achoium\Global.h" />
     <ClInclude Include="Achoium\Input\InputManager.h" />
+    <ClInclude Include="Achoium\Render\Model.h" />
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLModel.h" />
+    <ClInclude Include="Achoium\Render\Vertex.h" />
+    <ClInclude Include="Achoium\Render\Mesh.h" />
+    <ClInclude Include="Achoium\Render\OpenGL\OpenGLMesh.h" />
     <ClInclude Include="Achoium\stb_image.h" />
     <ClInclude Include="Achoium\Math\Transform.h" />
     <ClInclude Include="Achoium\Event\KeyEvent.h" />
@@ -49,6 +55,8 @@
     <ClInclude Include="Achoium\InitEngine.h" />
     <ClInclude Include="Achoium\EngineComponents\TextComponent.h" />
     <ClInclude Include="Achoium\EngineSystems\RenderTextSystems.h" />
+    <ClInclude Include="SandBox\Scenes\TestScene.hpp" />
+    <ClInclude Include="SandBox\Scenes\TestScene3D.hpp" />
     <ClInclude Include="SandBox\UnitTests\Benchmark.h" />
     <ClInclude Include="SandBox\UnitTests\EventManagerTest.h" />
     <ClInclude Include="SandBox\UnitTests\TestPhysics.h" />
@@ -106,6 +114,8 @@
     </ClCompile>
     <ClCompile Include="Achoium\Global.cpp" />
     <ClCompile Include="Achoium\Input\InputManager.cpp" />
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLMesh.cpp" />
+    <ClCompile Include="Achoium\Render\OpenGL\OpenGLModel.cpp" />
     <ClCompile Include="Achoium\Render\OpenGL\OpenGLTexture2D.cpp" />
     <ClCompile Include="Achoium\AssetManagement\AssetManager.cpp" />
     <ClCompile Include="Achoium\stb_image.c">
@@ -150,6 +160,8 @@
   <ItemGroup>
     <None Include="cpp.hint" />
     <None Include="SandBox\Audio\test.ogg" />
+    <None Include="SandBox\Shader\3DFragmentShader.glsl" />
+    <None Include="SandBox\Shader\3DVertexShader.glsl" />
     <None Include="SandBox\Shader\TextFragmentShader.glsl" />
     <None Include="SandBox\Shader\TextVertexShader.glsl" />
   </ItemGroup>
@@ -194,14 +206,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependency\Assimp\include;$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;$(SolutionDir)Dependency\Assimp\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\$(Platform)\$(Configuration)\$(Projectname)\</OutDir>
     <IntDir>$(SolutionDir)\binint\$(Platform)\$(Configuration)\$(Projectname)\</IntDir>
-    <IncludePath>$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Dependency\Assimp\include;$(SolutionDir)Dependency\SoLoud\include;$(SolutionDir)Dependency\FreeType\include;$(ProjectDir)Achoium;$(SolutionDir)Dependency\GLFW\include;$(SolutionDir)Dependency\glad\include;$(SolutionDir)Dependency;$(SolutionDir)Dependency\glm;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;$(SolutionDir)Dependency\Assimp\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -212,13 +224,13 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\Assimp\include\assimp;$(SolutionDir)Dependency\Assimp\include;$(SolutionDir)Dependency\GLFW\include\GLFW</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\Assimp\lib;$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\Assimp\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;assimp-vc145-mtd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -232,15 +244,15 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>acpch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\GLFW\include\GLFW;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependency\FreeType\include\freetype;$(ProjectDir)src\acpch.h;$(SolutionDir)Dependency\glad\include\glad;$(SolutionDir)Dependency\Assimp\include\assimp;$(SolutionDir)Dependency\Assimp\include;$(SolutionDir)Dependency\GLFW\include\GLFW</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\SoLoud\lib;$(SolutionDir)Dependency\FreeType\release dll\win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)Dependency\Assimp\lib;$(SolutionDir)Dependency\GLFW\lib-vc2022;$(SolutionDir)Dependency\Assimp\lib\Debug</AdditionalLibraryDirectories>
+      <AdditionalDependencies>soloud_static.lib;glfw3.lib;opengl32.lib;User32.lib;Gdi32.lib;Shell32.lib;freetype.lib;assimp-vc145-mtd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

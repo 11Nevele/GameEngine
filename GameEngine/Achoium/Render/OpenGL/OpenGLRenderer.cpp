@@ -24,13 +24,16 @@ namespace ac
 		textShader = new OpenGLShader("textShader",
 			util::ReadFile(currentPath + "/SandBox/Shader/TextVertexShader.glsl"),
 			util::ReadFile(currentPath + "/SandBox/Shader/TextFragmentShader.glsl"));
+        shader3D = new OpenGLShader("3DShader",
+            util::ReadFile(currentPath + "/SandBox/Shader/3DVertexShader.glsl"),
+			util::ReadFile(currentPath + "/SandBox/Shader/3DFragmentShader.glsl"));
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); // Standard alpha blending
-        glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //½ûÓÃbyte-alignmentÏÞÖÆ
+        glPixelStorei(GL_UNPACK_ALIGNMENT, 1); //ï¿½ï¿½ï¿½ï¿½byte-alignmentï¿½ï¿½ï¿½ï¿½
         FT_Library ft;
         if (FT_Init_FreeType(&ft))
             std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-        // ¼ì²éÎÄ¼þÊÇ·ñ´æÔÚ
+        // ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
         if (!std::filesystem::exists((currentPath + "/Assets/Fonts/arial.ttf")))
             std::cout << "ERROR: Font file does not exist!" << std::endl;
         FT_Face face;
@@ -41,18 +44,18 @@ namespace ac
             
         }
 
-        // ÉèÖÃ×ÖÌå´óÐ¡ - ¿í¶ÈÎª0±íÊ¾¶¯Ì¬¼ÆËã¿í¶È
-        FT_Set_Pixel_Sizes(face, 0, 48);  // 48ÏñËØ¸ß
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¡ - ï¿½ï¿½ï¿½Îª0ï¿½ï¿½Ê¾ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        FT_Set_Pixel_Sizes(face, 0, 48);  // 48ï¿½ï¿½ï¿½Ø¸ï¿½
 
         for (GLubyte c = 0; c < 128; c++)
         {
-            // ¼ÓÔØ×Ö·ûµÄ×ÖÐÎ 
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 
             if (FT_Load_Char(face, c, FT_LOAD_RENDER))
             {
                 std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
                 continue;
             }
-            // Éú³É×ÖÐÎÎÆÀí
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             GLuint texture;
             glGenTextures(1, &texture);
             glBindTexture(GL_TEXTURE_2D, texture);
@@ -67,12 +70,12 @@ namespace ac
                 GL_UNSIGNED_BYTE,
                 face->glyph->bitmap.buffer
             );
-            // ÉèÖÃÎÆÀíÑ¡Ïî
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            // ½«×Ö·û´æ´¢µ½×Ö·û±íÖÐ±¸ÓÃ
+            // ï¿½ï¿½ï¿½Ö·ï¿½ï¿½æ´¢ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½ï¿½Ð±ï¿½ï¿½ï¿½
             Character character = {
                 texture,
                 glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
@@ -87,6 +90,7 @@ namespace ac
 void OpenGLRenderer::Init()  
 {  
 	glEnable(GL_DEPTH_TEST);  
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }  
 
 /// Shuts down the OpenGL renderer.  
@@ -128,13 +132,7 @@ void OpenGLRenderer::EndScene()
 /// @param transform The transformation matrix for the object being rendered.  
 void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform, const glm::vec4& color)
 {  
-	glm::mat4 projection = glm::perspective(  
-		glm::radians(45.0f),  // Field of View (FOV) angle  
-		16.0f / 9.0f,         // Aspect ratio (width/height)  
-		0.1f,                 // Near clipping plane  
-		100.0f                // Far clipping plane  
-	);  
-	projection = glm::orthoRH_NO(  
+	glm::mat4 projection = glm::orthoRH_NO(  
 		0.0f, 1280.0f,        // Left, Right  
 		0.0f, 720.0f          // Bottom, Top  
         ,1.0f, -1.0f
@@ -149,9 +147,8 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	shader2D->SetMat4("projection", projection);
 	shader2D->SetFloat4("uColor", color);
 
-    glm::vec4 t = transform* glm::vec4{ 1,1,0,1 };
-    t = s_SceneData.ViewProjectionMatrix * t;
-    t = projection * t;
+    glm::vec4 t = glm::vec4{ 1,1,0,1 };
+    t = projection * s_SceneData.ViewProjectionMatrix * transform * t;
 
 	// Bind the vertex array  
 	vertexArray->Bind();  
@@ -159,7 +156,36 @@ void OpenGLRenderer::Submit(VertexArray* vertexArray, const glm::mat4& transform
 	// Issue the draw call  
 	uint32_t cnt = vertexArray->GetIndexBuffer()->GetCount();  
 	glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);  
-}  
+}
+
+void OpenGLRenderer::Submit3D(VertexArray* vertexArray, const glm::mat4& transform, const glm::vec4& color)
+{
+    glm::mat4 projection = glm::perspective(
+        glm::radians(45.0f),  // Field of View (FOV) angle  
+        16.0f / 9.0f,         // Aspect ratio (width/height)  
+        0.1f,                 // Near clipping plane  
+        10000.0f                // Far clipping plane  
+    );
+
+    // Bind the shader program  
+    shader3D->Bind();
+
+    // Upload the transformation matrix and view-projection matrix to the shader  
+    shader3D->SetMat4("u_ViewProjection", s_SceneData.ViewProjectionMatrix);
+    shader3D->SetMat4("u_Transform", transform);
+    shader3D->SetMat4("projection", projection);
+    shader3D->SetFloat4("uColor", color);
+
+    glm::vec4 t = glm::vec4{ 1,1,0,1 };
+    t = projection * s_SceneData.ViewProjectionMatrix * transform * t;
+
+    // Bind the vertex array  
+    vertexArray->Bind();
+
+    // Issue the draw call  
+    uint32_t cnt = vertexArray->GetIndexBuffer()->GetCount();
+    glDrawElements(GL_TRIANGLES, cnt, GL_UNSIGNED_INT, 0);
+}
 
 void OpenGLRenderer::SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform)
 {
@@ -251,7 +277,7 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, 
 
         GLfloat w = ch.Size.x * transform.scale.x;
         GLfloat h = ch.Size.y * transform.scale.y;
-        // µ±Ç°×Ö·ûµÄVBO
+        // ï¿½ï¿½Ç°ï¿½Ö·ï¿½ï¿½ï¿½VBO
         GLfloat vertices[6][5] = {
             { xpos,     ypos + h , transform.position.z,   0.0, 0.0 },
             { xpos,     ypos,    transform.position.z,   0.0, 1.0 },
@@ -261,15 +287,15 @@ void OpenGLRenderer::SubmitText(const string& text, const Transform& transform, 
             { xpos + w, ypos,    transform.position.z,    1.0, 1.0 },
             { xpos + w, ypos + h, transform.position.z,   1.0, 0.0 }
         };
-        // ÔÚ·½¿éÉÏ»æÖÆ×ÖÐÎÎÆÀí
+        // ï¿½Ú·ï¿½ï¿½ï¿½ï¿½Ï»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         glBindTexture(GL_TEXTURE_2D, ch.TextureID);
-        // ¸üÐÂµ±Ç°×Ö·ûµÄVBO
+        // ï¿½ï¿½ï¿½Âµï¿½Ç°ï¿½Ö·ï¿½ï¿½ï¿½VBO
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        // »æÖÆ·½¿é
+        // ï¿½ï¿½ï¿½Æ·ï¿½ï¿½ï¿½
         glDrawArrays(GL_TRIANGLES, 0, 6);
-        // ¸üÐÂÎ»ÖÃµ½ÏÂÒ»¸ö×ÖÐÎµÄÔ­µã£¬×¢Òâµ¥Î»ÊÇ1/64ÏñËØ
+        // ï¿½ï¿½ï¿½ï¿½Î»ï¿½Ãµï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Îµï¿½Ô­ï¿½ã£¬×¢ï¿½âµ¥Î»ï¿½ï¿½1/64ï¿½ï¿½ï¿½ï¿½
         x += (ch.Advance >> 6) * transform.scale.x; //(2^6 = 64)
     }
 

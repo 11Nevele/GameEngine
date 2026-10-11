@@ -64,6 +64,8 @@ namespace ac
 		 */
 		void Submit(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
 
+		void Submit3D(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f), const glm::vec4& color = glm::vec4(1, 1, 1, 1)) override;
+
 		void SubmitDebug(VertexArray* vertexArray, const glm::mat4& transform = glm::mat4(1.0f)) override;
 		/**
 		 * @brief Submits a text rendering command.
@@ -87,11 +89,9 @@ namespace ac
 		 * @param cameraTransform The camera's view-projection matrix
 		 */
 		void UpdateCamera(const glm::mat4& cameraTransform) override;
-
-	private:
 		/**
 		 * @brief Data structure for scene rendering information.
-		 * 
+		 *
 		 * Stores the current view-projection matrix for the scene.
 		 */
 		Shader* shader2D;
@@ -101,11 +101,15 @@ namespace ac
 
 		Shader* textShader;
 
+		Shader* shader3D;
+	private:
+		
+
 		struct Character {
-			GLuint     TextureID;  // ×ÖÐÎÎÆÀíID
-			glm::ivec2 Size;       // ×ÖÐÎ´ó´óÐ¡
-			glm::ivec2 Bearing;    // ×ÖÐÎ»ùÓÚ»ùÏßºÍÆðµãµÄÎ»ÖÃ
-			GLuint     Advance;    // Æðµãµ½ÏÂÒ»¸ö×ÖÐÎÆðµãµÄ¾àÀë
+			GLuint     TextureID;  // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ID
+			glm::ivec2 Size;       // ï¿½ï¿½ï¿½Î´ï¿½ï¿½Ð¡
+			glm::ivec2 Bearing;    // ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ú»ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
+			GLuint     Advance;    // ï¿½ï¿½ãµ½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¾ï¿½ï¿½ï¿½
 		};
 
 		std::map<GLchar, Character> Characters;

@@ -1,4 +1,6 @@
 [submodule "Dependency/glm"]
 	path = Dependency/glm
 	url = https://github.com/icaven/glm
-
+[submodule "Dependency/Assimp"]
+	path = Dependency/Assimp
+	url = https://github.com/assimp/assimp.git

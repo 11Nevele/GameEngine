@@ -43,10 +43,15 @@ namespace ac
 		world.RegisterType<RigidBody2D>();
 		world.RegisterType<Tilemap>();
 		world.RegisterType<TilemapElement>();
-		// ×¢²áÒôÆµ×é¼þ
+		// ×¢ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½
 		world.RegisterType<AudioSource>();
 		world.RegisterType<AudioListener>();
 		world.RegisterType<Text>();
+
+		world.RegisterType<OpenGLModel>();
+
+		world.RegisterType<AmbientLight>();
+		world.RegisterType<PointLight>();
 
 		world.AddResource<ac::EventManager>(new EventManager());
 		world.AddResource<Time>(new Time());	
@@ -57,7 +62,7 @@ namespace ac
 		world.AddResource<ModelManager>(new ModelManager());
 		world.AddResource<CollisionLayer>(new CollisionLayer());
 		world.AddResource<InputManager>(new InputManager());
-		// Ìí¼ÓÒôÆµ¹ÜÀíÆ÷×ÊÔ´
+		// ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´
 		world.AddResource<AudioManager>(new AudioManager());
 
 		std::string currentPath = std::filesystem::current_path().string();
@@ -78,8 +83,8 @@ namespace ac
 		// Register physics systems
 		world.AddUpdateSystem(PhysicsSystem::PhysicsStep, 1); // Run physics step early in update
 		world.AddUpdateSystem(PhysicsSystem::CollisionSystem, 2); // Run collision detection after physics update
-		// ×¢²áÒôÆµÏµÍ³
-		world.AddPostUpdateSystem(AudioSystem::UpdateAudio, 0); // ÔÚÎïÀíÏµÍ³Ö®ºó¸üÐÂÒôÆµ
+		// ×¢ï¿½ï¿½ï¿½ï¿½ÆµÏµÍ³
+		world.AddPostUpdateSystem(AudioSystem::UpdateAudio, 0); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÏµÍ³Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµ
 		world.AddPostUpdateSystem(SyncCamera, 0); // Sync camera after audio update
 		
 		world.AddPostUpdateSystem(PhysicsSystem::Physics2DStep, 1);
@@ -87,6 +92,7 @@ namespace ac
 		world.AddPostUpdateSystem(RenderSprite, 9);
 		world.AddPostUpdateSystem(RenderTilemap, 9);
 		world.AddPostUpdateSystem(RenderTextSystem, 9);
+		world.AddPostUpdateSystem(RenderModel, 9);
 		
 
 		

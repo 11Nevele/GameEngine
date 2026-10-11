@@ -17,7 +17,7 @@ A modern C++20 game engine built with Entity-Component-System (ECS) architecture
 - [License](#license)
 
 ## Features
-
+![MyImage](img/preview.png)
 ### Core Engine Features
 - **Entity-Component-System (ECS) Architecture**: High-performance data-oriented design
 - **OpenGL Rendering**: Modern OpenGL-based 2D/3D graphics rendering

@@ -8,3 +8,5 @@
 #include "OpenGL/OpenGLShader.h"
 #include "OpenGL/OpenGLVertexArray.h"
 #include "OpenGL/OpenGLTexture2D.h"
+#include "OpenGL/OpenGLMesh.h"
+#include "OpenGL/OpenGLModel.h"

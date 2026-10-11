@@ -4,6 +4,7 @@
 #include "Math/Transform.h"
 #include "EngineComponents/Physics/Physics.h"
 #include "EngineComponents/Tilemap.h"
+#include "EngineComponents\Lighting\Lights.hpp"
 namespace ac
 {
 	bool OnSpriteAdded(const OnAdded<Sprite>& event)
@@ -31,6 +32,9 @@ namespace ac
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
 		TextureManager& textureManager = world.GetResourse<TextureManager>();
 		ModelManager& modelManager = world.GetResourse<ModelManager>();
+
+		
+
 		world.View<Sprite, Transform>().ForEach([&modelManager, &textureManager, &renderer](Entity e, Sprite& sprite, Transform& trans)
 			{
 				textureManager.GetTexture(sprite.textureID).Bind();
@@ -52,6 +56,9 @@ namespace ac
 		t.RotateZ(0.1);
 		renderer.SubmitCircle(&modelManager.GetModel(0), radius, t);
 	}
+
+
+
 	void RenderCollider(World& world)
 	{
 		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
@@ -100,6 +107,52 @@ namespace ac
 		world.View<Camera, Transform>().ForEach([&renderer](Entity e, Camera& camera, Transform& transform)
 			{
 				renderer.UpdateCamera(transform.asMat4(true));
+			});
+	}
+	void RenderModel(World& world)
+	{
+		glm::vec3 color(0, 0, 0);
+		world.View<AmbientLight>().ForEach([&color](Entity e, AmbientLight& light) {
+			color += light.color;
+			});
+		if (color.length() > 0)
+		{
+			//color /= color.length();
+		}
+
+		OpenGLRenderer& renderer = world.GetResourse<OpenGLRenderer>();
+		renderer.shader3D->Bind();
+		renderer.shader3D->SetFloat3("uAmbientLightColor", color);
+
+		int pointLightCount = 0;
+		world.View<PointLight, Transform>().ForEach([&renderer, &pointLightCount](Entity e, PointLight& light, Transform& transform)
+			{
+				if (pointLightCount >= 4)
+					return;
+
+				renderer.shader3D->SetFloat3("uLightPos[" + std::to_string(pointLightCount) + "]", transform.position);
+				renderer.shader3D->SetFloat3("uLightColor[" + std::to_string(pointLightCount) + "]", light.color);
+				pointLightCount++;
+			});
+		renderer.shader3D->SetInt("uLightCount", pointLightCount);
+
+		
+		
+
+		world.View<OpenGLModel, Transform>().ForEach([&renderer](Entity e, OpenGLModel& model, Transform& transform)
+			{
+				for (auto& m : model.GetMeshes())
+				{
+					m->BindTextures();
+					renderer.shader3D->SetInt("uMaterial.diffuse", 0);
+					renderer.shader3D->SetInt("uMaterial.specular", 1);
+					renderer.shader3D->SetFloat("uMaterial.shininess", 1.0f);
+
+					Transform t = transform;
+					renderer.shader3D->SetMat4("rotation", transform.rotation.operator glm::mat<4, 4, float, glm::packed_highp>());
+					
+					renderer.Submit3D(m->GetVertexArray(), t.asMat4());
+				}
 			});
 	}
 }

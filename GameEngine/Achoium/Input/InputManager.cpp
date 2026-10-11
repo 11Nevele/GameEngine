@@ -22,4 +22,12 @@ void ac::InputManagerSystem::UpdateInput(World& world)
 		inputManager.mIsMouseButtonUp[i] = inputManager.mIsMouseButtonPressed[i] && !windowsInput.IsMouseButtonPressed(i);
 		inputManager.mIsMouseButtonPressed[i] = windowsInput.IsMouseButtonPressed(i);
 	}
+	if (inputManager.mousePos == glm::vec2{-1, -1})
+	{
+		inputManager.mousePos = windowsInput.GetMousePosition();
+		inputManager.lastMousePos = inputManager.mousePos;
+	}
+	inputManager.lastMousePos = inputManager.mousePos;
+	inputManager.mousePos = windowsInput.GetMousePosition();
+	
 }
